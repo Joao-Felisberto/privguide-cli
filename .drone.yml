@@ -10,5 +10,7 @@ steps:
   - go build
 
 trigger:
+  branch:
+    - master
   event:
     - push
