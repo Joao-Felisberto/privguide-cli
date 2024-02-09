@@ -2,7 +2,7 @@
 
 pkgs.mkShell {
 	nativeBuildInputs = with pkgs; [
-		apache-jena-fuseki
+		#apache-jena-fuseki
 
 		go
 
