@@ -29,7 +29,17 @@ func main() {
 		},
 	}
 
+	var devCmd = &cobra.Command{
+		Use:   "dev",
+		Short: "Development tests only",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			fmt.Println("Running development command")
+			return nil
+		},
+	}
+
 	rootCmd.AddCommand(analyseCmd)
+	rootCmd.AddCommand(devCmd)
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)

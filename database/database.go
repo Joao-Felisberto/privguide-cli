@@ -5,7 +5,6 @@ import (
 	"encoding/base64"
 	"fmt"
 	"net/http"
-	"os"
 )
 
 // todo: sanitization https://stackoverflow.com/a/55726984
@@ -28,7 +27,7 @@ func sendSparqlQuery(endpoint, query, username, password string) (*http.Response
 	return client.Do(req)
 }
 
-func TestDB(dataset string, ip string, port int64, username string, password string) {
+func TestDB(dataset string, ip string, port int64, username string, password string) (int, error) {
 	fmt.Printf("ip=%s port=%d username=%s password=%s\n", ip, port, username, password)
 
 	endpointURL := fmt.Sprintf("http://%s:%d/%s/update", ip, port, dataset)
@@ -43,7 +42,7 @@ func TestDB(dataset string, ip string, port int64, username string, password str
 	response, err := sendSparqlQuery(endpointURL, sparqlQuery, username, password)
 	if err != nil {
 		fmt.Println("Error sending SPARQL query:", err)
-		os.Exit(1)
+		return -1, err
 	}
 	defer response.Body.Close()
 
@@ -52,4 +51,6 @@ func TestDB(dataset string, ip string, port int64, username string, password str
 	} else {
 		fmt.Println("Error inserting triple. Status code:", response.StatusCode)
 	}
+
+	return response.StatusCode, nil
 }
