@@ -1,0 +1,114 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/Data Flow Diagram",
+    "definitions": {
+        "Data Flow Diagram": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "external entities": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ExternalEntity"
+                    }
+                },
+                "processes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ExternalEntity"
+                    }
+                },
+                "data stores": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/DataStore"
+                    }
+                },
+                "data flows": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/DataFlow"
+                    }
+                }
+            },
+            "required": [
+                "data flows",
+                "data stores",
+                "external entities",
+                "processes"
+            ],
+            "title": "Data Flow Diagram"
+        },
+        "DataFlow": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "from": {
+                    "type": "string"
+                },
+                "to": {
+                    "type": "string"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": [
+                "data",
+                "from",
+                "to"
+            ],
+            "title": "DataFlow"
+        },
+        "DataStore": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "stores": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": [
+                "id",
+                "stores"
+            ],
+            "title": "DataStore"
+        },
+        "ExternalEntity": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "consumes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "produces": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": [
+                "consumes",
+                "id",
+                "produces"
+            ],
+            "title": "ExternalEntity"
+        }
+    }
+}
