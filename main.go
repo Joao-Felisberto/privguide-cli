@@ -10,6 +10,11 @@ import (
 func main() {
 	appName := "devprivops"
 
+	var (
+		dfdSchema        string
+		attackTreeSchema string
+	)
+
 	var rootCmd = &cobra.Command{
 		Use:   appName,
 		Short: fmt.Sprintf("A CLI application to analyze %s", appName),
@@ -37,6 +42,9 @@ func main() {
 			return nil
 		},
 	}
+
+	analyseCmd.Flags().StringVar(&dfdSchema, "dfd-schema", "", "Custom DFD schema file")
+	analyseCmd.Flags().StringVar(&attackTreeSchema, "attack-tree-schema", "", "Custom attack tree schema file")
 
 	rootCmd.AddCommand(analyseCmd)
 	rootCmd.AddCommand(devCmd)

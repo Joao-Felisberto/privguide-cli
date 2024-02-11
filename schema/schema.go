@@ -37,41 +37,41 @@ func toStringKeys(val interface{}) (interface{}, error) {
 }
 
 // ValidateYAMLAgainstSchema validates a YAML file against a JSON Schema
-func ValidateYAMLAgainstSchema(yamlFile, schemaFile string) (bool, error) {
+func ValidateYAMLAgainstSchema(yamlFile, schemaFile string) error {
 	// Read YAML file
 	yamlData, err := os.ReadFile(yamlFile)
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	// Read schema
 	schemaText, err := os.ReadFile(schemaFile)
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	// Unmarshal YAML data
 	var rawData interface{}
 	if err := yaml.Unmarshal(yamlData, &rawData); err != nil {
-		return false, err
+		return err
 	}
 	data, err := toStringKeys(rawData)
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	// Load schema
 	compiler := jsonschema.NewCompiler()
 	if err := compiler.AddResource("schema.json", strings.NewReader(string(schemaText))); err != nil {
-		return false, err
+		return err
 	}
 	schema, err := compiler.Compile("schema.json")
 	if err != nil {
-		return false, err
+		return err
 	}
 	if err := schema.ValidateInterface(data); err != nil {
-		return false, err
+		return err
 	}
 
-	return true, nil
+	return nil
 }
