@@ -3,6 +3,8 @@
 pkgs.mkShell {
 	nativeBuildInputs = with pkgs; [
 		#apache-jena-fuseki
+		#lua
+		#luarocks
 
 		go
 
