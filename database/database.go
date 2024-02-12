@@ -9,6 +9,8 @@ import (
 
 // todo: sanitization https://stackoverflow.com/a/55726984
 
+var id_cnt = 0
+
 func sendSparqlQuery(endpoint, query, username, password string) (*http.Response, error) {
 	client := &http.Client{}
 
@@ -53,4 +55,8 @@ func TestDB(dataset string, ip string, port int64, username string, password str
 	}
 
 	return response.StatusCode, nil
+}
+
+func YAMLToDB() {
+
 }

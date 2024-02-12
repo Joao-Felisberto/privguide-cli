@@ -2,12 +2,23 @@ package schema
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"strings"
 
-	"github.com/ghodss/yaml"
 	"github.com/santhosh-tekuri/jsonschema"
+	"gopkg.in/yaml.v2"
 )
+
+type YAMLVal interface{ int | string }
+
+type Triple struct {
+	Subject   string
+	Predicate string
+	Object    interface{}
+}
+
+var idCounter int
 
 func toStringKeys(val interface{}) (interface{}, error) {
 	switch val := val.(type) {
@@ -74,4 +85,45 @@ func ValidateYAMLAgainstSchema(yamlFile, schemaFile string) error {
 	}
 
 	return nil
+}
+
+func generateID() string {
+	idCounter++
+	return fmt.Sprintf("ex:_%d", idCounter)
+}
+
+func YAMLtoRDF(key string, val interface{}, rootURI string) []Triple {
+	triples := []Triple{}
+
+	switch v := val.(type) {
+	case map[interface{}]interface{}:
+		for p, value := range v {
+			switch t := value.(type) {
+			case map[interface{}]interface{}:
+				id := generateID()
+				triples = append(triples, Triple{rootURI, fmt.Sprintf("%v", p), id})
+				triples = append(triples, YAMLtoRDF(fmt.Sprintf("%v", p), t, id)...)
+			case []interface{}:
+				triples = append(triples, YAMLtoRDF(fmt.Sprintf("%v", p), t, rootURI)...)
+			default:
+				triples = append(triples, Triple{rootURI, fmt.Sprintf("%v", p), t})
+			}
+		}
+	case []interface{}:
+		for _, e := range v {
+			id := generateID()
+			switch t := e.(type) {
+			case map[interface{}]interface{}, []interface{}:
+				triples = append(triples, Triple{rootURI, key, id})
+				triples = append(triples, YAMLtoRDF(id, t, id)...)
+			default:
+				triples = append(triples, Triple{rootURI, key, t})
+			}
+		}
+	default:
+		//triples = append(triples, Triple{rootURI, key, v})
+		fmt.Println("ERROR")
+	}
+
+	return triples
 }
