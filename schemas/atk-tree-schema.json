@@ -1,0 +1,33 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "type": "array",
+    "items": {
+        "$ref": "#/definitions/AtkNode"
+    },
+    "definitions": {
+        "AtkNode": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "query": {
+                    "type": "string"
+                },
+                "children": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/AtkNode"
+                    }
+                }
+            },
+            "required": [
+                "children",
+                "description",
+                "query"
+            ],
+            "title": "AtkNode"
+        }
+    }
+}
