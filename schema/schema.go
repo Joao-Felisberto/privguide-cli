@@ -47,26 +47,71 @@ func toStringKeys(val interface{}) (interface{}, error) {
 	}
 }
 
-// ValidateYAMLAgainstSchema validates a YAML file against a JSON Schema
-func ValidateYAMLAgainstSchema(yamlFile, schemaFile string) error {
-	// Read YAML file
+func ReadYAML(yamlFile string, schemaFile string) (interface{}, error) {
+
 	yamlData, err := os.ReadFile(yamlFile)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
+	// Unmarshal YAML data
+	var rawData interface{}
+	if err := yaml.Unmarshal(yamlData, &rawData); err != nil {
+		return nil, err
+	}
+	data, err := toStringKeys(rawData)
+	if err != nil {
+		return nil, err
+	}
+
+	if schemaFile != "" {
+		schemaText, err := os.ReadFile(schemaFile)
+		if err != nil {
+			return nil, err
+		}
+
+		compiler := jsonschema.NewCompiler()
+		if err := compiler.AddResource("schema.json", strings.NewReader(string(schemaText))); err != nil {
+			return nil, err
+		}
+		schema, err := compiler.Compile("schema.json")
+		if err != nil {
+			return nil, err
+		}
+		if err := schema.ValidateInterface(data); err != nil {
+			return nil, err
+		}
+	}
+
+	return data, nil
+}
+
+// ValidateYAMLAgainstSchema validates a YAML file against a JSON Schema
+func ValidateYAMLAgainstSchema(yamlFile string, schemaFile string) error {
 	// Read schema
 	schemaText, err := os.ReadFile(schemaFile)
 	if err != nil {
 		return err
 	}
 
-	// Unmarshal YAML data
-	var rawData interface{}
-	if err := yaml.Unmarshal(yamlData, &rawData); err != nil {
-		return err
-	}
-	data, err := toStringKeys(rawData)
+	/*
+		// Read YAML file
+		yamlData, err := os.ReadFile(yamlFile)
+		if err != nil {
+			return err
+		}
+
+		// Unmarshal YAML data
+		var rawData interface{}
+		if err := yaml.Unmarshal(yamlData, &rawData); err != nil {
+			return err
+		}
+		data, err := toStringKeys(rawData)
+		if err != nil {
+			return err
+		}
+	*/
+	data, err := ReadYAML(yamlFile, "")
 	if err != nil {
 		return err
 	}
@@ -87,7 +132,7 @@ func ValidateYAMLAgainstSchema(yamlFile, schemaFile string) error {
 	return nil
 }
 
-func generateID() string {
+func generateAnonID() string {
 	idCounter++
 	return fmt.Sprintf("ex:_%d", idCounter)
 }
@@ -100,7 +145,7 @@ func YAMLtoRDF(key string, val interface{}, rootURI string) []Triple {
 		for p, value := range v {
 			switch t := value.(type) {
 			case map[interface{}]interface{}:
-				id := generateID()
+				id := generateAnonID()
 				triples = append(triples, Triple{rootURI, fmt.Sprintf("%v", p), id})
 				triples = append(triples, YAMLtoRDF(fmt.Sprintf("%v", p), t, id)...)
 			case []interface{}:
@@ -111,7 +156,7 @@ func YAMLtoRDF(key string, val interface{}, rootURI string) []Triple {
 		}
 	case []interface{}:
 		for _, e := range v {
-			id := generateID()
+			id := generateAnonID()
 			switch t := e.(type) {
 			case map[interface{}]interface{}, []interface{}:
 				triples = append(triples, Triple{rootURI, key, id})

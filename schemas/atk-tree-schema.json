@@ -1,11 +1,8 @@
 {
     "$schema": "http://json-schema.org/draft-06/schema#",
-    "type": "array",
-    "items": {
-        "$ref": "#/definitions/AtkNode"
-    },
+    "$ref": "#/definitions/Welcome5",
     "definitions": {
-        "AtkNode": {
+        "Welcome5": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
@@ -18,7 +15,7 @@
                 "children": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/AtkNode"
+                        "$ref": "#/definitions/Welcome5"
                     }
                 }
             },
@@ -27,7 +24,7 @@
                 "description",
                 "query"
             ],
-            "title": "AtkNode"
+            "title": "Welcome5"
         }
     }
 }

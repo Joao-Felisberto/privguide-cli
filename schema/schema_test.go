@@ -41,19 +41,19 @@ a:
 	triples := schema.YAMLtoRDF(rootURI, data, rootURI)
 
 	expected := []schema.Triple{
-		{Subject: "ex:ROOT", Predicate: "a", Object: "ex:_1"},
-		{Subject: "ex:_1", Predicate: "b", Object: "ex:_2"},
-		{Subject: "ex:_2", Predicate: "c", Object: "ex:_3"},
-		{Subject: "ex:_3", Predicate: "d", Object: 1},
-		{Subject: "ex:_3", Predicate: "f", Object: 1},
-		{Subject: "ex:_3", Predicate: "f", Object: 2},
-		{Subject: "ex:_3", Predicate: "f", Object: 3},
-		{Subject: "ex:_2", Predicate: "e", Object: "ex:_7"},
-		{Subject: "ex:_7", Predicate: "a1", Object: 1},
-		{Subject: "ex:_7", Predicate: "a2", Object: 2},
-		{Subject: "ex:_2", Predicate: "e", Object: "ex:_8"},
-		{Subject: "ex:_8", Predicate: "a1", Object: 3},
-		{Subject: "ex:_8", Predicate: "a2", Object: 4},
+		{"ex:ROOT", "a", "ex:_1"},
+		{"ex:_1", "b", "ex:_2"},
+		{"ex:_2", "c", "ex:_3"},
+		{"ex:_3", "d", 1},
+		{"ex:_3", "f", 1},
+		{"ex:_3", "f", 2},
+		{"ex:_3", "f", 3},
+		{"ex:_2", "e", "ex:_7"},
+		{"ex:_7", "a1", 1},
+		{"ex:_7", "a2", 2},
+		{"ex:_2", "e", "ex:_8"},
+		{"ex:_8", "a1", 3},
+		{"ex:_8", "a2", 4},
 	}
 
 	if lt, le := len(triples), len(expected); lt != le {

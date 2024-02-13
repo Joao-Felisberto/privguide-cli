@@ -5,16 +5,26 @@ import (
 	"encoding/base64"
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 	"text/template"
 
+	attacktree "github.com/Joao-Felisberto/devprivops/attack_tree"
 	"github.com/Joao-Felisberto/devprivops/schema"
 )
 
 // todo: sanitization https://stackoverflow.com/a/55726984
 
+type QueryMethod string
+
+const (
+	QUERY  QueryMethod = "query"
+	UPDATE QueryMethod = "update"
+	DATA   QueryMethod = "data"
+	UPLOAD QueryMethod = "upload"
+)
+
 type DBManager struct {
-	id_cnt   int
 	username string
 	password string
 	ip       string
@@ -24,7 +34,7 @@ type DBManager struct {
 
 // var id_cnt = 0
 
-func (db *DBManager) sendSparqlQuery(query string, method string) (*http.Response, error) {
+func (db *DBManager) sendSparqlQuery(query string, method QueryMethod) (*http.Response, error) {
 	endpoint := fmt.Sprintf("http://%s:%d/%s/%s", db.ip, db.port, db.dataset, method)
 	client := &http.Client{}
 
@@ -33,7 +43,7 @@ func (db *DBManager) sendSparqlQuery(query string, method string) (*http.Respons
 		return nil, err
 	}
 
-	req.Header.Set("Content-Type", "application/sparql-update")
+	req.Header.Set("Content-Type", fmt.Sprintf("application/sparql-%s", method))
 	req.Header.Set("Accept", "application/json")
 
 	auth := db.username + ":" + db.password
@@ -73,9 +83,9 @@ func (db *DBManager) TestDB() (int, error) {
 func (db *DBManager) AddTriples(triples []schema.Triple) (int, error) {
 	sparqlTemplate := `
         INSERT DATA {
-				{{ range . }}
-					{{ .Subject }} {{ .Predicate }} {{ .Object }} .
-				{{ end }}
+			{{ range . }}
+				{{ .Subject }} {{ .Predicate }} {{ .Object }} .
+			{{ end }}
         }
     `
 	var sparqlQuery strings.Builder
@@ -85,7 +95,7 @@ func (db *DBManager) AddTriples(triples []schema.Triple) (int, error) {
 		fmt.Println("ERROR could not instantiate template")
 	}
 
-	response, err := db.sendSparqlQuery(sparqlQuery.String(), "update")
+	response, err := db.sendSparqlQuery(sparqlQuery.String(), UPDATE)
 	if err != nil {
 		fmt.Println("Error sending SPARQL query:", err)
 		return -1, err
@@ -93,4 +103,41 @@ func (db *DBManager) AddTriples(triples []schema.Triple) (int, error) {
 	defer response.Body.Close()
 
 	return response.StatusCode, nil
+}
+
+func (db *DBManager) executeQueryFile(file string, method QueryMethod) (int, error) {
+
+	sparqlQueryBytes, err := os.ReadFile(file)
+	if err != nil {
+		return -1, err
+	}
+
+	sparqlQuery := string(sparqlQueryBytes)
+
+	response, err := db.sendSparqlQuery(sparqlQuery, method)
+	if err != nil {
+		fmt.Println("Error sending SPARQL query:", err)
+		return -1, err
+	}
+	defer response.Body.Close()
+
+	return response.StatusCode, nil
+}
+
+func (db *DBManager) executeAttackTreeNode(attackNode *attacktree.AttackNode) (int, *attacktree.AttackNode, error) {
+	for _, node := range attackNode.Children {
+		code, failingNode, err := db.executeAttackTreeNode(&node)
+		if err != nil {
+			return code, failingNode, err
+		}
+		qCode, qErr := db.executeQueryFile(attackNode.Query, QUERY)
+		if qErr != nil {
+			return qCode, attackNode, qErr
+		}
+	}
+	return -1, nil, nil
+}
+
+func (db *DBManager) ExecuteAttackTree(attackTree *attacktree.AttackTree) (int, *attacktree.AttackNode, error) {
+	return db.executeAttackTreeNode(&attackTree.Root)
 }
