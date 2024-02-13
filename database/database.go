@@ -5,13 +5,27 @@ import (
 	"encoding/base64"
 	"fmt"
 	"net/http"
+	"strings"
+	"text/template"
+
+	"github.com/Joao-Felisberto/devprivops/schema"
 )
 
 // todo: sanitization https://stackoverflow.com/a/55726984
 
-var id_cnt = 0
+type DBManager struct {
+	id_cnt   int
+	username string
+	password string
+	ip       string
+	port     int
+	dataset  string
+}
 
-func sendSparqlQuery(endpoint, query, username, password string) (*http.Response, error) {
+// var id_cnt = 0
+
+func (db *DBManager) sendSparqlQuery(query string, method string) (*http.Response, error) {
+	endpoint := fmt.Sprintf("http://%s:%d/%s/%s", db.ip, db.port, db.dataset, method)
 	client := &http.Client{}
 
 	req, err := http.NewRequest("POST", endpoint, bytes.NewBuffer([]byte(query)))
@@ -22,17 +36,15 @@ func sendSparqlQuery(endpoint, query, username, password string) (*http.Response
 	req.Header.Set("Content-Type", "application/sparql-update")
 	req.Header.Set("Accept", "application/json")
 
-	auth := username + ":" + password
+	auth := db.username + ":" + db.password
 	basicAuth := "Basic " + base64.StdEncoding.EncodeToString([]byte(auth))
 	req.Header.Set("Authorization", basicAuth)
 
 	return client.Do(req)
 }
 
-func TestDB(dataset string, ip string, port int64, username string, password string) (int, error) {
-	fmt.Printf("ip=%s port=%d username=%s password=%s\n", ip, port, username, password)
-
-	endpointURL := fmt.Sprintf("http://%s:%d/%s/update", ip, port, dataset)
+/*
+func (db *DBManager) TestDB() (int, error) {
 	sparqlQuery := `
         PREFIX foaf: <http://xmlns.com/foaf/0.1/>
         INSERT DATA {
@@ -41,7 +53,7 @@ func TestDB(dataset string, ip string, port int64, username string, password str
         }
     `
 
-	response, err := sendSparqlQuery(endpointURL, sparqlQuery, username, password)
+	response, err := db.sendSparqlQuery(sparqlQuery, "update")
 	if err != nil {
 		fmt.Println("Error sending SPARQL query:", err)
 		return -1, err
@@ -56,7 +68,29 @@ func TestDB(dataset string, ip string, port int64, username string, password str
 
 	return response.StatusCode, nil
 }
+*/
 
-func YAMLToDB() {
+func (db *DBManager) AddTriples(triples []schema.Triple) (int, error) {
+	sparqlTemplate := `
+        INSERT DATA {
+				{{ range . }}
+					{{ .Subject }} {{ .Predicate }} {{ .Object }} .
+				{{ end }}
+        }
+    `
+	var sparqlQuery strings.Builder
 
+	tpl := template.Must(template.New("insert triples").Parse(sparqlTemplate))
+	if err := tpl.Execute(&sparqlQuery, triples); err != nil {
+		fmt.Println("ERROR could not instantiate template")
+	}
+
+	response, err := db.sendSparqlQuery(sparqlQuery.String(), "update")
+	if err != nil {
+		fmt.Println("Error sending SPARQL query:", err)
+		return -1, err
+	}
+	defer response.Body.Close()
+
+	return response.StatusCode, nil
 }
