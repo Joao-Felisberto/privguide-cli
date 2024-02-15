@@ -3,17 +3,19 @@ package main
 import (
 	"fmt"
 	"os"
+	"strconv"
 
+	attacktree "github.com/Joao-Felisberto/devprivops/attack_tree"
+	"github.com/Joao-Felisberto/devprivops/database"
+	"github.com/Joao-Felisberto/devprivops/schema"
 	"github.com/spf13/cobra"
 )
 
 func main() {
 	appName := "devprivops"
 
-	var (
-		dfdSchema        string
-		attackTreeSchema string
-	)
+	dfdSchema := fmt.Sprintf("./.%s/schemas/dfd-schema.json", appName)
+	attackTreeSchema := fmt.Sprintf("./.%s/schemas/atk-tree-schema.json", appName)
 
 	var rootCmd = &cobra.Command{
 		Use:   appName,
@@ -24,12 +26,60 @@ func main() {
 	}
 
 	var analyseCmd = &cobra.Command{
-		Use:   "analyse <database endpoint>",
+		Use:   "analyse <username> <password> <database ip> <database port> <dataset>",
 		Short: fmt.Sprintf("Analyse the specified database endpoint for %s", appName),
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			databaseEndpoint := args[0]
-			fmt.Printf("Analyzing database at endpoint: %s\n", databaseEndpoint)
+			username := args[0]
+			password := args[1]
+			ip := args[2]
+			port, err := strconv.Atoi(args[3])
+			if err != nil {
+				return err
+			}
+			dataset := args[4]
+
+			dbManager := database.New(
+				username,
+				password,
+				ip,
+				port,
+				dataset,
+			)
+
+			// 1. Load DFD into DB
+			dfd, err := schema.ReadYAML(fmt.Sprintf("./.%s/dfd/dfd.yml", appName), "") // TODO: add schema
+			if err != nil {
+				return err
+			}
+			statusCode, err := dbManager.AddTriples(schema.YAMLtoRDF("ex:ROOT", dfd, "ex:ROOT"))
+			if err != nil {
+				return err
+			}
+			if statusCode != 204 {
+				return fmt.Errorf("unexpected status code: %d", statusCode)
+			}
+
+			// 2. Run all attack trees
+			atkDir := fmt.Sprintf("./.%s/attack_trees/", appName)
+			files, err := os.ReadDir(atkDir)
+			if err != nil {
+				return err
+			}
+			for _, file := range files {
+				tree, err := attacktree.NewAttackTreeFromYaml(file.Name(), "") // TODO schema
+				if err != nil {
+					return err
+				}
+
+				// query code, failingNode, err
+				_, failingNode, err := dbManager.ExecuteAttackTree(tree)
+				if err != nil {
+					return fmt.Errorf("error at node '%s': %s", failingNode.Description, err)
+				}
+			}
+
+			// fmt.Printf("Analyzing database at endpoint: %s:%d\n", ip, port)
 			return nil
 		},
 	}
@@ -43,8 +93,8 @@ func main() {
 		},
 	}
 
-	analyseCmd.Flags().StringVar(&dfdSchema, "dfd-schema", "", "Custom DFD schema file")
-	analyseCmd.Flags().StringVar(&attackTreeSchema, "attack-tree-schema", "", "Custom attack tree schema file")
+	analyseCmd.Flags().StringVar(&dfdSchema, "dfd-schema", dfdSchema, "Custom DFD schema file")
+	analyseCmd.Flags().StringVar(&attackTreeSchema, "attack-tree-schema", attackTreeSchema, "Custom attack tree schema file")
 
 	rootCmd.AddCommand(analyseCmd)
 	rootCmd.AddCommand(devCmd)

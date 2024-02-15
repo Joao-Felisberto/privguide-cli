@@ -34,6 +34,22 @@ type DBManager struct {
 
 // var id_cnt = 0
 
+func New(
+	username string,
+	password string,
+	ip string,
+	port int,
+	dataset string,
+) DBManager {
+	return DBManager{
+		username,
+		password,
+		ip,
+		port,
+		dataset,
+	}
+}
+
 func (db *DBManager) sendSparqlQuery(query string, method QueryMethod) (*http.Response, error) {
 	endpoint := fmt.Sprintf("http://%s:%d/%s/%s", db.ip, db.port, db.dataset, method)
 	client := &http.Client{}

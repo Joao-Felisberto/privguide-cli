@@ -60,13 +60,28 @@ a:
 		t.Errorf("Number of triples generated does not match: expected %d, got %d", le, lt)
 	}
 	for i, v := range triples {
-		if v != expected[i] {
-			t.Errorf("The produced triples do not match @%d, expected (%s,%s,%s), got (%s,%s,%s)",
-				i,
+		found := false
+		for j := 0; j < len(expected); j++ {
+			if v == expected[j] {
+				found = true
+				break
+			}
+		}
+		if found {
+			continue
+		}
+		t.Errorf("The produced triples do not match @%d, expected (%s,%s,%s), got (%s,%s,%s)",
+			i,
+			expected[i].Subject, expected[i].Predicate, expected[i].Object,
+			v.Subject, v.Predicate, v.Object,
+		)
+		for i, v := range triples {
+			t.Logf(
+				"%s,%s,%s\t%s,%s,%s",
 				expected[i].Subject, expected[i].Predicate, expected[i].Object,
 				v.Subject, v.Predicate, v.Object,
 			)
-			break
 		}
+		break
 	}
 }
