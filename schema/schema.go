@@ -18,6 +18,28 @@ type Triple struct {
 	Object    interface{}
 }
 
+func NewTriple(s, p, o string) Triple {
+	isURI := s[0] == '<' && s[len(s)-1] == '>'
+	if !isURI {
+		s = fmt.Sprintf(`<%s>`, s)
+	}
+	s = strings.ReplaceAll(s, " ", "_")
+	isURI = p[0] == '<' && p[len(p)-1] == '>'
+	if !isURI {
+		p = strings.ReplaceAll(p, " ", "_")
+		p = fmt.Sprintf(`<%s>`, p)
+	}
+
+	isURI = strings.HasPrefix(o, "https://")
+	if isURI {
+		o = fmt.Sprintf(`<%s>`, o)
+	} else {
+		o = fmt.Sprintf(`"%s"`, o)
+	}
+
+	return Triple{s, p, o}
+}
+
 var idCounter int
 
 func toStringKeys(val interface{}) (interface{}, error) {
@@ -134,7 +156,7 @@ func ValidateYAMLAgainstSchema(yamlFile string, schemaFile string) error {
 
 func generateAnonID() string {
 	idCounter++
-	return fmt.Sprintf("ex:_%d", idCounter)
+	return fmt.Sprintf("https://example.com/%d", idCounter)
 }
 
 func YAMLtoRDF(key string, val interface{}, rootURI string) []Triple {
@@ -146,12 +168,26 @@ func YAMLtoRDF(key string, val interface{}, rootURI string) []Triple {
 			switch t := value.(type) {
 			case map[interface{}]interface{}:
 				id := generateAnonID()
-				triples = append(triples, Triple{rootURI, fmt.Sprintf("%v", p), id})
+
+				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", p), id))
 				triples = append(triples, YAMLtoRDF(fmt.Sprintf("%v", p), t, id)...)
 			case []interface{}:
 				triples = append(triples, YAMLtoRDF(fmt.Sprintf("%v", p), t, rootURI)...)
 			default:
-				triples = append(triples, Triple{rootURI, fmt.Sprintf("%v", p), t})
+				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", p), t.(string)))
+			}
+		}
+	case map[string]interface{}:
+		for p, value := range v {
+			switch t := value.(type) {
+			case map[interface{}]interface{}:
+				id := generateAnonID()
+				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", p), id))
+				triples = append(triples, YAMLtoRDF(fmt.Sprintf("%v", p), t, id)...)
+			case []interface{}:
+				triples = append(triples, YAMLtoRDF(fmt.Sprintf("%v", p), t, rootURI)...)
+			default:
+				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", p), t.(string)))
 			}
 		}
 	case []interface{}:
@@ -159,15 +195,15 @@ func YAMLtoRDF(key string, val interface{}, rootURI string) []Triple {
 			id := generateAnonID()
 			switch t := e.(type) {
 			case map[interface{}]interface{}, []interface{}:
-				triples = append(triples, Triple{rootURI, key, id})
+				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%s", key), id))
 				triples = append(triples, YAMLtoRDF(id, t, id)...)
 			default:
-				triples = append(triples, Triple{rootURI, key, t})
+				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%s", key), t.(string)))
 			}
 		}
 	default:
 		//triples = append(triples, Triple{rootURI, key, v})
-		fmt.Println("ERROR")
+		fmt.Printf("ERROR: %s: %s\n", key, v)
 	}
 
 	return triples

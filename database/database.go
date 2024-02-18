@@ -3,7 +3,10 @@ package database
 import (
 	"bytes"
 	"encoding/base64"
+	"encoding/json"
+	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"strings"
@@ -34,7 +37,7 @@ type DBManager struct {
 
 // var id_cnt = 0
 
-func New(
+func NewDBManager(
 	username string,
 	password string,
 	ip string,
@@ -69,47 +72,22 @@ func (db *DBManager) sendSparqlQuery(query string, method QueryMethod) (*http.Re
 	return client.Do(req)
 }
 
-/*
-func (db *DBManager) TestDB() (int, error) {
-	sparqlQuery := `
-        PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-        INSERT DATA {
-            <http://example.org/JaneDane> foaf:name "Jane Dane" ;
-                                          foaf:email <mailto:jane@example.org> .
-        }
-    `
-
-	response, err := db.sendSparqlQuery(sparqlQuery, "update")
-	if err != nil {
-		fmt.Println("Error sending SPARQL query:", err)
-		return -1, err
-	}
-	defer response.Body.Close()
-
-	if response.StatusCode == http.StatusOK {
-		fmt.Println("Triple inserted successfully.")
-	} else {
-		fmt.Println("Error inserting triple. Status code:", response.StatusCode)
-	}
-
-	return response.StatusCode, nil
-}
-*/
-
 func (db *DBManager) AddTriples(triples []schema.Triple) (int, error) {
 	sparqlTemplate := `
+		PREFIX ex: <https://example.com/>
         INSERT DATA {
-			{{ range . }}
-				{{ .Subject }} {{ .Predicate }} {{ .Object }} .
-			{{ end }}
+		{{ range . }}{{ .Subject }} {{ .Predicate }} {{ .Object }} .
+		{{ end }}
         }
     `
 	var sparqlQuery strings.Builder
 
 	tpl := template.Must(template.New("insert triples").Parse(sparqlTemplate))
 	if err := tpl.Execute(&sparqlQuery, triples); err != nil {
-		fmt.Println("ERROR could not instantiate template")
+		return -1, err
 	}
+
+	fmt.Printf("Sending %s\n", sparqlQuery.String())
 
 	response, err := db.sendSparqlQuery(sparqlQuery.String(), UPDATE)
 	if err != nil {
@@ -121,39 +99,78 @@ func (db *DBManager) AddTriples(triples []schema.Triple) (int, error) {
 	return response.StatusCode, nil
 }
 
-func (db *DBManager) executeQueryFile(file string, method QueryMethod) (int, error) {
-
+func (db *DBManager) executeAtkQueryFile(file string, method QueryMethod) ([]map[string]interface{}, error) {
 	sparqlQueryBytes, err := os.ReadFile(file)
 	if err != nil {
-		return -1, err
+		return nil, err
 	}
 
 	sparqlQuery := string(sparqlQueryBytes)
 
 	response, err := db.sendSparqlQuery(sparqlQuery, method)
 	if err != nil {
-		fmt.Println("Error sending SPARQL query:", err)
-		return -1, err
+		return nil, err
 	}
 	defer response.Body.Close()
 
-	return response.StatusCode, nil
+	resTxt, err := io.ReadAll(response.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	var resJSON map[string]interface{}
+	if err := json.Unmarshal(resTxt, &resJSON); err != nil {
+		return nil, err
+	}
+
+	results, ok := resJSON["results"].(map[string]interface{})
+	if !ok {
+		return nil, errors.New("results not found in response")
+	}
+
+	bindings, ok := results["bindings"].([]interface{})
+	if !ok {
+		return nil, errors.New("bindings not found in response")
+	}
+
+	var binds []map[string]interface{}
+	for _, bind := range bindings {
+		bindMap, ok := bind.(map[string]interface{})
+		if !ok {
+			return nil, errors.New("invalid binding format")
+		}
+		binds = append(binds, bindMap)
+	}
+
+	fmt.Printf("BEFORE: %d\n", len(binds))
+	return binds, nil
 }
 
-func (db *DBManager) executeAttackTreeNode(attackNode *attacktree.AttackNode) (int, *attacktree.AttackNode, error) {
+func (db *DBManager) executeAttackTreeNode(attackNode *attacktree.AttackNode) ([]map[string]interface{}, *attacktree.AttackNode, error) {
+	thisNodeIsReachable := len(attackNode.Children) == 0
 	for _, node := range attackNode.Children {
-		code, failingNode, err := db.executeAttackTreeNode(&node)
+		response, failingNode, err := db.executeAttackTreeNode(&node)
 		if err != nil {
-			return code, failingNode, err
+			return response, failingNode, err
 		}
-		qCode, qErr := db.executeQueryFile(attackNode.Query, QUERY)
-		if qErr != nil {
-			return qCode, attackNode, qErr
+		// fmt.Printf("- %s\n", response)
+		if len(response) != 0 {
+			thisNodeIsReachable = true
 		}
 	}
-	return -1, nil, nil
+	if thisNodeIsReachable {
+		fmt.Printf("Executing %s\n", attackNode.Description)
+		binds, qErr := db.executeAtkQueryFile(attackNode.Query, QUERY)
+		// fmt.Printf("AFTER: %d\n", len(binds))
+		//		if qErr != nil {
+		//			return binds, attackNode, qErr
+		//		}
+		return binds, attackNode, qErr
+	}
+	fmt.Printf("HERE\n")
+	return nil, nil, nil
 }
 
-func (db *DBManager) ExecuteAttackTree(attackTree *attacktree.AttackTree) (int, *attacktree.AttackNode, error) {
+func (db *DBManager) ExecuteAttackTree(attackTree *attacktree.AttackTree) ([]map[string]interface{}, *attacktree.AttackNode, error) {
 	return db.executeAttackTreeNode(&attackTree.Root)
 }

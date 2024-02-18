@@ -39,7 +39,7 @@ func main() {
 			}
 			dataset := args[4]
 
-			dbManager := database.New(
+			dbManager := database.NewDBManager(
 				username,
 				password,
 				ip,
@@ -52,7 +52,7 @@ func main() {
 			if err != nil {
 				return err
 			}
-			statusCode, err := dbManager.AddTriples(schema.YAMLtoRDF("ex:ROOT", dfd, "ex:ROOT"))
+			statusCode, err := dbManager.AddTriples(schema.YAMLtoRDF("https://example.com/ROOT", dfd, "https://example.com/ROOT"))
 			if err != nil {
 				return err
 			}
@@ -67,8 +67,10 @@ func main() {
 				return err
 			}
 			for _, file := range files {
-				tree, err := attacktree.NewAttackTreeFromYaml(file.Name(), "") // TODO schema
+				fPath := fmt.Sprintf("./.%s/attack_trees/%s", appName, file.Name())
+				tree, err := attacktree.NewAttackTreeFromYaml(fPath, "") // TODO schema
 				if err != nil {
+					fmt.Printf("ERROR!!!! %s: %s\n", fPath, err)
 					return err
 				}
 
