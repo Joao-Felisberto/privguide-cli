@@ -99,7 +99,25 @@ func (db *DBManager) AddTriples(triples []schema.Triple) (int, error) {
 	return response.StatusCode, nil
 }
 
-func (db *DBManager) executeAtkQueryFile(file string, method QueryMethod) ([]map[string]interface{}, error) {
+func (db *DBManager) ExecuteReasonerRule(file string) error {
+	sparqlQueryBytes, err := os.ReadFile(file)
+	if err != nil {
+		return err
+	}
+
+	sparqlQuery := string(sparqlQueryBytes)
+
+	fmt.Printf(".Executing %s", sparqlQuery)
+
+	response, err := db.sendSparqlQuery(sparqlQuery, UPDATE)
+	if err != nil {
+		return err
+	}
+	defer response.Body.Close()
+	return nil
+}
+
+func (db *DBManager) executeAtkQueryFile(file string) ([]map[string]interface{}, error) {
 	sparqlQueryBytes, err := os.ReadFile(file)
 	if err != nil {
 		return nil, err
@@ -107,7 +125,7 @@ func (db *DBManager) executeAtkQueryFile(file string, method QueryMethod) ([]map
 
 	sparqlQuery := string(sparqlQueryBytes)
 
-	response, err := db.sendSparqlQuery(sparqlQuery, method)
+	response, err := db.sendSparqlQuery(sparqlQuery, QUERY)
 	if err != nil {
 		return nil, err
 	}
@@ -142,7 +160,7 @@ func (db *DBManager) executeAtkQueryFile(file string, method QueryMethod) ([]map
 		binds = append(binds, bindMap)
 	}
 
-	fmt.Printf("BEFORE: %d\n", len(binds))
+	// fmt.Printf("BEFORE: %d\n", len(binds))
 	return binds, nil
 }
 
@@ -160,7 +178,7 @@ func (db *DBManager) executeAttackTreeNode(attackNode *attacktree.AttackNode) ([
 	}
 	if thisNodeIsReachable {
 		fmt.Printf("Executing %s\n", attackNode.Description)
-		binds, qErr := db.executeAtkQueryFile(attackNode.Query, QUERY)
+		binds, qErr := db.executeAtkQueryFile(attackNode.Query)
 		// fmt.Printf("AFTER: %d\n", len(binds))
 		//		if qErr != nil {
 		//			return binds, attackNode, qErr

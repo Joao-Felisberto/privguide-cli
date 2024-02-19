@@ -7,7 +7,6 @@ import (
 
 	attacktree "github.com/Joao-Felisberto/devprivops/attack_tree"
 	"github.com/Joao-Felisberto/devprivops/database"
-	"github.com/Joao-Felisberto/devprivops/schema"
 	"github.com/spf13/cobra"
 )
 
@@ -48,21 +47,36 @@ func main() {
 			)
 
 			// 1. Load DFD into DB
-			dfd, err := schema.ReadYAML(fmt.Sprintf("./.%s/dfd/dfd.yml", appName), "") // TODO: add schema
+			/*
+				dfd, err := schema.ReadYAML(fmt.Sprintf("./.%s/dfd/dfd.yml", appName), "") // TODO: add schema
+				if err != nil {
+					return err
+				}
+				statusCode, err := dbManager.AddTriples(schema.YAMLtoRDF("https://example.com/ROOT", dfd, "https://example.com/ROOT"))
+				if err != nil {
+					return err
+				}
+				if statusCode != 204 {
+					return fmt.Errorf("unexpected status code: %d", statusCode)
+				}
+			*/
+
+			// 2. Run all the reasoner rules
+			reasonDir := fmt.Sprintf("./.%s/reasoner/", appName)
+			files, err := os.ReadDir(reasonDir)
 			if err != nil {
 				return err
 			}
-			statusCode, err := dbManager.AddTriples(schema.YAMLtoRDF("https://example.com/ROOT", dfd, "https://example.com/ROOT"))
-			if err != nil {
-				return err
-			}
-			if statusCode != 204 {
-				return fmt.Errorf("unexpected status code: %d", statusCode)
+			for _, file := range files {
+				fPath := fmt.Sprintf("./.%s/reasoner/%s", appName, file.Name())
+				if err := dbManager.ExecuteReasonerRule(fPath); err != nil {
+					return err
+				}
 			}
 
-			// 2. Run all attack trees
+			// 3. Run all attack trees
 			atkDir := fmt.Sprintf("./.%s/attack_trees/", appName)
-			files, err := os.ReadDir(atkDir)
+			files, err = os.ReadDir(atkDir)
 			if err != nil {
 				return err
 			}
