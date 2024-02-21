@@ -157,14 +157,16 @@ func ValidateYAMLAgainstSchema(yamlFile string, schemaFile string) (*gojsonschem
 	}
 
 	// Print validation result
-	if result.Valid() {
-		fmt.Println("YAML file abides by the schema.")
-	} else {
-		fmt.Println("YAML file does not abide by the schema. Validation errors:")
-		for _, desc := range result.Errors() {
-			fmt.Printf("- %s\n", desc)
+	/*
+		if result.Valid() {
+			fmt.Println("YAML file abides by the schema.")
+		} else {
+			fmt.Println("YAML file does not abide by the schema. Validation errors:")
+			for _, desc := range result.Errors() {
+				fmt.Printf("- %s\n", desc)
+			}
 		}
-	}
+	*/
 
 	return result, nil
 }
