@@ -2,11 +2,13 @@ package schema
 
 import (
 	"errors"
+	"fmt"
+	"log"
 	"os"
-	"strings"
 
 	"github.com/ghodss/yaml"
-	"github.com/santhosh-tekuri/jsonschema"
+	// "github.com/santhosh-tekuri/jsonschema"
+	"github.com/xeipuuv/gojsonschema"
 )
 
 func toStringKeys(val interface{}) (interface{}, error) {
@@ -36,6 +38,74 @@ func toStringKeys(val interface{}) (interface{}, error) {
 	}
 }
 
+func convertToJSON(data interface{}) interface{} {
+	switch v := data.(type) {
+	case map[interface{}]interface{}:
+		m := make(map[string]interface{})
+		for key, value := range v {
+			m[fmt.Sprintf("%v", key)] = convertToJSON(value)
+		}
+		return m
+	case []interface{}:
+		if len(v) == 0 {
+			// Empty array represented as an array
+			return []interface{}{}
+		}
+		var convertedArray []interface{}
+		for _, value := range v {
+			convertedArray = append(convertedArray, convertToJSON(value))
+		}
+		return convertedArray
+	default:
+		return data
+	}
+}
+
+func ValidateYAMLAgainstSchema(yamlFile, schemaFile string) error {
+	// Load JSON schema
+	schemaLoader := gojsonschema.NewReferenceLoader("file://" + schemaFile)
+	schema, err := gojsonschema.NewSchema(schemaLoader)
+	if err != nil {
+		log.Fatalf("Failed to load JSON schema: %v", err)
+	}
+
+	// Load YAML data
+	yamlData, err := os.ReadFile(yamlFile)
+	if err != nil {
+		log.Fatalf("Failed to read YAML file: %v", err)
+	}
+
+	// Parse YAML data
+	var yamlObj interface{}
+	err = yaml.Unmarshal(yamlData, &yamlObj)
+	if err != nil {
+		log.Fatalf("Failed to parse YAML data: %v", err)
+	}
+
+	// Convert YAML data to JSON-like structure
+	jsonData := convertToJSON(yamlObj)
+
+	// Validate JSON-like data against JSON schema
+	jsonLoader := gojsonschema.NewGoLoader(jsonData)
+	result, err := schema.Validate(jsonLoader)
+	if err != nil {
+		log.Fatalf("Failed to validate YAML data: %v", err)
+	}
+
+	// Print validation result
+	if result.Valid() {
+		fmt.Println("YAML file abides by the schema.")
+	} else {
+		fmt.Println("YAML file does not abide by the schema. Validation errors:")
+		for _, desc := range result.Errors() {
+			fmt.Printf("- %s\n", desc)
+		}
+	}
+
+	return nil
+}
+
+/*
 // ValidateYAMLAgainstSchema validates a YAML file against a JSON Schema
 func ValidateYAMLAgainstSchema(yamlFile, schemaFile string) error {
 	// Read YAML file
@@ -75,3 +145,4 @@ func ValidateYAMLAgainstSchema(yamlFile, schemaFile string) error {
 
 	return nil
 }
+*/
