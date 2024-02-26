@@ -1,11 +1,17 @@
 {
     "$schema": "http://json-schema.org/draft-06/schema#",
-    "$ref": "#/definitions/Data Flow Diagram",
+    "$ref": "#/definitions/DataFlowDiagram",
     "definitions": {
-        "Data Flow Diagram": {
+        "DataFlowDiagram": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
+                "data types": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/DataType"
+                    }
+                },
                 "external entities": {
                     "type": "array",
                     "items": {
@@ -15,7 +21,7 @@
                 "processes": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/ExternalEntity"
+                        "$ref": "#/definitions/Process"
                     }
                 },
                 "data stores": {
@@ -34,10 +40,11 @@
             "required": [
                 "data flows",
                 "data stores",
+                "data types",
                 "external entities",
                 "processes"
             ],
-            "title": "Data Flow Diagram"
+            "title": "DataFlowDiagram"
         },
         "DataFlow": {
             "type": "object",
@@ -54,10 +61,14 @@
                     "items": {
                         "type": "string"
                     }
+                },
+                "encryption": {
+                    "type": "string"
                 }
             },
             "required": [
                 "data",
+                "encryption",
                 "from",
                 "to"
             ],
@@ -70,18 +81,60 @@
                 "id": {
                     "type": "string"
                 },
-                "stores": {
+                "data stored": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "$ref": "#/definitions/DataStored"
                     }
+                },
+                "location": {
+                    "type": "string"
                 }
             },
             "required": [
+                "data stored",
                 "id",
-                "stores"
+                "location"
             ],
             "title": "DataStore"
+        },
+        "DataStored": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "type": {
+                    "type": "string"
+                },
+                "storage period": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "storage period",
+                "type"
+            ],
+            "title": "DataStored"
+        },
+        "DataType": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "validity": {
+                    "type": "string"
+                },
+                "category": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "category",
+                "id",
+                "validity"
+            ],
+            "title": "DataType"
         },
         "ExternalEntity": {
             "type": "object",
@@ -101,14 +154,78 @@
                     "items": {
                         "type": "string"
                     }
+                },
+                "location": {
+                    "type": "string"
+                },
+                "human": {
+                    "$ref": "#/definitions/Human"
                 }
             },
             "required": [
                 "consumes",
+                "human",
                 "id",
+                "location",
                 "produces"
             ],
             "title": "ExternalEntity"
+        },
+        "Human": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "age": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "age"
+            ],
+            "title": "Human"
+        },
+        "Process": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "consumes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "produces": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "location": {
+                    "type": "string"
+                },
+                "purpose": {
+                    "type": "string"
+                },
+                "contractual obligation": {
+                    "type": "boolean"
+                },
+                "legally mandated": {
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "consumes",
+                "contractual obligation",
+                "id",
+                "legally mandated",
+                "location",
+                "produces",
+                "purpose"
+            ],
+            "title": "Process"
         }
     }
 }
