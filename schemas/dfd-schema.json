@@ -88,7 +88,10 @@
                     }
                 },
                 "location": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             },
             "required": [
@@ -156,13 +159,23 @@
                     }
                 },
                 "location": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "categories": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "human": {
                     "$ref": "#/definitions/Human"
                 }
             },
             "required": [
+                "categories",
                 "consumes",
                 "human",
                 "id",
@@ -204,7 +217,10 @@
                     }
                 },
                 "location": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "purpose": {
                     "type": "string"
@@ -214,12 +230,16 @@
                 },
                 "legally mandated": {
                     "type": "boolean"
+                },
+                "legal implications": {
+                    "type": "boolean"
                 }
             },
             "required": [
                 "consumes",
                 "contractual obligation",
                 "id",
+                "legal implications",
                 "legally mandated",
                 "location",
                 "produces",
