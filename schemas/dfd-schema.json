@@ -64,12 +64,20 @@
                 },
                 "encryption": {
                     "type": "string"
+                },
+                "periodicity": {
+                    "type": "string"
+                },
+                "amount of data per period": {
+                    "type": "integer"
                 }
             },
             "required": [
+                "amount of data per period",
                 "data",
                 "encryption",
                 "from",
+                "periodicity",
                 "to"
             ],
             "title": "DataFlow"
@@ -170,32 +178,23 @@
                         "type": "string"
                     }
                 },
-                "human": {
-                    "$ref": "#/definitions/Human"
-                }
-            },
-            "required": [
-                "categories",
-                "consumes",
-                "human",
-                "id",
-                "location",
-                "produces"
-            ],
-            "title": "ExternalEntity"
-        },
-        "Human": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
                 "age": {
                     "type": "string"
+                },
+                "produces public information": {
+                    "type": "boolean"
                 }
             },
             "required": [
-                "age"
+                "age",
+                "categories",
+                "consumes",
+                "id",
+                "location",
+                "produces",
+                "produces public information"
             ],
-            "title": "Human"
+            "title": "ExternalEntity"
         },
         "Process": {
             "type": "object",
@@ -233,17 +232,43 @@
                 },
                 "legal implications": {
                     "type": "boolean"
+                },
+                "vital interest": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "public interest": {
+                    "type": "boolean"
+                },
+                "is official authority": {
+                    "type": "boolean"
+                },
+                "legitimate interest": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "professional secrecy": {
+                    "type": "boolean"
                 }
             },
             "required": [
                 "consumes",
                 "contractual obligation",
                 "id",
+                "is official authority",
                 "legal implications",
                 "legally mandated",
+                "legitimate interest",
                 "location",
                 "produces",
-                "purpose"
+                "professional secrecy",
+                "public interest",
+                "purpose",
+                "vital interest"
             ],
             "title": "Process"
         }
