@@ -100,9 +100,13 @@
                     "items": {
                         "type": "string"
                     }
+                },
+                "certification": {
+                    "type": "string"
                 }
             },
             "required": [
+                "certification",
                 "data stored",
                 "id",
                 "location"
@@ -118,11 +122,27 @@
                 },
                 "storage period": {
                     "type": "string"
+                },
+                "create": {
+                    "type": "string"
+                },
+                "read": {
+                    "type": "string"
+                },
+                "update": {
+                    "type": "string"
+                },
+                "delete": {
+                    "type": "string"
                 }
             },
             "required": [
+                "create",
+                "delete",
+                "read",
                 "storage period",
-                "type"
+                "type",
+                "update"
             ],
             "title": "DataStored"
         },
@@ -253,9 +273,13 @@
                 },
                 "professional secrecy": {
                     "type": "boolean"
+                },
+                "certification": {
+                    "type": "string"
                 }
             },
             "required": [
+                "certification",
                 "consumes",
                 "contractual obligation",
                 "id",

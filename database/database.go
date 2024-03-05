@@ -9,6 +9,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 	"text/template"
 
@@ -117,7 +118,7 @@ func (db *DBManager) ExecuteReasonerRule(file string) error {
 	return nil
 }
 
-func (db *DBManager) executeAtkQueryFile(file string) ([]map[string]interface{}, error) {
+func (db *DBManager) ExecuteQueryFile(file string) ([]map[string]interface{}, error) {
 	sparqlQueryBytes, err := os.ReadFile(file)
 	if err != nil {
 		return nil, err
@@ -178,7 +179,7 @@ func (db *DBManager) executeAttackTreeNode(attackNode *attacktree.AttackNode) ([
 	}
 	if thisNodeIsReachable {
 		fmt.Printf("Executing %s\n", attackNode.Description)
-		binds, qErr := db.executeAtkQueryFile(attackNode.Query)
+		binds, qErr := db.ExecuteQueryFile(attackNode.Query)
 		// fmt.Printf("AFTER: %d\n", len(binds))
 		//		if qErr != nil {
 		//			return binds, attackNode, qErr
@@ -191,4 +192,24 @@ func (db *DBManager) executeAttackTreeNode(attackNode *attacktree.AttackNode) ([
 
 func (db *DBManager) ExecuteAttackTree(attackTree *attacktree.AttackTree) ([]map[string]interface{}, *attacktree.AttackNode, error) {
 	return db.executeAttackTreeNode(&attackTree.Root)
+}
+
+func FindQueryFiles(rootDir string) ([]string, error) {
+	var files []string
+
+	err := filepath.Walk(rootDir, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if !info.IsDir() && filepath.Ext(path) == ".rq" {
+			files = append(files, path)
+		}
+		return nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return files, nil
 }

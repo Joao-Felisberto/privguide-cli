@@ -74,7 +74,37 @@ func main() {
 				}
 			}
 
-			// 3. Run all attack trees
+			// 3. Verify policy compliance
+			polDir := fmt.Sprintf("./.%s/policies/", appName)
+			polFiles, err := database.FindQueryFiles(polDir)
+			if err != nil {
+				return err
+			}
+			for _, pol := range polFiles {
+				res, err := dbManager.ExecuteQueryFile(pol)
+				if err != nil {
+					return err
+				}
+				// TODO: operate on the results
+				fmt.Printf("%s\n", res)
+			}
+
+			// 4. Verify contract compliance
+			contractDir := fmt.Sprintf("./.%s/contracts/", appName)
+			contractFiles, err := database.FindQueryFiles(contractDir)
+			if err != nil {
+				return err
+			}
+			for _, con := range contractFiles {
+				res, err := dbManager.ExecuteQueryFile(con)
+				if err != nil {
+					return err
+				}
+				// TODO: operate on the results
+				fmt.Printf("%s\n", res)
+			}
+
+			// 5. Run all attack trees
 			atkDir := fmt.Sprintf("./.%s/attack_trees/", appName)
 			files, err = os.ReadDir(atkDir)
 			if err != nil {
@@ -84,7 +114,7 @@ func main() {
 				fPath := fmt.Sprintf("./.%s/attack_trees/%s", appName, file.Name())
 				tree, err := attacktree.NewAttackTreeFromYaml(fPath, "") // TODO schema
 				if err != nil {
-					fmt.Printf("ERROR!!!! %s: %s\n", fPath, err)
+					// fmt.Printf("ERROR!!!! %s: %s\n", fPath, err)
 					return err
 				}
 
