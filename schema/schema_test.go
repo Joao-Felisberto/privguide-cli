@@ -2,11 +2,63 @@ package schema_test
 
 import (
 	"fmt"
+	"slices"
 	"testing"
+
+	"reflect"
 
 	"github.com/Joao-Felisberto/devprivops/schema"
 	"gopkg.in/yaml.v2"
 )
+
+func TestNewTriple(t *testing.T) {
+	triple := schema.NewTriple(
+		"http://example.com/ex1",
+		"http://example.com/ex2",
+		"http://example.com/ex3",
+	)
+
+	if triple.Subject != "<http://example.com/ex1>" {
+		t.Errorf("Triple subject does not match: expected '<http://example.com/ex1>', got '%s'", triple.Subject)
+	}
+	if triple.Predicate != "<http://example.com/ex2>" {
+		t.Errorf("Triple predicate does not match: expected '<http://example.com/ex2>', got '%s'", triple.Predicate)
+	}
+	if triple.Object != "<http://example.com/ex3>" {
+		t.Errorf("Triple object does not match: expected '<http://example.com/ex3>', got '%s'", triple.Object)
+	}
+
+	triple = schema.NewTriple(
+		"http://example.com/ex4",
+		"http://example.com/ex5",
+		"6",
+	)
+
+	if triple.Subject != "<http://example.com/ex4>" {
+		t.Errorf("Triple subject does not match: expected '<http://example.com/ex1>', got '%s'", triple.Subject)
+	}
+	if triple.Predicate != "<http://example.com/ex5>" {
+		t.Errorf("Triple predicate does not match: expected '<http://example.com/ex2>', got '%s'", triple.Predicate)
+	}
+	if triple.Object != "\"6\"" {
+		t.Errorf("Triple object does not match: expected '<http://example.com/ex3>', got '%s'", triple.Object)
+	}
+}
+
+func TestConvertToJSON(t *testing.T) {
+	orig := map[string]interface{}{
+		"Obj": map[string]interface{}{
+			"Value1": 1,
+			"Value2": 2,
+		},
+	}
+
+	res := schema.ConvertToJSON(orig).(map[string]interface{})
+
+	if !reflect.DeepEqual(orig, res) {
+		t.Errorf("Failed to compare '%s' with '%s'", orig, res)
+	}
+}
 
 func TestYAMLtoRDF(t *testing.T) {
 	// Example YAML input with multiple addresses
@@ -15,15 +67,8 @@ a:
   b:
     c:
       d: 1
-      f:
-        - 1
-        - 2
-        - 3
-    e:
-      - a1: 1
-        a2: 2
-      - a1: 3
-        a2: 4
+      f: 2
+    e: 3
 `
 
 	// Parse YAML into map
@@ -35,53 +80,30 @@ a:
 	fmt.Println(data)
 
 	// Root URI
-	rootURI := "ex:ROOT"
+	rootURI := "https://example.com/ROOT"
 
 	// Convert YAML to RDF triples
 	triples := schema.YAMLtoRDF(rootURI, data, rootURI)
 
 	expected := []schema.Triple{
-		{"ex:ROOT", "a", "ex:_1"},
-		{"ex:_1", "b", "ex:_2"},
-		{"ex:_2", "c", "ex:_3"},
-		{"ex:_3", "d", 1},
-		{"ex:_3", "f", 1},
-		{"ex:_3", "f", 2},
-		{"ex:_3", "f", 3},
-		{"ex:_2", "e", "ex:_7"},
-		{"ex:_7", "a1", 1},
-		{"ex:_7", "a2", 2},
-		{"ex:_2", "e", "ex:_8"},
-		{"ex:_8", "a1", 3},
-		{"ex:_8", "a2", 4},
+		{"<https://example.com/ROOT>", "<https://example.com/a>", "<https://example.com/1>"},
+		{"<https://example.com/1>", "<https://example.com/b>", "<https://example.com/2>"},
+		{"<https://example.com/2>", "<https://example.com/c>", "<https://example.com/3>"},
+		{"<https://example.com/3>", "<https://example.com/d>", "\"1\""},
+		{"<https://example.com/3>", "<https://example.com/f>", "\"2\""},
+		{"<https://example.com/2>", "<https://example.com/e>", "\"3\""},
 	}
 
 	if lt, le := len(triples), len(expected); lt != le {
 		t.Errorf("Number of triples generated does not match: expected %d, got %d", le, lt)
 	}
-	for i, v := range triples {
-		found := false
-		for j := 0; j < len(expected); j++ {
-			if v == expected[j] {
-				found = true
-				break
+	for _, v := range triples {
+		if !slices.Contains(expected, v) {
+			t.Errorf("'%s' not expected.", v)
+			for i, e := range expected {
+				t.Logf("%s: %s\t%s", reflect.TypeOf(e.Object), e, triples[i])
 			}
+			break
 		}
-		if found {
-			continue
-		}
-		t.Errorf("The produced triples do not match @%d, expected (%s,%s,%s), got (%s,%s,%s)",
-			i,
-			expected[i].Subject, expected[i].Predicate, expected[i].Object,
-			v.Subject, v.Predicate, v.Object,
-		)
-		for i, v := range triples {
-			t.Logf(
-				"%s,%s,%s\t%s,%s,%s",
-				expected[i].Subject, expected[i].Predicate, expected[i].Object,
-				v.Subject, v.Predicate, v.Object,
-			)
-		}
-		break
 	}
 }

@@ -1,4 +1,7 @@
+.vscode/
+
 **/*.old
 **/*.tmp
+
 schemas/*.yml
 .devprivops/

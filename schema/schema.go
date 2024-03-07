@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 
 	// "github.com/santhosh-tekuri/jsonschema"
@@ -32,7 +33,7 @@ func NewTriple(s, p, o string) Triple {
 		p = fmt.Sprintf(`<%s>`, p)
 	}
 
-	isURI = strings.HasPrefix(o, "https://")
+	isURI = strings.HasPrefix(o, "https://") || strings.HasPrefix(o, "http://")
 	if isURI {
 		o = fmt.Sprintf(`<%s>`, o)
 	} else {
@@ -237,7 +238,14 @@ func YAMLtoRDF(key string, val interface{}, rootURI string) []Triple {
 			case []interface{}:
 				triples = append(triples, YAMLtoRDF(fmt.Sprintf("%v", p), t, rootURI)...)
 			default:
-				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", p), t.(string)))
+				switch tv := t.(type) {
+				case int:
+					tn := strconv.Itoa(tv)
+					triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", p), tn))
+				default: // string
+					triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", p), tv.(string)))
+				}
+				// triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", p), t.(string)))
 			}
 		}
 	case map[string]interface{}:
@@ -250,7 +258,14 @@ func YAMLtoRDF(key string, val interface{}, rootURI string) []Triple {
 			case []interface{}:
 				triples = append(triples, YAMLtoRDF(fmt.Sprintf("%v", p), t, rootURI)...)
 			default:
-				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", p), t.(string)))
+				switch tv := t.(type) {
+				case int:
+					tn := strconv.Itoa(tv)
+					triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", p), tn))
+				default: // string
+					triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", p), tv.(string)))
+				}
+				// triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", p), t.(string)))
 			}
 		}
 	case []interface{}:
@@ -261,7 +276,14 @@ func YAMLtoRDF(key string, val interface{}, rootURI string) []Triple {
 				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%s", key), id))
 				triples = append(triples, YAMLtoRDF(id, t, id)...)
 			default:
-				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%s", key), t.(string)))
+				switch tv := t.(type) {
+				case int:
+					tn := strconv.Itoa(tv)
+					triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", key), tn))
+				default: // string
+					triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", key), tv.(string)))
+				}
+				// triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%s", key), t.(string)))
 			}
 		}
 	default:
