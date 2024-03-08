@@ -4,7 +4,7 @@ name: default
 
 steps:
 - name: test
-  image: golang-with-fuseki 
+  image: golang-with-fuseki:latest
   commands:
   - go test ./...
   - go build
