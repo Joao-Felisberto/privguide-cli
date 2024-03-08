@@ -4,9 +4,9 @@ name: default
 
 steps:
 - name: test
-  image: golang
+  image: golang-with-fuseki 
   commands:
-  - go test
+  - go test ./...
   - go build
 
 trigger:
