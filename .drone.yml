@@ -7,6 +7,7 @@ steps:
   image: localhost:5000/golang-fuseki:latest
   commands:
   - sleep 20s
+  - ps aux
   - go test ./...
   - go build
 
