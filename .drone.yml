@@ -6,6 +6,7 @@ steps:
 - name: test
   image: localhost:5000/golang-fuseki:latest
   commands:
+  - /opt/fuseki/fuseki-server --mem --port=3030 /tmp &
   - sleep 10s
   - ps aux
   - curl localhost:3030
