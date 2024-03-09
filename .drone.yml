@@ -6,8 +6,9 @@ steps:
 - name: test
   image: localhost:5000/golang-fuseki:latest
   commands:
-  - sleep 20s
+  - sleep 10s
   - ps aux
+  - curl localhost:3030
   - go test ./...
   - go build
 
