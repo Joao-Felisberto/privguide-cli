@@ -8,13 +8,11 @@ steps:
   commands:
   - /opt/fuseki/fuseki-server --mem --port=3030 /tmp &
   - sleep 10s
-  - ps aux
-  - curl localhost:3030
+#  - ps aux
+#  - curl localhost:3030
   - go test ./...
   - go build
 
 trigger:
-  #branch:
-  #  - master
   event:
     - push
