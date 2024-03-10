@@ -7,6 +7,8 @@ import (
 
 	attacktree "github.com/Joao-Felisberto/devprivops/attack_tree"
 	"github.com/Joao-Felisberto/devprivops/database"
+	"github.com/Joao-Felisberto/devprivops/schema"
+	"github.com/Joao-Felisberto/devprivops/util"
 	"github.com/spf13/cobra"
 )
 
@@ -75,13 +77,40 @@ func main() {
 			}
 
 			// 3. Verify policy compliance
-			polDir := fmt.Sprintf("./.%s/policies/", appName)
-			polFiles, err := database.FindQueryFiles(polDir)
+			/*
+				polDir := fmt.Sprintf("./.%s/policies/", appName)
+				polFiles, err := database.FindQueryFiles(polDir)
+				if err != nil {
+					return err
+				}
+				for _, pol := range polFiles {
+					res, err := dbManager.ExecuteQueryFile(pol)
+					if err != nil {
+						return err
+					}
+					// TODO: operate on the results
+					fmt.Printf("%s\n", res)
+				}
+			*/
+			polFile := fmt.Sprintf("./.%s/policies/policies.yml", appName)
+			yamlQueries, err := schema.ReadYAML(polFile, "")
+			yamlQueriesList := yamlQueries.([]map[string]interface{})
 			if err != nil {
 				return err
 			}
-			for _, pol := range polFiles {
-				res, err := dbManager.ExecuteQueryFile(pol)
+			queries := util.Map(yamlQueriesList, func(q map[string]interface{}) database.Query {
+				format := q["format"].(map[string]string)
+				return database.NewQuery(
+					q["file"].(string),
+					q["title"].(string),
+					q["description"].(string),
+					format["heading whith results"],
+					format["heading whithout results"],
+					format["result line"],
+				)
+			})
+			for _, pol := range queries {
+				res, err := dbManager.ExecuteQueryFile(pol.File)
 				if err != nil {
 					return err
 				}
@@ -90,13 +119,40 @@ func main() {
 			}
 
 			// 4. Verify contract compliance
-			contractDir := fmt.Sprintf("./.%s/contracts/", appName)
-			contractFiles, err := database.FindQueryFiles(contractDir)
+			/*
+				contractDir := fmt.Sprintf("./.%s/contracts/", appName)
+				contractFiles, err := database.FindQueryFiles(contractDir)
+				if err != nil {
+					return err
+				}
+				for _, con := range contractFiles {
+					res, err := dbManager.ExecuteQueryFile(con)
+					if err != nil {
+						return err
+					}
+					// TODO: operate on the results
+					fmt.Printf("%s\n", res)
+				}
+			*/
+			contractFile := fmt.Sprintf("./.%s/contracts/contracts.yml", appName)
+			yamlQueries, err = schema.ReadYAML(contractFile, "")
+			yamlQueriesList = yamlQueries.([]map[string]interface{})
 			if err != nil {
 				return err
 			}
-			for _, con := range contractFiles {
-				res, err := dbManager.ExecuteQueryFile(con)
+			queries = util.Map(yamlQueriesList, func(q map[string]interface{}) database.Query {
+				format := q["format"].(map[string]string)
+				return database.NewQuery(
+					q["file"].(string),
+					q["title"].(string),
+					q["description"].(string),
+					format["heading whith results"],
+					format["heading whithout results"],
+					format["result line"],
+				)
+			})
+			for _, contract := range queries {
+				res, err := dbManager.ExecuteQueryFile(contract.File)
 				if err != nil {
 					return err
 				}
