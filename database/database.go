@@ -103,18 +103,19 @@ func (db *DBManager) AddTriples(triples []schema.Triple) (int, error) {
 func (db *DBManager) ExecuteReasonerRule(file string) error {
 	sparqlQueryBytes, err := os.ReadFile(file)
 	if err != nil {
-		return err
+		return fmt.Errorf("could not read rule file '%s': %s", file, err)
 	}
 
 	sparqlQuery := string(sparqlQueryBytes)
 
-	fmt.Printf(".Executing %s", sparqlQuery)
+	fmt.Printf(".Executing:\n%s\n", sparqlQuery)
 
 	response, err := db.sendSparqlQuery(sparqlQuery, UPDATE)
 	if err != nil {
-		return err
+		return fmt.Errorf("query from '%s' had db errors: %s", file, err)
 	}
 	defer response.Body.Close()
+
 	return nil
 }
 

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"strconv"
@@ -49,21 +50,24 @@ func main() {
 			)
 
 			// 1. Load DFD into DB
-			/*
-				dfd, err := schema.ReadYAML(fmt.Sprintf("./.%s/dfd/dfd.yml", appName), "") // TODO: add schema
-				if err != nil {
-					return err
-				}
-				statusCode, err := dbManager.AddTriples(schema.YAMLtoRDF("https://example.com/ROOT", dfd, "https://example.com/ROOT"))
-				if err != nil {
-					return err
-				}
-				if statusCode != 204 {
-					return fmt.Errorf("unexpected status code: %d", statusCode)
-				}
-			*/
+			fmt.Println("===\nLoading DFD into DB\n===")
+			dfd, err := schema.ReadYAML(
+				fmt.Sprintf("./.%s/dfd/dfd.yml", appName),
+				fmt.Sprintf("./.%s/dfd/dfd-schema.json", appName),
+			)
+			if err != nil {
+				return err
+			}
+			statusCode, err := dbManager.AddTriples(schema.YAMLtoRDF("https://example.com/ROOT", dfd, "https://example.com/ROOT"))
+			if err != nil {
+				return err
+			}
+			if statusCode != 204 {
+				return fmt.Errorf("unexpected status code: %d", statusCode)
+			}
 
 			// 2. Run all the reasoner rules
+			fmt.Println("===\nReasoner Rules\n===")
 			reasonDir := fmt.Sprintf("./.%s/reasoner/", appName)
 			files, err := os.ReadDir(reasonDir)
 			if err != nil {
@@ -72,11 +76,12 @@ func main() {
 			for _, file := range files {
 				fPath := fmt.Sprintf("./.%s/reasoner/%s", appName, file.Name())
 				if err := dbManager.ExecuteReasonerRule(fPath); err != nil {
-					return err
+					return fmt.Errorf("could not execute reasoner rule: %s", err)
 				}
 			}
 
 			// 3. Verify policy compliance
+			fmt.Println("===\nPolicy Compliance\n===")
 			/*
 				polDir := fmt.Sprintf("./.%s/policies/", appName)
 				polFiles, err := database.FindQueryFiles(polDir)
@@ -93,29 +98,38 @@ func main() {
 				}
 			*/
 			polFile := fmt.Sprintf("./.%s/policies/policies.yml", appName)
-			yamlQueries, err := schema.ReadYAML(polFile, "")
-			yamlQueriesList := yamlQueries.([]map[string]interface{})
+			polschema := fmt.Sprintf("./.%s/policies/query-schema.json", appName)
+			yamlQueries, err := schema.ReadYAML(polFile, polschema)
 			if err != nil {
 				return err
 			}
-			queries := util.Map(yamlQueriesList, func(q map[string]interface{}) database.Query {
-				format := q["format"].(map[string]string)
+			// fmt.Printf("MAIN: %s\n", yamlQueries)
+			// yamlQueriesList := yamlQueries.([]map[string]interface{})
+			// queries := util.Map(yamlQueriesList, func(q map[string]interface{}) database.Query {
+			yamlQueriesList := yamlQueries.([]interface{})
+			queries := util.Map(yamlQueriesList, func(q1 interface{}) database.Query {
+				q := q1.(map[interface{}]interface{})
+				format := q["format"].(map[interface{}]interface{})
 				return database.NewQuery(
-					q["file"].(string),
+					fmt.Sprintf("./.%s/%s", appName, q["file"].(string)),
 					q["title"].(string),
 					q["description"].(string),
-					format["heading whith results"],
-					format["heading whithout results"],
-					format["result line"],
+					format["heading whith results"].(string),
+					format["heading without results"].(string),
+					format["result line"].(string),
 				)
 			})
 			for _, pol := range queries {
 				res, err := dbManager.ExecuteQueryFile(pol.File)
 				if err != nil {
-					return err
+					return fmt.Errorf("error executing query from '%s': %s", pol.File, err)
 				}
 				// TODO: operate on the results
-				fmt.Printf("%s\n", res)
+				b, err := json.MarshalIndent(res, "", "  ")
+				if err != nil {
+					fmt.Println("error parsing query results:", err)
+				}
+				fmt.Printf("Violations of '%s': %s\n", pol.Title, b)
 			}
 
 			// 4. Verify contract compliance
@@ -134,21 +148,27 @@ func main() {
 					fmt.Printf("%s\n", res)
 				}
 			*/
+			/* // TODO uncomment
+			fmt.Println("===\nContract Compliance\n===")
 			contractFile := fmt.Sprintf("./.%s/contracts/contracts.yml", appName)
-			yamlQueries, err = schema.ReadYAML(contractFile, "")
-			yamlQueriesList = yamlQueries.([]map[string]interface{})
+			yamlQueries, err = schema.ReadYAML(contractFile, polschema)
 			if err != nil {
 				return err
 			}
-			queries = util.Map(yamlQueriesList, func(q map[string]interface{}) database.Query {
-				format := q["format"].(map[string]string)
+			// yamlQueriesList = yamlQueries.([]map[string]interface{})
+			// queries = util.Map(yamlQueriesList, func(q map[string]interface{}) database.Query {
+			yamlQueriesList = yamlQueries.([]interface{})
+			queries = util.Map(yamlQueriesList, func(q1 interface{}) database.Query {
+				q := q1.(map[interface{}]interface{})
+				format := q["format"].(map[interface{}]interface{})
 				return database.NewQuery(
-					q["file"].(string),
+					// q["file"].(string),
+					fmt.Sprintf("./.%s/%s", appName, q["file"].(string)),
 					q["title"].(string),
 					q["description"].(string),
-					format["heading whith results"],
-					format["heading whithout results"],
-					format["result line"],
+					format["heading whith results"].(string),
+					format["heading without results"].(string),
+					format["result line"].(string),
 				)
 			})
 			for _, contract := range queries {
@@ -159,16 +179,18 @@ func main() {
 				// TODO: operate on the results
 				fmt.Printf("%s\n", res)
 			}
-
+			*/
 			// 5. Run all attack trees
+			fmt.Println("===\nAttack Trees\n===")
 			atkDir := fmt.Sprintf("./.%s/attack_trees/", appName)
 			files, err = os.ReadDir(atkDir)
 			if err != nil {
 				return err
 			}
+			atkSchema := fmt.Sprintf("./.%s/atk-tree-schema.json", appName)
 			for _, file := range files {
 				fPath := fmt.Sprintf("./.%s/attack_trees/%s", appName, file.Name())
-				tree, err := attacktree.NewAttackTreeFromYaml(fPath, "") // TODO schema
+				tree, err := attacktree.NewAttackTreeFromYaml(fPath, atkSchema)
 				if err != nil {
 					// fmt.Printf("ERROR!!!! %s: %s\n", fPath, err)
 					return err

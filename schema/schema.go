@@ -99,27 +99,32 @@ func ReadYAML(yamlFile string, schemaFile string) (interface{}, error) {
 
 	yamlData, err := os.ReadFile(yamlFile)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error reading file: %s", err)
 	}
 
 	// Unmarshal YAML data
 	var rawData interface{}
 	if err := yaml.Unmarshal(yamlData, &rawData); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error reading YAML file: %s", err)
 	}
-	data, err := toStringKeys(rawData)
-	if err != nil {
-		return nil, err
-	}
+	// fmt.Printf("RAWDATA %s\n", rawData)
+	/*
+		data, err := toStringKeys(rawData)
+		if err != nil {
+			return nil, err
+		}
+		fmt.Printf("data: %s\n", data)
+	*/
 
 	if schemaFile != "" {
 		_, err := ValidateYAMLAgainstSchema(yamlFile, schemaFile)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("error validating schema: %s", err)
 		}
 	}
 
-	return data, nil
+	//return data, nil
+	return rawData, nil
 }
 
 func ValidateYAMLAgainstSchema(yamlFile string, schemaFile string) (*gojsonschema.Result, error) {
@@ -128,14 +133,14 @@ func ValidateYAMLAgainstSchema(yamlFile string, schemaFile string) (*gojsonschem
 	schema, err := gojsonschema.NewSchema(schemaLoader)
 	if err != nil {
 		log.Fatalf("Failed to load JSON schema: %v", err)
-		return nil, err
+		return nil, fmt.Errorf("failed to load JSON schema: %s", err)
 	}
 
 	// Load YAML data
 	yamlData, err := os.ReadFile(yamlFile)
 	if err != nil {
 		log.Fatalf("Failed to read YAML file: %v", err)
-		return nil, err
+		return nil, fmt.Errorf("failed to read YAML file: %s", err)
 	}
 
 	// Parse YAML data
@@ -143,7 +148,7 @@ func ValidateYAMLAgainstSchema(yamlFile string, schemaFile string) (*gojsonschem
 	err = yaml.Unmarshal(yamlData, &yamlObj)
 	if err != nil {
 		log.Fatalf("Failed to parse YAML data: %v", err)
-		return nil, err
+		return nil, fmt.Errorf("failed to parse YAML data: %s", err)
 	}
 
 	// Convert YAML data to JSON-like structure
@@ -153,8 +158,8 @@ func ValidateYAMLAgainstSchema(yamlFile string, schemaFile string) (*gojsonschem
 	jsonLoader := gojsonschema.NewGoLoader(jsonData)
 	result, err := schema.Validate(jsonLoader)
 	if err != nil {
-		log.Fatalf("Failed to validate YAML data: %v", err)
-		return nil, err
+		log.Fatalf("YAML file does not abide by the schema: %v", err)
+		return nil, fmt.Errorf("YAML file does not abide by the schema: %s", err)
 	}
 
 	// Print validation result
@@ -241,6 +246,9 @@ func YAMLtoRDF(key string, val interface{}, rootURI string) []Triple {
 				switch tv := t.(type) {
 				case int:
 					tn := strconv.Itoa(tv)
+					triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", p), tn))
+				case bool:
+					tn := strconv.FormatBool(tv)
 					triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", p), tn))
 				default: // string
 					triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", p), tv.(string)))

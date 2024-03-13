@@ -50,6 +50,9 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
+                "id": {
+                    "type": "string"
+                },
                 "from": {
                     "type": "string"
                 },
@@ -77,6 +80,7 @@
                 "data",
                 "encryption",
                 "from",
+                "id",
                 "periodicity",
                 "to"
             ],
