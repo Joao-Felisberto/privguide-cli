@@ -1,0 +1,38 @@
+PREFIX ex: <https://example.com>
+
+SELECT ?dfId ?serviceId
+WHERE {
+    ?df ex:from|ex:to ?serviceId .
+    ?df ex:id ?dfId
+    
+    FILTER NOT EXISTS {
+        ex:ROOT ex:external_entities|ex:processes|ex:data_stores ?service .
+        ?service ex:id ?serviceId
+    }
+}
+
+#PREFIX ex: <http://example.org/>
+#
+#SELECT ?startNode ?endNode ?path
+#WHERE {
+#  ?dataFlow ex:from ?startNode ;
+#            ex:to ?endNode ;
+#            ex:data ?dataType .
+#  ?dataType ex:id "data type 1" .  # Replace "data type 1" with the desired data type
+#  
+#  BIND(STR(?startNode) AS ?path) .
+#  
+#  ?nextFlow ex:from ?endNode ;
+#            ex:to ?nextNode ;
+#            ex:data ?dataType .
+#  
+#  BIND(CONCAT(?path, " -> ", STR(?nextNode)) AS ?path) .
+#  
+#  FILTER(?endNode != ?nextNode)
+#  
+#  OPTIONAL {
+#    ?nextFlow ex:to ?storageNode .
+#    ?storageNode ex:id ?storageId .
+#    BIND(CONCAT(?path, " -> ", ?storageId) AS ?path)
+#  }
+#}

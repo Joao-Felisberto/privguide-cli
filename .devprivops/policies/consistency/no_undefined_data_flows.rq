@@ -1,0 +1,19 @@
+PREFIX ex: <https://example.com>
+
+SELECT ?dfId
+WHERE {
+    {
+        ?_ ex:create ?dfId
+    } UNION {
+        ?_ ex:read ?dfId
+    } UNION {
+        ?_ ex:update ?dfId
+    } UNION {
+        ?_ ex:delete ?dfId
+    }
+    FILTER NOT EXISTS {
+        ex:ROOT ex:data_flows ?df .
+        ?df ex:id ?dfId
+    }
+}
+

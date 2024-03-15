@@ -1,0 +1,29 @@
+PREFIX ex: <https://example.com/>
+
+SELECT ?dsId ?dtName ?missingPredicate
+WHERE {
+  ?ds ex:data_stored ?dt .
+  ?dt ex:type ?dtName .
+  ?ds ex:id ?dsId .
+
+  OPTIONAL {
+    {
+      ?dt ex:create ?dfId .
+      BIND("create" as ?missingPredicate)
+    } UNION {
+      ?dt ex:read ?dfId .
+      BIND("read" as ?missingPredicate)
+    } UNION {
+      ?dt ex:update ?dfId .
+      BIND("update" as ?missingPredicate)
+    } UNION {
+      ?dt ex:delete ?dfId .
+      BIND("delete" as ?missingPredicate)
+    }
+  }
+
+  FILTER NOT EXISTS {
+    ex:ROOT ex:data_flows ?df .
+      ?df ex:id ?dfId
+  }
+}

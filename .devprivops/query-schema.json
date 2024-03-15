@@ -1,0 +1,55 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "type": "array",
+    "items": {
+        "$ref": "#/definitions/QueryMetadata"
+    },
+    "definitions": {
+        "QueryMetadata": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "file": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "format": {
+                    "$ref": "#/definitions/Format"
+                }
+            },
+            "required": [
+                "description",
+                "file",
+                "format",
+                "title"
+            ],
+            "title": "QueryMetadata"
+        },
+        "Format": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "heading whith results": {
+                    "type": "string"
+                },
+                "heading without results": {
+                    "type": "string"
+                },
+                "result line": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "heading whith results",
+                "heading without results",
+                "result line"
+            ],
+            "title": "Format"
+        }
+    }
+}

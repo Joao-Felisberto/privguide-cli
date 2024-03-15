@@ -117,9 +117,18 @@ func ReadYAML(yamlFile string, schemaFile string) (interface{}, error) {
 	*/
 
 	if schemaFile != "" {
-		_, err := ValidateYAMLAgainstSchema(yamlFile, schemaFile)
+		res, err := ValidateYAMLAgainstSchema(yamlFile, schemaFile)
 		if err != nil {
 			return nil, fmt.Errorf("error validating schema: %s", err)
+		}
+
+		if !res.Valid() {
+			// fmt.Println("YAML file does not abide by the schema. Validation errors:")
+			//
+			//	for _, desc := range res.Errors() {
+			//		fmt.Printf("- %s\n", desc)
+			//	}
+			return nil, fmt.Errorf("the file '%s' does not abide by the schema: %s", yamlFile, res.Errors())
 		}
 	}
 

@@ -1,0 +1,20 @@
+PREFIX ex: <https://example.com>
+
+SELECT ?dtId
+WHERE {
+    {
+        ?_ ex:consumes ?dtId
+    } UNION {
+        ?_ ex:produces ?dtId
+    } UNION {
+        ?_ ex:type ?dtId
+    } UNION {
+        ?_ ex:data ?dtId
+    }
+    FILTER NOT EXISTS {
+        ex:ROOT ex:data_types ?dt .
+        ?dt ex:id ?dtId
+        #?dt ex:validity ?_
+        #?dt ex:category ?_
+    }
+}

@@ -1,0 +1,9 @@
+description: R
+query: .devprivops/queries/master.rq
+children:
+  - description: C1 
+    query: .devprivops/queries/file1.rq
+    children: []
+  - description: C2
+    query: .devprivops/queries/file2.rq
+    children: []

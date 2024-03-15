@@ -1,0 +1,8 @@
+PREFIX ex: <https://example.com/>
+
+SELECT ?s1 ?s2 ?id
+WHERE {
+  ?s1 ex:id ?id .
+  ?s2 ex:id ?id .
+  FILTER (?s1 != ?s2)
+}

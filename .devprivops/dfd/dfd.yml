@@ -1,0 +1,112 @@
+data types:
+  - id: message
+    validity: eternal
+    category: message
+external entities:
+  - id: User 
+    consumes:
+      - message
+    produces: 
+      - message
+    location:
+      - Portugal
+    categories:
+      - human
+    age: ">16"
+    produces public information: false
+processes:
+  - id: send message
+    consumes:
+      - message
+    produces:
+      - message
+    location:
+      - Portugal
+    purpose: message routing
+    contractual obligation: false
+    legally mandated: false
+    legal implications: false
+    vital interest: []
+    public interest: false
+    is official authority: false
+    legitimate interest:
+      - User
+    professional secrecy: false
+    certification: ""
+data stores:
+  - id: message db
+    data stored:
+      - type: message
+        storage period: eternal
+        create: C store message
+        read:  R store message
+        update: U store message
+        delete: D store message
+    location:
+      - Portugal
+    certification: ""
+data flows:
+  - id: C message
+    from: User
+    to: send message
+    data:
+      - message
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+  - id: C store message
+    from: send message
+    to: message db
+    data:
+      - message
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+  - id: R message
+    from: User
+    to: send message
+    data:
+      - message
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+  - id: R store message
+    from: send message
+    to: message db
+    data:
+      - message
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+  - id: U message
+    from: User
+    to: send message
+    data:
+      - message
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+  - id: U store message
+    from: send message
+    to: message db
+    data:
+      - message
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+  - id: D message
+    from: User
+    to: send message
+    data:
+      - message
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+  - id: D store message
+    from: send message
+    to: message db
+    data:
+      - message
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1

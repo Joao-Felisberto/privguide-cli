@@ -4,4 +4,3 @@
 **/*.tmp
 
 schemas/*.yml
-.devprivops/
