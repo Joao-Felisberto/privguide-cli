@@ -159,6 +159,9 @@ func (db *DBManager) ExecuteQueryFile(file string) ([]map[string]interface{}, er
 		if !ok {
 			return nil, errors.New("invalid binding format")
 		}
+		for k := range bindMap {
+			bindMap[k] = bindMap[k].(map[string]interface{})["value"]
+		}
 		binds = append(binds, bindMap)
 	}
 
@@ -167,10 +170,12 @@ func (db *DBManager) ExecuteQueryFile(file string) ([]map[string]interface{}, er
 }
 
 func (db *DBManager) executeAttackTreeNode(attackNode *attacktree.AttackNode) ([]map[string]interface{}, *attacktree.AttackNode, error) {
+	// attackNode.ExecutionStatus = -1
 	thisNodeIsReachable := len(attackNode.Children) == 0
 	for _, node := range attackNode.Children {
-		response, failingNode, err := db.executeAttackTreeNode(&node)
+		response, failingNode, err := db.executeAttackTreeNode(node)
 		if err != nil {
+			fmt.Printf("ERROR\n")
 			return response, failingNode, err
 		}
 		// fmt.Printf("- %s\n", response)
@@ -181,13 +186,18 @@ func (db *DBManager) executeAttackTreeNode(attackNode *attacktree.AttackNode) ([
 	if thisNodeIsReachable {
 		fmt.Printf("Executing %s\n", attackNode.Description)
 		binds, qErr := db.ExecuteQueryFile(attackNode.Query)
-		// fmt.Printf("AFTER: %d\n", len(binds))
-		//		if qErr != nil {
-		//			return binds, attackNode, qErr
-		//		}
+
+		if len(binds) == 0 {
+			fmt.Println("NOT POSSIBLE")
+			attackNode.SetExecutionStatus(attacktree.NOT_POSSIBLE)
+		} else {
+			fmt.Println("POSSIBLE")
+			attackNode.SetExecutionStatus(attacktree.POSSIBLE)
+		}
+
 		return binds, attackNode, qErr
 	}
-	fmt.Printf("HERE\n")
+	fmt.Printf("UNREACHABLE\n")
 	return nil, nil, nil
 }
 

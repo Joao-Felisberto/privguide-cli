@@ -32,6 +32,8 @@ func execute(cmd *cobra.Command, args []string) error {
 		dataset,
 	)
 
+	report := map[string]interface{}{}
+
 	// 1. Load DFD into DB
 	fmt.Println("===\nLoading DFD into DB\n===")
 	dfdFname, err := fs.GetFile("dfd/dfd.yml")
@@ -133,6 +135,7 @@ func execute(cmd *cobra.Command, args []string) error {
 			format["result line"].(string),
 		)
 	})
+	report["policies"] = map[string]interface{}{}
 	for _, pol := range queries {
 		res, err := dbManager.ExecuteQueryFile(pol.File)
 		if err != nil {
@@ -144,6 +147,8 @@ func execute(cmd *cobra.Command, args []string) error {
 			fmt.Println("error parsing query results:", err)
 		}
 		fmt.Printf("Violations of '%s': %s\n", pol.Title, b)
+		resReport := report["policies"].(map[string]interface{})
+		resReport[pol.Title] = res
 	}
 
 	// 4. Verify contract compliance
@@ -210,6 +215,7 @@ func execute(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
+	report["attack_trees"] = map[string]interface{}{}
 	for _, file := range files {
 		// fPath := fmt.Sprintf("./.%s/attack_trees/%s", appName, file.Name())
 		fPath, err := fs.GetFile(fmt.Sprintf("attack_trees/%s", file.Name()))
@@ -227,9 +233,20 @@ func execute(cmd *cobra.Command, args []string) error {
 		if err != nil {
 			return fmt.Errorf("error at node '%s': %s", failingNode.Description, err)
 		}
+
+		//		report["attack_trees"].(map[string]interface{})[tree.Root.Query], err = json.Marshal(tree)
+		//		if err != nil {
+		//			fmt.Println("error parsing attack tree:", err)
+		//		}
+		report["attack_trees"].(map[string]interface{})[file.Name()] = tree
 	}
 
 	// fmt.Printf("Analyzing database at endpoint: %s:%d\n", ip, port)
+	b, err := json.MarshalIndent(report, "", "  ")
+	if err != nil {
+		fmt.Println("error parsing report:", err)
+	}
+	fmt.Printf("==============\nReport: %s\n", b)
 	return nil
 }
 

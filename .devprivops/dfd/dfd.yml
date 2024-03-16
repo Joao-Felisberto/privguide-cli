@@ -39,7 +39,7 @@ data stores:
       - type: message
         storage period: eternal
         create: C store message
-        read:  R store message
+        read:  R store message no
         update: U store message
         delete: D store message
     location:

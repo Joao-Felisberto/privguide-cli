@@ -8,10 +8,24 @@ import (
 	"github.com/Joao-Felisberto/devprivops/schema"
 )
 
+type ExecutionStatus int
+
+const (
+	NOT_EXECUTED ExecutionStatus = iota
+	NOT_POSSIBLE
+	POSSIBLE
+	ERROR
+)
+
 type AttackNode struct {
-	Description string
-	Query       string
-	Children    []AttackNode
+	Description     string
+	Query           string
+	Children        []*AttackNode
+	ExecutionStatus ExecutionStatus
+}
+
+func (node *AttackNode) SetExecutionStatus(status ExecutionStatus) {
+	node.ExecutionStatus = status
 }
 
 type AttackTree struct {
@@ -29,19 +43,20 @@ func parseNode(data interface{}) (*AttackNode, error) {
 			return nil, errors.New("missing required fields in node")
 		}
 
-		children := make([]AttackNode, len(childrenData))
+		children := make([]*AttackNode, len(childrenData))
 		for i, childData := range childrenData {
 			childNode, err := parseNode(childData)
 			if err != nil {
 				return nil, fmt.Errorf("error parsing child node: %w", err)
 			}
-			children[i] = *childNode
+			children[i] = childNode
 		}
 
 		return &AttackNode{
-			Description: description,
-			Query:       query,
-			Children:    children,
+			Description:     description,
+			Query:           query,
+			Children:        children,
+			ExecutionStatus: NOT_EXECUTED,
 		}, nil
 	case map[interface{}]interface{}:
 		description, descOk := node["description"].(string)
@@ -52,19 +67,20 @@ func parseNode(data interface{}) (*AttackNode, error) {
 			return nil, errors.New("missing required fields in node")
 		}
 
-		children := make([]AttackNode, len(childrenData))
+		children := make([]*AttackNode, len(childrenData))
 		for i, childData := range childrenData {
 			childNode, err := parseNode(childData)
 			if err != nil {
 				return nil, fmt.Errorf("error parsing child node: %w", err)
 			}
-			children[i] = *childNode
+			children[i] = childNode
 		}
 
 		return &AttackNode{
-			Description: description,
-			Query:       query,
-			Children:    children,
+			Description:     description,
+			Query:           query,
+			Children:        children,
+			ExecutionStatus: NOT_EXECUTED,
 		}, nil
 	default:
 		return nil, fmt.Errorf("invalid node data type: %s", reflect.TypeOf(data))
