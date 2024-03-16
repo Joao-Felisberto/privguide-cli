@@ -8,11 +8,13 @@ steps:
   commands:
   - /opt/fuseki/fuseki-server --mem --port=3030 /tmp &
   - sleep 10s
-#  - ps aux
-#  - curl localhost:3030
   - go test ./...
   - go build
-
+- name: package
+  image: localhost:5000/golang-docker:latest
+  commands:
+    - docker build -t localhost:5000/devprivops:latest .
+    - docker push localhost:5000/devprivops:latest
 trigger:
   event:
     - push
