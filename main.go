@@ -242,11 +242,16 @@ func execute(cmd *cobra.Command, args []string) error {
 	}
 
 	// fmt.Printf("Analyzing database at endpoint: %s:%d\n", ip, port)
-	b, err := json.MarshalIndent(report, "", "  ")
+	jsonReport, err := json.MarshalIndent(report, "", "  ")
 	if err != nil {
 		fmt.Println("error parsing report:", err)
 	}
-	fmt.Printf("==============\nReport: %s\n", b)
+	fmt.Printf("==============\nReport: %s\n", jsonReport)
+
+	if err := os.WriteFile("report.json", []byte(jsonReport), 0666); err != nil {
+		return err
+	}
+
 	return nil
 }
 
