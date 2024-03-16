@@ -7,14 +7,16 @@ steps:
   image: localhost:5000/golang-fuseki:latest
   commands:
   - /opt/fuseki/fuseki-server --mem --port=3030 /tmp &
-  - sleep 10s
+  - sleep 3s
   - go test ./...
-  - go build
 - name: package
-  image: localhost:5000/golang-docker:latest
-  commands:
-    - docker build -t localhost:5000/devprivops:latest .
-    - docker push localhost:5000/devprivops:latest
+  image: plugins/docker
+  settings:
+    registry: 192.168.56.1:5000
+    repo: 192.168.56.1:5000/devprivops
+    tags: latest
+    dockerfile: Dockerfile
+    insecure: true
 trigger:
   event:
     - push
