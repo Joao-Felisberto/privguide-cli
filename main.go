@@ -241,6 +241,8 @@ func execute(cmd *cobra.Command, args []string) error {
 		report["attack_trees"].(map[string]interface{})[file.Name()] = tree
 	}
 
+	dbManager.CleanDB()
+
 	// fmt.Printf("Analyzing database at endpoint: %s:%d\n", ip, port)
 	jsonReport, err := json.MarshalIndent(report, "", "  ")
 	if err != nil {

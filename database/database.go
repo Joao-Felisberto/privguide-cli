@@ -74,6 +74,17 @@ func (db *DBManager) sendSparqlQuery(query string, method QueryMethod) (*http.Re
 	return client.Do(req)
 }
 
+func (db *DBManager) CleanDB() (*http.Response, error) {
+	return db.sendSparqlQuery(`
+		DELETE { 
+			?s ?p ?o 
+		} WHERE { 
+			?s ?p ?o 
+		}
+	`, UPDATE,
+	)
+}
+
 func (db *DBManager) AddTriples(triples []schema.Triple) (int, error) {
 	sparqlTemplate := `
 		PREFIX ex: <https://example.com/>
@@ -89,7 +100,7 @@ func (db *DBManager) AddTriples(triples []schema.Triple) (int, error) {
 		return -1, err
 	}
 
-	fmt.Printf("Sending %s\n", sparqlQuery.String())
+	// fmt.Printf("Sending %s\n", sparqlQuery.String())
 
 	response, err := db.sendSparqlQuery(sparqlQuery.String(), UPDATE)
 	if err != nil {

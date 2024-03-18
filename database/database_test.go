@@ -1,6 +1,7 @@
 package database_test
 
 import (
+	"encoding/json"
 	"os"
 	"reflect"
 	"testing"
@@ -76,9 +77,11 @@ func TestExecuteQueryFile(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	bind := res[0]["o"].(map[string]interface{})
+	t.Log(json.MarshalIndent(res, "", "  "))
 
-	if bind["value"] != "2" {
+	bind := res[0]["o"].(string)
+
+	if bind != "2" {
 		t.Errorf("Result did not match: %s", res)
 	}
 }
@@ -113,44 +116,60 @@ func TestFindQueryFiles(t *testing.T) {
 func TestExecuteAttackTree(t *testing.T) {
 	db := database.NewDBManager(USER, PASS, HOST, PORT, DB)
 
-	if err := os.Mkdir("root", os.ModePerm); err != nil {
-		t.Fatal(err)
+	dir, err := os.Getwd()
+	if err != nil {
+		t.Fatalf("Could not get CWD: %s", err)
 	}
-	defer os.Remove("root")
+	t.Logf("CWD: %s", dir)
 
-	if err := os.WriteFile("root/f1.rq", []byte("SELECT * WHERE {<https://no.exists> ?p ?o}"), 0666); err != nil {
+	if err := os.Mkdir(".devprivops/", os.ModePerm); err != nil {
 		t.Fatal(err)
 	}
-	defer os.Remove("root/f1.rq")
+	defer os.Remove(".devprivops/")
 
-	if err := os.WriteFile("root/f2.rq", []byte("SELECT * WHERE {<https://no.exists> ?p ?o}"), 0666); err != nil {
+	if err := os.Mkdir(".devprivops/test/", os.ModePerm); err != nil {
 		t.Fatal(err)
 	}
-	defer os.Remove("root/f2.rq")
+	defer os.Remove(".devprivops/test/")
 
-	if err := os.WriteFile("root/f3.rq", []byte("SELECT * WHERE {<https://no.exists> ?p ?o}"), 0666); err != nil {
+	if err := os.Mkdir(".devprivops/test/root", os.ModePerm); err != nil {
 		t.Fatal(err)
 	}
-	defer os.Remove("root/f3.rq")
+	defer os.Remove(".devprivops/test/root")
+
+	if err := os.WriteFile(".devprivops/test/root/f1.rq", []byte("SELECT * WHERE {<https://no.exists> ?p ?o}"), 0666); err != nil {
+		t.Fatal(err)
+	}
+	defer os.Remove(".devprivops/test/root/f1.rq")
+
+	if err := os.WriteFile(".devprivops/test/root/f2.rq", []byte("SELECT * WHERE {<https://no.exists> ?p ?o}"), 0666); err != nil {
+		t.Fatal(err)
+	}
+	defer os.Remove(".devprivops/test/root/f2.rq")
+
+	if err := os.WriteFile(".devprivops/test/root/f3.rq", []byte("SELECT * WHERE {<https://no.exists> ?p ?o}"), 0666); err != nil {
+		t.Fatal(err)
+	}
+	defer os.Remove(".devprivops/test/root/f3.rq")
 
 	atkTreeFile := `
 description: R
-query: root/f1.rq
+query: test/root/f1.rq
 children:
   - description: C1 
-    query: root/f2.rq
+    query: test/root/f2.rq
     children: []
   - description: C2
-    query: root/f3.rq
+    query: test/root/f3.rq
     children: []
 `
 
-	if err := os.WriteFile("atk_tree.yml", []byte(atkTreeFile), 0666); err != nil {
+	if err := os.WriteFile(".devprivops/test/atk_tree.yml", []byte(atkTreeFile), 0666); err != nil {
 		t.Fatal(err)
 	}
-	defer os.Remove("atk_tree.yml")
+	defer os.Remove(".devprivops/test/atk_tree.yml")
 
-	atkTree, err := attacktree.NewAttackTreeFromYaml("atk_tree.yml", "")
+	atkTree, err := attacktree.NewAttackTreeFromYaml(".devprivops/test/atk_tree.yml", "")
 	if err != nil {
 		t.Fatal(err)
 	}
