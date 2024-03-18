@@ -1,12 +1,12 @@
 description: R
-query: .devprivops/queries/master.rq
+query: queries/master.rq
 children:
   - description: C1 
-    query: .devprivops/queries/file1.rq
+    query: queries/file1.rq
     children:
       - description: C11
-        query: .devprivops/queries/file1.rq
+        query: queries/file1.rq
         children: []
   - description: C2
-    query: .devprivops/queries/file2.rq
+    query: queries/file2.rq
     children: []

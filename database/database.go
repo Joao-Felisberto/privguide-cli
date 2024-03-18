@@ -14,6 +14,7 @@ import (
 	"text/template"
 
 	attacktree "github.com/Joao-Felisberto/devprivops/attack_tree"
+	"github.com/Joao-Felisberto/devprivops/fs"
 	"github.com/Joao-Felisberto/devprivops/schema"
 )
 
@@ -185,7 +186,11 @@ func (db *DBManager) executeAttackTreeNode(attackNode *attacktree.AttackNode) ([
 	}
 	if thisNodeIsReachable {
 		fmt.Printf("Executing %s\n", attackNode.Description)
-		binds, qErr := db.ExecuteQueryFile(attackNode.Query)
+		qFile, err := fs.GetFile(attackNode.Query)
+		if err != nil {
+			return nil, attackNode, err
+		}
+		binds, qErr := db.ExecuteQueryFile(qFile)
 
 		if len(binds) == 0 {
 			fmt.Println("NOT POSSIBLE")
