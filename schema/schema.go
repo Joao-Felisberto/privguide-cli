@@ -245,9 +245,18 @@ func YAMLtoRDF(key string, val interface{}, rootURI string) []Triple {
 		for p, value := range v {
 			switch t := value.(type) {
 			case map[interface{}]interface{}:
-				id := generateAnonID()
+				// id := generateAnonID()
+
+				id := fmt.Sprintf("https://example.com/%v", t["id"])
+				if id == "https://example.com/<nil>" {
+					id = generateAnonID()
+				} else {
+					delete(t, "id")
+				}
+				fmt.Printf("ID: %s\n", id)
 
 				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", p), id))
+				// triples = append(triples, NewTriple(rootURI, p.(string), id))
 				triples = append(triples, YAMLtoRDF(fmt.Sprintf("%v", p), t, id)...)
 			case []interface{}:
 				triples = append(triples, YAMLtoRDF(fmt.Sprintf("%v", p), t, rootURI)...)
@@ -269,7 +278,14 @@ func YAMLtoRDF(key string, val interface{}, rootURI string) []Triple {
 		for p, value := range v {
 			switch t := value.(type) {
 			case map[interface{}]interface{}:
-				id := generateAnonID()
+				// id := generateAnonID()
+				id := fmt.Sprintf("https://example.com/%v", t["id"])
+				if id == "https://example.com/<nil>" {
+					id = generateAnonID()
+				} else {
+					delete(t, "id")
+				}
+
 				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", p), id))
 				triples = append(triples, YAMLtoRDF(fmt.Sprintf("%v", p), t, id)...)
 			case []interface{}:

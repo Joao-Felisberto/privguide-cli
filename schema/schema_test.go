@@ -64,8 +64,11 @@ func TestYAMLtoRDF(t *testing.T) {
 	// Example YAML input with multiple addresses
 	yamlInput := `
 a:
+  id: aId
   b:
+    id: bId
     c:
+      id: cId
       d: 1
       f: 2
     e: 3
@@ -86,16 +89,19 @@ a:
 	triples := schema.YAMLtoRDF(rootURI, data, rootURI)
 
 	expected := []schema.Triple{
-		{"<https://example.com/ROOT>", "<https://example.com/a>", "<https://example.com/1>"},
-		{"<https://example.com/1>", "<https://example.com/b>", "<https://example.com/2>"},
-		{"<https://example.com/2>", "<https://example.com/c>", "<https://example.com/3>"},
-		{"<https://example.com/3>", "<https://example.com/d>", "\"1\""},
-		{"<https://example.com/3>", "<https://example.com/f>", "\"2\""},
-		{"<https://example.com/2>", "<https://example.com/e>", "\"3\""},
+		{"<https://example.com/ROOT>", "<https://example.com/a>", "<https://example.com/aId>"},
+		{"<https://example.com/aId>", "<https://example.com/b>", "<https://example.com/bId>"},
+		{"<https://example.com/bId>", "<https://example.com/c>", "<https://example.com/cId>"},
+		{"<https://example.com/cId>", "<https://example.com/d>", "\"1\""},
+		{"<https://example.com/cId>", "<https://example.com/f>", "\"2\""},
+		{"<https://example.com/bId>", "<https://example.com/e>", "\"3\""},
 	}
 
 	if lt, le := len(triples), len(expected); lt != le {
 		t.Errorf("Number of triples generated does not match: expected %d, got %d", le, lt)
+	}
+	for _, e := range triples {
+		t.Logf("%s", e)
 	}
 	for _, v := range triples {
 		if !slices.Contains(expected, v) {
