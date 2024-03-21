@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"reflect"
 	"strconv"
 	"strings"
 
@@ -237,91 +238,91 @@ func generateAnonID() string {
 	return fmt.Sprintf("https://example.com/%d", idCounter)
 }
 
-func YAMLtoRDF(key string, val interface{}, rootURI string) []Triple {
+func YAMLtoRDF(key string, rawData interface{}, rootURI string) []Triple {
+	fmt.Printf("!!! %s: %s", reflect.TypeOf(rawData), rawData)
 	triples := []Triple{}
 
-	switch v := val.(type) {
+	switch data := rawData.(type) {
 	case map[interface{}]interface{}:
-		for p, value := range v {
-			switch t := value.(type) {
+		for key, rawValue := range data {
+			switch value := rawValue.(type) {
 			case map[interface{}]interface{}:
 				// id := generateAnonID()
 
-				id := fmt.Sprintf("https://example.com/%v", t["id"])
+				id := fmt.Sprintf("https://example.com/%v", value["id"])
 				if id == "https://example.com/<nil>" {
 					id = generateAnonID()
 				} else {
-					delete(t, "id")
+					delete(value, "id")
 				}
 				fmt.Printf("ID: %s\n", id)
 
-				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", p), id))
-				// triples = append(triples, NewTriple(rootURI, p.(string), id))
-				triples = append(triples, YAMLtoRDF(fmt.Sprintf("%v", p), t, id)...)
+				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", key), id))
+				triples = append(triples, YAMLtoRDF(fmt.Sprintf("%v", key), value, id)...)
 			case []interface{}:
-				triples = append(triples, YAMLtoRDF(fmt.Sprintf("%v", p), t, rootURI)...)
-			default:
-				switch tv := t.(type) {
-				case int:
-					tn := strconv.Itoa(tv)
-					triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", p), tn))
-				case bool:
-					tn := strconv.FormatBool(tv)
-					triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", p), tn))
-				default: // string
-					triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", p), tv.(string)))
-				}
-				// triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", p), t.(string)))
+				triples = append(triples, YAMLtoRDF(fmt.Sprintf("%v", key), value, rootURI)...)
+			case int:
+				tn := strconv.Itoa(value)
+				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", key), tn))
+			case bool:
+				tn := strconv.FormatBool(value)
+				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", key), tn))
+			default: // string
+				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", key), value.(string)))
 			}
 		}
 	case map[string]interface{}:
-		for p, value := range v {
-			switch t := value.(type) {
+		for key, rawValue := range data {
+			switch value := rawValue.(type) {
 			case map[interface{}]interface{}:
 				// id := generateAnonID()
-				id := fmt.Sprintf("https://example.com/%v", t["id"])
+
+				id := fmt.Sprintf("https://example.com/%v", value["id"])
 				if id == "https://example.com/<nil>" {
 					id = generateAnonID()
 				} else {
-					delete(t, "id")
+					delete(value, "id")
 				}
+				// fmt.Printf("ID: %s\n", id)
 
-				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", p), id))
-				triples = append(triples, YAMLtoRDF(fmt.Sprintf("%v", p), t, id)...)
+				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", key), id))
+				triples = append(triples, YAMLtoRDF(fmt.Sprintf("%v", key), value, id)...)
 			case []interface{}:
-				triples = append(triples, YAMLtoRDF(fmt.Sprintf("%v", p), t, rootURI)...)
-			default:
-				switch tv := t.(type) {
-				case int:
-					tn := strconv.Itoa(tv)
-					triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", p), tn))
-				default: // string
-					triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", p), tv.(string)))
-				}
-				// triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", p), t.(string)))
+				triples = append(triples, YAMLtoRDF(fmt.Sprintf("%v", key), value, rootURI)...)
+			case int:
+				tn := strconv.Itoa(value)
+				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", key), tn))
+			default: // string
+				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", key), value.(string)))
 			}
 		}
 	case []interface{}:
-		for _, e := range v {
-			id := generateAnonID()
-			switch t := e.(type) {
-			case map[interface{}]interface{}, []interface{}:
-				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%s", key), id))
-				triples = append(triples, YAMLtoRDF(id, t, id)...)
-			default:
-				switch tv := t.(type) {
-				case int:
-					tn := strconv.Itoa(tv)
-					triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", key), tn))
-				default: // string
-					triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", key), tv.(string)))
+		for _, rawElement := range data {
+			// id := generateAnonID()
+
+			switch e := rawElement.(type) {
+			case []interface{}:
+				// TODO: support array of arrays
+				panic("Cannot have array of arrays")
+			case map[interface{}]interface{}:
+				id := fmt.Sprintf("https://example.com/%v", e["id"])
+				if id == "https://example.com/<nil>" {
+					id = generateAnonID()
+				} else {
+					delete(e, "id")
 				}
-				// triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%s", key), t.(string)))
+
+				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%s", key), id))
+				triples = append(triples, YAMLtoRDF(id, e, id)...)
+			case int:
+				eInt := strconv.Itoa(e)
+				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", key), eInt))
+			default: // string
+				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", key), e.(string)))
 			}
 		}
 	default:
-		//triples = append(triples, Triple{rootURI, key, v})
-		fmt.Printf("ERROR: %s: %s\n", key, v)
+		fmt.Printf("ERROR: %s: %s\n", key, data)
 	}
 
 	return triples

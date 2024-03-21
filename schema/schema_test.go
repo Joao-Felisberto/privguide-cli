@@ -113,3 +113,62 @@ a:
 		}
 	}
 }
+
+func TestYAMLArrayToRDF(t *testing.T) {
+	// Example YAML input with multiple addresses
+	yamlInput := `
+main:
+  - id: e1
+    a: 1
+    b: 2
+  - id: e2
+    a: 3
+    b: 4
+other:
+  - 10
+  - 20
+  - 30
+`
+
+	// Parse YAML into map
+	var data map[interface{}]interface{}
+	err := yaml.Unmarshal([]byte(yamlInput), &data)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(data)
+
+	// Root URI
+	rootURI := "https://example.com/ROOT"
+
+	// Convert YAML to RDF triples
+	triples := schema.YAMLtoRDF(rootURI, data, rootURI)
+
+	expected := []schema.Triple{
+		{"<https://example.com/ROOT>", "<https://example.com/main>", "<https://example.com/e1>"},
+		{"<https://example.com/ROOT>", "<https://example.com/main>", "<https://example.com/e2>"},
+		{"<https://example.com/e1>", "<https://example.com/a>", "\"1\""},
+		{"<https://example.com/e1>", "<https://example.com/b>", "\"2\""},
+		{"<https://example.com/e2>", "<https://example.com/a>", "\"3\""},
+		{"<https://example.com/e2>", "<https://example.com/b>", "\"4\""},
+		{"<https://example.com/ROOT>", "<https://example.com/other>", "\"10\""},
+		{"<https://example.com/ROOT>", "<https://example.com/other>", "\"20\""},
+		{"<https://example.com/ROOT>", "<https://example.com/other>", "\"30\""},
+	}
+
+	if lt, le := len(triples), len(expected); lt != le {
+		t.Errorf("Number of triples generated does not match: expected %d, got %d", le, lt)
+	}
+	for _, e := range triples {
+		t.Logf("%s", e)
+	}
+	for _, v := range triples {
+		if !slices.Contains(expected, v) {
+			t.Errorf("'%s' not expected.", v)
+			for i, e := range expected {
+				t.Logf("%s: %s\t%s", reflect.TypeOf(e.Object), e, triples[i])
+			}
+			break
+		}
+	}
+}
