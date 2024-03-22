@@ -2,10 +2,9 @@ PREFIX ex: <https://example.com/>
 
 # Checks whether a transfer takes data outside the EU
 # Change the value of `EUCountries` as needed
-SELECT ?destId ?location
+SELECT ?dataFlow ?destId ?location
 WHERE {
-    ?dataFlow ex:to ?destination .
-    ?destId ex:id ?destination .
+    ?dataFlow ex:to ?destId .
     ?destId ex:location ?location .
 
     FILTER NOT EXISTS {

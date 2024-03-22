@@ -1,4 +1,4 @@
-PREFIX ex: <https://example.com>
+PREFIX ex: <https://example.com/>
 
 SELECT ?eId
 WHERE {
@@ -7,17 +7,8 @@ WHERE {
     } UNION {
         ?_ ex:legitimate_interest ?eId
     } 
-#    UNION {
-#        ?_ ex:from ?eId
-#    } UNION {
-#        ?_ ex:to ?eId
-#    }
+
     FILTER NOT EXISTS {
-        ex:ROOT ex:external_entities ?e .
-        ?e ex:id ?eId
-#        ?e ex:location ?_
-#        ?e ex:categories ?_
-#        ?e ex:age ?_
-#        ?e ex:produces_public_information ?_
+        ex:ROOT ex:external_entities ?eId 
     }
 }

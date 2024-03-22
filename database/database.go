@@ -56,6 +56,7 @@ func NewDBManager(
 }
 
 func (db *DBManager) sendSparqlQuery(query string, method QueryMethod) (*http.Response, error) {
+	fmt.Printf("Sending: %s", query)
 	endpoint := fmt.Sprintf("http://%s:%d/%s/%s", db.ip, db.port, db.dataset, method)
 	client := &http.Client{}
 

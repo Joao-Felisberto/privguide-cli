@@ -1,4 +1,4 @@
-PREFIX ex: <https://example.com>
+PREFIX ex: <https://example.com/>
 
 SELECT ?dfId
 WHERE {
@@ -12,8 +12,7 @@ WHERE {
         ?_ ex:delete ?dfId
     }
     FILTER NOT EXISTS {
-        ex:ROOT ex:data_flows ?df .
-        ?df ex:id ?dfId
+        ex:ROOT ex:data_flows ?dfId 
     }
 }
 

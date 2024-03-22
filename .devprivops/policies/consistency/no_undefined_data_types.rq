@@ -1,4 +1,4 @@
-PREFIX ex: <https://example.com>
+PREFIX ex: <https://example.com/>
 
 SELECT ?dtId
 WHERE {
@@ -12,9 +12,6 @@ WHERE {
         ?_ ex:data ?dtId
     }
     FILTER NOT EXISTS {
-        ex:ROOT ex:data_types ?dt .
-        ?dt ex:id ?dtId
-        #?dt ex:validity ?_
-        #?dt ex:category ?_
+        ex:ROOT ex:data_types ?dtId
     }
 }

@@ -1,10 +1,10 @@
 PREFIX ex: <https://example.com/>
 
-SELECT ?dsId ?dtName ?missingPredicate
+# Useless since it is enforced by the schema
+SELECT ?ds ?dtName ?missingPredicate
 WHERE {
   ?ds ex:data_stored ?dt .
   ?dt ex:type ?dtName .
-  ?ds ex:id ?dsId .
 
   OPTIONAL {
     {
@@ -24,6 +24,5 @@ WHERE {
 
   FILTER NOT EXISTS {
     ex:ROOT ex:data_flows ?df .
-      ?df ex:id ?dfId
   }
 }

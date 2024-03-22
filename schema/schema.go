@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"reflect"
 	"strconv"
 	"strings"
 
@@ -36,9 +35,16 @@ func NewTriple(s, p, o string) Triple {
 
 	isURI = strings.HasPrefix(o, "https://") || strings.HasPrefix(o, "http://")
 	if isURI {
+		o = strings.ReplaceAll(o, " ", "_")
 		o = fmt.Sprintf(`<%s>`, o)
 	} else {
-		o = fmt.Sprintf(`"%s"`, o)
+		if len(o) > 0 && o[0] == ':' {
+			// TODO: allow root URI customization
+			o = strings.ReplaceAll(o, " ", "_")
+			o = fmt.Sprintf(`<https://example.com/%s>`, o[1:])
+		} else {
+			o = fmt.Sprintf(`"%s"`, o)
+		}
 	}
 
 	return Triple{s, p, o}
@@ -239,7 +245,6 @@ func generateAnonID() string {
 }
 
 func YAMLtoRDF(key string, rawData interface{}, rootURI string) []Triple {
-	fmt.Printf("!!! %s: %s", reflect.TypeOf(rawData), rawData)
 	triples := []Triple{}
 
 	switch data := rawData.(type) {

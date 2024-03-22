@@ -31,6 +31,7 @@ func execute(cmd *cobra.Command, args []string) error {
 		port,
 		dataset,
 	)
+	// dbManager.CleanDB()
 
 	report := map[string]interface{}{}
 
