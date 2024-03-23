@@ -14,28 +14,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func execute(cmd *cobra.Command, args []string) error {
-	username := args[0]
-	password := args[1]
-	ip := args[2]
-	port, err := strconv.Atoi(args[3])
-	if err != nil {
-		return err
-	}
-	dataset := args[4]
-
-	dbManager := database.NewDBManager(
-		username,
-		password,
-		ip,
-		port,
-		dataset,
-	)
-	// dbManager.CleanDB()
-
-	report := map[string]interface{}{}
-
-	// 1. Load DFD into DB
+func loadRepresentations(dbManager *database.DBManager) error {
 	fmt.Println("===\nLoading DFD into DB\n===")
 	dfdFname, err := fs.GetFile("dfd/dfd.yml")
 	if err != nil {
@@ -62,7 +41,10 @@ func execute(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("unexpected status code: %d", statusCode)
 	}
 
-	// 2. Run all the reasoner rules
+	return nil
+}
+
+func reasoner(dbManager *database.DBManager) error {
 	fmt.Println("===\nReasoner Rules\n===")
 	reasonDir, err := fs.GetFile("reasoner")
 	if err != nil {
@@ -82,40 +64,24 @@ func execute(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	// 3. Verify policy compliance
+	return nil
+}
+
+func policies(dbManager *database.DBManager) (map[string]interface{}, error) {
 	fmt.Println("===\nPolicy Compliance\n===")
-	/*
-		polDir := fmt.Sprintf("./.%s/policies/", appName)
-		polFiles, err := database.FindQueryFiles(polDir)
-		if err != nil {
-			return err
-		}
-		for _, pol := range polFiles {
-			res, err := dbManager.ExecuteQueryFile(pol)
-			if err != nil {
-				return err
-			}
-			// TODO: operate on the results
-			fmt.Printf("%s\n", res)
-		}
-	*/
-	//	polFile := fmt.Sprintf("policies/policies.yml", appName)
-	//	polschema := fmt.Sprintf("query-schema.json", appName)
 	polFile, err := fs.GetFile("policies/policies.yml")
 	if err != nil {
-		return err
+		return nil, err
 	}
 	polSchema, err := fs.GetFile("query-schema.json")
 	if err != nil {
-		return err
+		return nil, err
 	}
 	yamlQueries, err := schema.ReadYAML(polFile, polSchema)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	// fmt.Printf("MAIN: %s\n", yamlQueries)
-	// yamlQueriesList := yamlQueries.([]map[string]interface{})
-	// queries := util.Map(yamlQueriesList, func(q map[string]interface{}) database.Query {
+
 	yamlQueriesList := yamlQueries.([]interface{})
 	queries := util.Map(yamlQueriesList, func(q1 interface{}) database.Query {
 		q := q1.(map[interface{}]interface{})
@@ -136,11 +102,11 @@ func execute(cmd *cobra.Command, args []string) error {
 			format["result line"].(string),
 		)
 	})
-	report["policies"] = map[string]interface{}{}
+	report := map[string]interface{}{}
 	for _, pol := range queries {
 		res, err := dbManager.ExecuteQueryFile(pol.File)
 		if err != nil {
-			return fmt.Errorf("error executing query from '%s': %s", pol.File, err)
+			return nil, fmt.Errorf("error executing query from '%s': %s", pol.File, err)
 		}
 		// TODO: operate on the results
 		b, err := json.MarshalIndent(res, "", "  ")
@@ -148,103 +114,96 @@ func execute(cmd *cobra.Command, args []string) error {
 			fmt.Println("error parsing query results:", err)
 		}
 		fmt.Printf("Violations of '%s': %s\n", pol.Title, b)
-		resReport := report["policies"].(map[string]interface{})
-		resReport[pol.Title] = res
+		report[pol.Title] = res
 	}
 
-	// 4. Verify contract compliance
-	/*
-		contractDir := fmt.Sprintf("./.%s/contracts/", appName)
-		contractFiles, err := database.FindQueryFiles(contractDir)
-		if err != nil {
-			return err
-		}
-		for _, con := range contractFiles {
-			res, err := dbManager.ExecuteQueryFile(con)
-			if err != nil {
-				return err
-			}
-			// TODO: operate on the results
-			fmt.Printf("%s\n", res)
-		}
-	*/
-	/* // TODO uncomment
-	fmt.Println("===\nContract Compliance\n===")
-	contractFile := fmt.Sprintf("./.%s/contracts/contracts.yml", appName)
-	yamlQueries, err = schema.ReadYAML(contractFile, polschema)
-	if err != nil {
-		return err
-	}
-	// yamlQueriesList = yamlQueries.([]map[string]interface{})
-	// queries = util.Map(yamlQueriesList, func(q map[string]interface{}) database.Query {
-	yamlQueriesList = yamlQueries.([]interface{})
-	queries = util.Map(yamlQueriesList, func(q1 interface{}) database.Query {
-		q := q1.(map[interface{}]interface{})
-		format := q["format"].(map[interface{}]interface{})
-		return database.NewQuery(
-			// q["file"].(string),
-			fmt.Sprintf("./.%s/%s", appName, q["file"].(string)),
-			q["title"].(string),
-			q["description"].(string),
-			format["heading whith results"].(string),
-			format["heading without results"].(string),
-			format["result line"].(string),
-		)
-	})
-	for _, contract := range queries {
-		res, err := dbManager.ExecuteQueryFile(contract.File)
-		if err != nil {
-			return err
-		}
-		// TODO: operate on the results
-		fmt.Printf("%s\n", res)
-	}
-	*/
-	// 5. Run all attack trees
+	return report, nil
+}
+
+func attackTrees(dbManager *database.DBManager) (map[string]interface{}, error) {
 	fmt.Println("===\nAttack Trees\n===")
-	// atkDir := fmt.Sprintf("./.%s/attack_trees/", appName)
 	atkDir, err := fs.GetFile("attack_trees/")
 	if err != nil {
-		return err
+		return nil, err
 	}
-	files, err = os.ReadDir(atkDir)
+	files, err := os.ReadDir(atkDir)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	//	atkSchema := fmt.Sprintf("./.%s/atk-tree-schema.json", appName)
 	atkSchema, err := fs.GetFile("atk-tree-schema.json")
 	if err != nil {
-		return err
+		return nil, err
 	}
-	report["attack_trees"] = map[string]interface{}{}
+	report := map[string]interface{}{}
 	for _, file := range files {
-		// fPath := fmt.Sprintf("./.%s/attack_trees/%s", appName, file.Name())
 		fPath, err := fs.GetFile(fmt.Sprintf("attack_trees/%s", file.Name()))
 		if err != nil {
-			return err
+			return nil, err
 		}
 		tree, err := attacktree.NewAttackTreeFromYaml(fPath, atkSchema)
 		if err != nil {
-			// fmt.Printf("ERROR!!!! %s: %s\n", fPath, err)
-			return err
+			return nil, err
 		}
 
 		// query code, failingNode, err
 		_, failingNode, err := dbManager.ExecuteAttackTree(tree)
 		if err != nil {
-			return fmt.Errorf("error at node '%s': %s", failingNode.Description, err)
+			return nil, fmt.Errorf("error at node '%s': %s", failingNode.Description, err)
 		}
 
-		//		report["attack_trees"].(map[string]interface{})[tree.Root.Query], err = json.Marshal(tree)
-		//		if err != nil {
-		//			fmt.Println("error parsing attack tree:", err)
-		//		}
-		report["attack_trees"].(map[string]interface{})[file.Name()] = tree
+		report[file.Name()] = tree
+	}
+	return report, nil
+}
+
+func analyse(cmd *cobra.Command, args []string) error {
+	username := args[0]
+	password := args[1]
+	ip := args[2]
+	port, err := strconv.Atoi(args[3])
+	if err != nil {
+		return err
+	}
+	dataset := args[4]
+
+	dbManager := database.NewDBManager(
+		username,
+		password,
+		ip,
+		port,
+		dataset,
+	)
+	// dbManager.CleanDB()
+
+	report := map[string]interface{}{}
+
+	// 1. Load DFD into DB
+	if err = loadRepresentations(&dbManager); err != nil {
+		return err
 	}
 
+	// 2. Run all the reasoner rules
+	if err = reasoner(&dbManager); err != nil {
+		return err
+	}
+	// 3. Verify policy compliance
+	polReport, err := policies(&dbManager)
+	if err != nil {
+		return err
+	}
+	report["policies"] = polReport
+
+	// 4. Run all attack trees
+	atkReport, err := attackTrees(&dbManager)
+	if err != nil {
+		return err
+	}
+	report["attack_trees"] = atkReport
+
+	// 5. Clean database
 	dbManager.CleanDB()
 
-	// fmt.Printf("Analyzing database at endpoint: %s:%d\n", ip, port)
+	// 6. Print and store report
 	jsonReport, err := json.MarshalIndent(report, "", "  ")
 	if err != nil {
 		fmt.Println("error parsing report:", err)
@@ -281,7 +240,7 @@ func main() {
 		Use:   "analyse <username> <password> <database ip> <database port> <dataset>",
 		Short: fmt.Sprintf("Analyse the specified database endpoint for %s", appName),
 		Args:  cobra.ExactArgs(5),
-		RunE:  execute,
+		RunE:  analyse,
 	}
 
 	var devCmd = &cobra.Command{
