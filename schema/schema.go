@@ -193,52 +193,6 @@ func ValidateYAMLAgainstSchema(yamlFile string, schemaFile string) (*gojsonschem
 	return result, nil
 }
 
-// // ValidateYAMLAgainstSchema validates a YAML file against a JSON Schema
-// func ValidateYAMLAgainstSchema(yamlFile string, schemaFile string) error {
-// 	// Read schema
-// 	schemaText, err := os.ReadFile(schemaFile)
-// 	if err != nil {
-// 		return err
-// 	}
-//
-// 	/*
-// 		// Read YAML file
-// 		yamlData, err := os.ReadFile(yamlFile)
-// 		if err != nil {
-// 			return err
-// 		}
-//
-// 		// Unmarshal YAML data
-// 		var rawData interface{}
-// 		if err := yaml.Unmarshal(yamlData, &rawData); err != nil {
-// 			return err
-// 		}
-// 		data, err := toStringKeys(rawData)
-// 		if err != nil {
-// 			return err
-// 		}
-// 	*/
-// 	data, err := ReadYAML(yamlFile, "")
-// 	if err != nil {
-// 		return err
-// 	}
-//
-// 	// Load schema
-// 	compiler := jsonschema.NewCompiler()
-// 	if err := compiler.AddResource("schema.json", strings.NewReader(string(schemaText))); err != nil {
-// 		return err
-// 	}
-// 	schema, err := compiler.Compile("schema.json")
-// 	if err != nil {
-// 		return err
-// 	}
-// 	if err := schema.ValidateInterface(data); err != nil {
-// 		return err
-// 	}
-//
-// 	return nil
-// }
-
 func generateAnonID() string {
 	idCounter++
 	return fmt.Sprintf("https://example.com/%d", idCounter)

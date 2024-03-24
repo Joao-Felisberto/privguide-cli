@@ -16,11 +16,11 @@ import (
 
 func loadRepresentations(dbManager *database.DBManager) error {
 	fmt.Println("===\nLoading DFD into DB\n===")
-	dfdFname, err := fs.GetFile("dfd/dfd.yml")
+	dfdFname, err := fs.GetFile("descriptions/dfd.yml")
 	if err != nil {
 		return err
 	}
-	dfdSchemaFname, err := fs.GetFile("dfd-schema.json")
+	dfdSchemaFname, err := fs.GetFile("schemas/dfd-schema.json")
 	if err != nil {
 		return err
 	}
@@ -67,13 +67,13 @@ func reasoner(dbManager *database.DBManager) error {
 	return nil
 }
 
-func policies(dbManager *database.DBManager) (map[string]interface{}, error) {
+func policies(dbManager *database.DBManager, regulation string) (map[string]interface{}, error) {
 	fmt.Println("===\nPolicy Compliance\n===")
-	polFile, err := fs.GetFile("policies/policies.yml")
+	polFile, err := fs.GetFile(fmt.Sprintf("regulations/%s/policies.yml", regulation))
 	if err != nil {
 		return nil, err
 	}
-	polSchema, err := fs.GetFile("query-schema.json")
+	polSchema, err := fs.GetFile("schemas/query-schema.json")
 	if err != nil {
 		return nil, err
 	}
@@ -122,7 +122,7 @@ func policies(dbManager *database.DBManager) (map[string]interface{}, error) {
 
 func attackTrees(dbManager *database.DBManager) (map[string]interface{}, error) {
 	fmt.Println("===\nAttack Trees\n===")
-	atkDir, err := fs.GetFile("attack_trees/")
+	atkDir, err := fs.GetFile("attack_trees/descriptions/")
 	if err != nil {
 		return nil, err
 	}
@@ -130,13 +130,13 @@ func attackTrees(dbManager *database.DBManager) (map[string]interface{}, error) 
 	if err != nil {
 		return nil, err
 	}
-	atkSchema, err := fs.GetFile("atk-tree-schema.json")
+	atkSchema, err := fs.GetFile("schemas/atk-tree-schema.json")
 	if err != nil {
 		return nil, err
 	}
 	report := map[string]interface{}{}
 	for _, file := range files {
-		fPath, err := fs.GetFile(fmt.Sprintf("attack_trees/%s", file.Name()))
+		fPath, err := fs.GetFile(fmt.Sprintf("attack_trees/descriptions/%s", file.Name()))
 		if err != nil {
 			return nil, err
 		}
@@ -173,7 +173,7 @@ func analyse(cmd *cobra.Command, args []string) error {
 		port,
 		dataset,
 	)
-	// dbManager.CleanDB()
+	dbManager.CleanDB()
 
 	report := map[string]interface{}{}
 
@@ -183,15 +183,27 @@ func analyse(cmd *cobra.Command, args []string) error {
 	}
 
 	// 2. Run all the reasoner rules
-	if err = reasoner(&dbManager); err != nil {
-		return err
-	}
+	/*
+		if err = reasoner(&dbManager); err != nil {
+			return err
+		}
+	*/
+
 	// 3. Verify policy compliance
-	polReport, err := policies(&dbManager)
+	report["policies"] = map[string]interface{}{}
+	regulations, err := fs.GetRegulations()
 	if err != nil {
 		return err
 	}
-	report["policies"] = polReport
+	for _, regulation := range regulations {
+		reg := report["policies"].(map[string]interface{})
+		reg[regulation] = map[string]interface{}{}
+		polReport, err := policies(&dbManager, regulation)
+		if err != nil {
+			return err
+		}
+		reg[regulation] = polReport
+	}
 
 	// 4. Run all attack trees
 	atkReport, err := attackTrees(&dbManager)

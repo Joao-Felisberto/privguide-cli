@@ -4,42 +4,42 @@
 # - define categories in the dfd?
 # - add a "no unused data types" policy?
 
-- file: policies/consistency/no_undefined_data_types.rq
+- file: regulations/gdpr/consistency/no_undefined_data_types.rq
   title: No undefined data types
   description: Ensure all data types that flow in the system are declared
   format:
     heading whith results: Undefined data types
     heading without results: No undefined data types were found
     result line: ""
-- file: policies/consistency/unique_ids.rq
+- file: regulations/gdpr/consistency/unique_ids.rq
   title: Unique IDs
   description: Different entities cannot have the same identifier
   format:
     heading whith results: Entities with the same identifier
     heading without results: No entities share identifiers
     result line: ""
-- file: policies/consistency/no_undefined_entities.rq
+- file: regulations/gdpr/consistency/no_undefined_entities.rq
   title: All external entities must be described
   description: All external entities that partake in data transactions must be defined
   format:
     heading whith results: Undefined external entities
     heading without results: No undefined external entities
     result line: ""
-- file: policies/consistency/no_undefined_data_flows.rq
+- file: regulations/gdpr/consistency/no_undefined_data_flows.rq
   title: All data flows must be identified
   description: The flows of data reaching data stores must all exist
   format:
     heading whith results: Unidentified data flows
     heading without results: No unidentified data flows
     result line: ""
-- file: policies/consistency/time_format.rq
+- file: regulations/gdpr/consistency/time_format.rq
   title: Wrong time formatting
   description: All durations and periods must be properly formatted
   format:
     heading whith results: Incorrectly formatted time measures
     heading without results: No time measures are improperlly formatted
     result line: ""
-- file: policies/consistency/wrong_data_flow_endpoints.rq
+- file: regulations/gdpr/consistency/wrong_data_flow_endpoints.rq
   title: Wrong data flow endpoints
   description: Data flow sources and destinations must be external entities, processes or stores
   format:
@@ -51,21 +51,21 @@
 # - assume all data entering a process is used in it?
 # - what to do with data type validity?
 
-- file: policies/gdpr/data_in_EU.rq
+- file: regulations/gdpr/policies/data_in_EU.rq
   title: User data shall not leave the EU
   description: Ensure that no data collected in the EU is sent overseas
   format:
     heading whith results: Some data was found to be leaving the EU
     heading without results: No data leaves the EU
     result line: ""
-# - file: policies/gdpr/unlawful_category_processing.rq
+# - file: regulations/gdpr/unlawful_category_processing.rq
 #   title: Unlawful processing of certain categories of data
 #   description: The processing of certain categories of data under certain circumstances is unlawful
 #   format:
 #     heading whith results: Unlawful processings
 #     heading without results: No unlawful processings were fuond
 #     result line: ""
-- file: policies/gdpr/insufficient_rights_over_data.rq
+- file: regulations/gdpr/policies/insufficient_rights_over_data.rq
   title: Insuficient rights over data
   description: The user cannot read, update and delete all data collected about them 
   format:
