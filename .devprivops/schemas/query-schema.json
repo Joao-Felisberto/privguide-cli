@@ -18,6 +18,9 @@
                 "description": {
                     "type": "string"
                 },
+                "maximum violations": {
+                    "type": "number"
+                },
                 "format": {
                     "$ref": "#/definitions/Format"
                 }
@@ -26,6 +29,7 @@
                 "description",
                 "file",
                 "format",
+                "maximum violations",
                 "title"
             ],
             "title": "QueryMetadata"

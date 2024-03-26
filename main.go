@@ -92,11 +92,18 @@ func policies(dbManager *database.DBManager, regulation string) (map[string]inte
 			// very beautiful, isn't it?
 			panic(err)
 		}
+		// maxViolations, err := strconv.Atoi(q["maximum violations"].(string))
+		maxViolations := q["maximum violations"].(int)
+		if err != nil {
+			// will never happen because the schema has already been validated
+			panic(err)
+		}
 		return database.NewQuery(
 			// fmt.Sprintf("./.%s/%s", appName, q["file"].(string)),
 			qFile,
 			q["title"].(string),
 			q["description"].(string),
+			maxViolations,
 			format["heading whith results"].(string),
 			format["heading without results"].(string),
 			format["result line"].(string),
@@ -114,7 +121,10 @@ func policies(dbManager *database.DBManager, regulation string) (map[string]inte
 			fmt.Println("error parsing query results:", err)
 		}
 		fmt.Printf("Violations of '%s': %s\n", pol.Title, b)
-		report[pol.Title] = res
+		report[pol.Title] = map[string]interface{}{
+			"maximum violations": pol.MaxViolations,
+			"violations":         res,
+		}
 	}
 
 	return report, nil
@@ -154,6 +164,25 @@ func attackTrees(dbManager *database.DBManager) (map[string]interface{}, error) 
 		report[file.Name()] = tree
 	}
 	return report, nil
+}
+
+func validateReportInternal(report *map[string]interface{}) []string {
+	regulations := (*report)["policies"].(map[string]interface{})
+	violated := []string{}
+
+	for _, policies := range regulations {
+		for polName, policy := range policies.(map[string]interface{}) {
+			// policy = policy.(map[string]interface{})
+			maxViolations := policy.(map[string]interface{})["maximum violations"].(int)
+			violations := len(policy.(map[string]interface{})["violations"].([]map[string]interface{}))
+
+			if violations > maxViolations {
+				violated = append(violated, polName)
+			}
+		}
+	}
+
+	return violated
 }
 
 func analyse(cmd *cobra.Command, args []string) error {
@@ -224,6 +253,16 @@ func analyse(cmd *cobra.Command, args []string) error {
 
 	if err := os.WriteFile("report.json", []byte(jsonReport), 0666); err != nil {
 		return err
+	}
+
+	// 7. Check whether the violations are acceptable
+	violations := validateReportInternal(&report)
+	if len(violations) != 0 {
+		fmt.Fprintf(os.Stderr, "There are policies with too many violations\n")
+		for _, v := range violations {
+			fmt.Fprintf(os.Stderr, "\t- %s\n", v)
+		}
+		os.Exit(1)
 	}
 
 	return nil
