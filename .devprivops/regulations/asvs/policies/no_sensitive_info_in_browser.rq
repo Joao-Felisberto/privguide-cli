@@ -1,0 +1,9 @@
+PREFIX ex: <https://example.com/>
+
+SELECT ?dsId ?dtId
+WHERE {
+    ex:ROOT ex:data_stores ?dsId
+    ?dsId ex:data_stored/ex:type ?dtId
+
+    ?dtId ex:categories ex:sensitive
+}

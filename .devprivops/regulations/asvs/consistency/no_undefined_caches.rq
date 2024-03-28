@@ -1,0 +1,10 @@
+PREFIX ex: <https://example.com/>
+
+SELECT ?cacheId
+WHERE {
+    ?_ ex:caches ?cacheId
+    FILTER NOT EXISTS {
+        ex:ROOT ex:data_stores ?cacheId
+    }
+}
+

@@ -239,6 +239,9 @@
                         "type": "string"
                     }
                 },
+                "caches": {
+                    "type": "string"
+                },
                 "location": {
                     "type": "array",
                     "items": {

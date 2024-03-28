@@ -1,1 +1,8 @@
-[]
+- file: regulations/asvs/consistency/no_undefined_caches.rq
+  title: No undefined caches
+  description: Ensure all processes' caches are defined 
+  maximum violations: 0
+  format:
+    heading whith results: Undefined caches
+    heading without results: No undefined caches were found
+    result line: ""

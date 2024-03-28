@@ -1,0 +1,15 @@
+PREFIX ex: <https://example.com/>
+
+SELECT ?dsId ?dtId
+WHERE {
+    ex:ROOT ex:data_stores ?dsId
+    ?dsId ex:data_stored ?dataStored 
+    ?dataStored ex:type ?dtId
+
+    ?dsId ex:location "browser"
+    ?dtId ex:categories ex:authenticated_only # TODO: detect data obtained while authenticated
+
+    FILTER NOT EXISTS {
+        ?dataStored ex:storage_period: "session"
+    }
+}
