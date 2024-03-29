@@ -1,6 +1,7 @@
 - file: regulations/asvs/consistency/no_undefined_caches.rq
   title: No undefined caches
   description: Ensure all processes' caches are defined 
+  is consistency: true
   maximum violations: 0
   format:
     heading whith results: Undefined caches

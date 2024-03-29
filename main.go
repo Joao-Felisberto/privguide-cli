@@ -1,10 +1,13 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"os"
+	"os/exec"
 	"strconv"
+	"strings"
 
 	attacktree "github.com/Joao-Felisberto/devprivops/attack_tree"
 	"github.com/Joao-Felisberto/devprivops/database"
@@ -44,6 +47,7 @@ func loadRepresentations(dbManager *database.DBManager) error {
 	return nil
 }
 
+/*
 func reasoner(dbManager *database.DBManager) error {
 	fmt.Println("===\nReasoner Rules\n===")
 	reasonDir, err := fs.GetFile("reasoner")
@@ -66,6 +70,7 @@ func reasoner(dbManager *database.DBManager) error {
 
 	return nil
 }
+*/
 
 func policies(dbManager *database.DBManager, regulation string) (map[string]interface{}, error) {
 	fmt.Println("===\nPolicy Compliance\n===")
@@ -103,6 +108,7 @@ func policies(dbManager *database.DBManager, regulation string) (map[string]inte
 			qFile,
 			q["title"].(string),
 			q["description"].(string),
+			q["is consistency"].(bool),
 			maxViolations,
 			format["heading whith results"].(string),
 			format["heading without results"].(string),
@@ -123,6 +129,7 @@ func policies(dbManager *database.DBManager, regulation string) (map[string]inte
 		fmt.Printf("Violations of '%s': %s\n", pol.Title, b)
 		report[pol.Title] = map[string]interface{}{
 			"maximum violations": pol.MaxViolations,
+			"is consistency":     pol.IsConsistency,
 			"violations":         res,
 		}
 	}
@@ -264,6 +271,20 @@ func analyse(cmd *cobra.Command, args []string) error {
 		}
 		os.Exit(1)
 	}
+
+	// 8. Send the report to the site
+	gitCommit := exec.Command("git", "rev-parse", "HEAD")
+	var commitOut bytes.Buffer
+	gitCommit.Stdout = &commitOut
+
+	gitBranch := exec.Command("git", "symbolic-ref", "--short", "HEAD")
+	var branchOut bytes.Buffer
+	gitBranch.Stdout = &branchOut
+
+	gitCommit.Run()
+	gitBranch.Run()
+
+	fmt.Printf("%s:%s\n", strings.Trim(branchOut.String(), "\n"), commitOut.String())
 
 	return nil
 }

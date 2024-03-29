@@ -18,6 +18,9 @@
                 "description": {
                     "type": "string"
                 },
+                "is consistency": {
+                    "type": "boolean"
+                },
                 "maximum violations": {
                     "type": "number"
                 },
@@ -27,6 +30,7 @@
             },
             "required": [
                 "description",
+                "is consistency",
                 "file",
                 "format",
                 "maximum violations",
