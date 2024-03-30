@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"os"
 	"os/exec"
 	"strconv"
@@ -90,7 +91,7 @@ func policies(dbManager *database.DBManager, regulation string) (map[string]inte
 	yamlQueriesList := yamlQueries.([]interface{})
 	queries := util.Map(yamlQueriesList, func(q1 interface{}) database.Query {
 		q := q1.(map[interface{}]interface{})
-		format := q["format"].(map[interface{}]interface{})
+		// format := q["format"].(map[interface{}]interface{})
 
 		qFile, err := fs.GetFile(q["file"].(string))
 		if err != nil {
@@ -110,9 +111,10 @@ func policies(dbManager *database.DBManager, regulation string) (map[string]inte
 			q["description"].(string),
 			q["is consistency"].(bool),
 			maxViolations,
-			format["heading whith results"].(string),
-			format["heading without results"].(string),
-			format["result line"].(string),
+			// 			format["heading whith results"].(string),
+			// 			format["heading without results"].(string),
+			// 			format["result line"].(string),
+			q["mapping message"].(string),
 		)
 	})
 	report := map[string]interface{}{}
@@ -131,6 +133,7 @@ func policies(dbManager *database.DBManager, regulation string) (map[string]inte
 			"maximum violations": pol.MaxViolations,
 			"is consistency":     pol.IsConsistency,
 			"violations":         res,
+			"mapping message":    pol.MappingMessage,
 		}
 	}
 
@@ -190,6 +193,26 @@ func validateReportInternal(report *map[string]interface{}) []string {
 	}
 
 	return violated
+}
+
+func sendReport(url string, report *map[string]interface{}) error {
+	// Define the URL
+	// url := "http://localhost:8080/report"
+
+	// Read report.json file
+	reportData, err := os.ReadFile("report.json")
+	if err != nil {
+		return fmt.Errorf("error reading report.json: %s", err)
+	}
+
+	// Send HTTP POST request
+	resp, err := http.Post(url, "application/json", bytes.NewBuffer(reportData))
+	if err != nil {
+		return fmt.Errorf("error sending HTTP request: %s", err)
+	}
+	defer resp.Body.Close()
+
+	return nil
 }
 
 func analyse(cmd *cobra.Command, args []string) error {
@@ -252,6 +275,30 @@ func analyse(cmd *cobra.Command, args []string) error {
 	dbManager.CleanDB()
 
 	// 6. Print and store report
+	gitCommit := exec.Command("git", "rev-parse", "HEAD")
+	var commitOut bytes.Buffer
+	gitCommit.Stdout = &commitOut
+
+	gitBranch := exec.Command("git", "symbolic-ref", "--short", "HEAD")
+	var branchOut bytes.Buffer
+	gitBranch.Stdout = &branchOut
+
+	gitCommit.Run()
+	gitBranch.Run()
+
+	projDir, err := os.Getwd()
+	if err != nil {
+		fmt.Println(err)
+	}
+	projPath := strings.Split(projDir, "/")
+	projDir = projPath[len(projPath)-1]
+
+	fmt.Printf("%s %s:%s\n", projDir, strings.Trim(branchOut.String(), "\n"), commitOut.String())
+
+	report["branch"] = strings.Trim(branchOut.String(), "\n")
+	report["commit"] = commitOut.String()
+	report["project"] = projDir
+
 	jsonReport, err := json.MarshalIndent(report, "", "  ")
 	if err != nil {
 		fmt.Println("error parsing report:", err)
@@ -269,23 +316,15 @@ func analyse(cmd *cobra.Command, args []string) error {
 		for _, v := range violations {
 			fmt.Fprintf(os.Stderr, "\t- %s\n", v)
 		}
-		os.Exit(1)
+		// os.Exit(1)
 	}
 
 	// 8. Send the report to the site
-	gitCommit := exec.Command("git", "rev-parse", "HEAD")
-	var commitOut bytes.Buffer
-	gitCommit.Stdout = &commitOut
+	if err := sendReport("http://localhost:8081/report", &report); err != nil {
+		return err
+	}
 
-	gitBranch := exec.Command("git", "symbolic-ref", "--short", "HEAD")
-	var branchOut bytes.Buffer
-	gitBranch.Stdout = &branchOut
-
-	gitCommit.Run()
-	gitBranch.Run()
-
-	fmt.Printf("%s:%s\n", strings.Trim(branchOut.String(), "\n"), commitOut.String())
-
+	fmt.Println("HERE")
 	return nil
 }
 

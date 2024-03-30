@@ -9,55 +9,38 @@
   description: Ensure all data types that flow in the system are declared
   is consistency: true
   maximum violations: 0
-  format:
-    heading whith results: Undefined data types
-    heading without results: No undefined data types were found
-    result line: ""
+  mapping message: ""
 - file: regulations/gdpr/consistency/unique_ids.rq
   title: Unique IDs
   description: Different entities cannot have the same identifier
   is consistency: true
   maximum violations: 0
-  format:
-    heading whith results: Entities with the same identifier
-    heading without results: No entities share identifiers
-    result line: ""
+  mapping message: ""
 - file: regulations/gdpr/consistency/no_undefined_entities.rq
   title: All external entities must be described
   description: All external entities that partake in data transactions must be defined
   is consistency: true
   maximum violations: 0
-  format:
-    heading whith results: Undefined external entities
-    heading without results: No undefined external entities
-    result line: ""
+  mapping message: ""
 - file: regulations/gdpr/consistency/no_undefined_data_flows.rq
   title: All data flows must be identified
   description: The flows of data reaching data stores must all exist
   is consistency: true
   maximum violations: 0
-  format:
-    heading whith results: Unidentified data flows
-    heading without results: No unidentified data flows
-    result line: ""
+  mapping message: ""
 - file: regulations/gdpr/consistency/time_format.rq
   title: Wrong time formatting
   description: All durations and periods must be properly formatted
   maximum violations: 0
   is consistency: true
-  format:
-    heading whith results: Incorrectly formatted time measures
-    heading without results: No time measures are improperlly formatted
-    result line: ""
+  mapping message: ""
 - file: regulations/gdpr/consistency/wrong_data_flow_endpoints.rq
   title: Wrong data flow endpoints
   description: Data flow sources and destinations must be external entities, processes or stores
   is consistency: true
   maximum violations: 0
-  format:
-    heading whith results: Ill defined endpoints
-    heading without results: No ill defined endpoints
-    result line: ""
+  mapping message: ""
+
 
 # GDPR
 # - assume all data entering a process is used in it?
@@ -68,24 +51,15 @@
   description: Ensure that no data collected in the EU is sent overseas
   is consistency: false
   maximum violations: 0
-  format:
-    heading whith results: Some data was found to be leaving the EU
-    heading without results: No data leaves the EU
-    result line: ""
+  mapping message: ""
 # - file: regulations/gdpr/unlawful_category_processing.rq
 #   title: Unlawful processing of certain categories of data
 #   description: The processing of certain categories of data under certain circumstances is unlawful
 #   maximum violations: 0
-#   format:
-#     heading whith results: Unlawful processings
-#     heading without results: No unlawful processings were fuond
-#     result line: ""
+#   mapping message: ""
 - file: regulations/gdpr/policies/insufficient_rights_over_data.rq
   title: Insuficient rights over data
   description: The user cannot read, update and delete all data collected about them 
   is consistency: false
   maximum violations: 0
-  format:
-    heading whith results: Collected data
-    heading without results: All rights are given over all data
-    result line: ""
+  mapping message: ""

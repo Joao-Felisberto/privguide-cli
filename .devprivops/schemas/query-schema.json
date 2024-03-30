@@ -24,40 +24,19 @@
                 "maximum violations": {
                     "type": "number"
                 },
-                "format": {
-                    "$ref": "#/definitions/Format"
+                "mapping message": {
+                    "type": "string"
                 }
             },
             "required": [
                 "description",
                 "is consistency",
                 "file",
-                "format",
+                "mapping message",
                 "maximum violations",
                 "title"
             ],
             "title": "QueryMetadata"
-        },
-        "Format": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "heading whith results": {
-                    "type": "string"
-                },
-                "heading without results": {
-                    "type": "string"
-                },
-                "result line": {
-                    "type": "string"
-                }
-            },
-            "required": [
-                "heading whith results",
-                "heading without results",
-                "result line"
-            ],
-            "title": "Format"
         }
     }
 }

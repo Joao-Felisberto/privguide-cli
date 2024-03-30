@@ -3,7 +3,4 @@
   description: Ensure all processes' caches are defined 
   is consistency: true
   maximum violations: 0
-  format:
-    heading whith results: Undefined caches
-    heading without results: No undefined caches were found
-    result line: ""
+  mapping message: ""
