@@ -9,6 +9,7 @@ import (
 	"os/exec"
 	"strconv"
 	"strings"
+	"time"
 
 	attacktree "github.com/Joao-Felisberto/devprivops/attack_tree"
 	"github.com/Joao-Felisberto/devprivops/database"
@@ -275,16 +276,18 @@ func analyse(cmd *cobra.Command, args []string) error {
 	dbManager.CleanDB()
 
 	// 6. Print and store report
-	gitCommit := exec.Command("git", "rev-parse", "HEAD")
-	var commitOut bytes.Buffer
-	gitCommit.Stdout = &commitOut
+	//	gitCommit := exec.Command("git", "rev-parse", "HEAD")
+	//	var commitOut bytes.Buffer
+	//	gitCommit.Stdout = &commitOut
 
 	gitBranch := exec.Command("git", "symbolic-ref", "--short", "HEAD")
 	var branchOut bytes.Buffer
 	gitBranch.Stdout = &branchOut
 
-	gitCommit.Run()
+	//	gitCommit.Run()
 	gitBranch.Run()
+
+	time := fmt.Sprint(time.Now().Unix())
 
 	projDir, err := os.Getwd()
 	if err != nil {
@@ -293,10 +296,11 @@ func analyse(cmd *cobra.Command, args []string) error {
 	projPath := strings.Split(projDir, "/")
 	projDir = projPath[len(projPath)-1]
 
-	fmt.Printf("%s %s:%s\n", projDir, strings.Trim(branchOut.String(), "\n"), commitOut.String())
+	fmt.Printf("%s %s:%s\n", projDir, strings.Trim(branchOut.String(), "\n"), time)
 
 	report["branch"] = strings.Trim(branchOut.String(), "\n")
-	report["commit"] = commitOut.String()
+	// report["time"] = commitOut.String()
+	report["time"] = time
 	report["project"] = projDir
 
 	jsonReport, err := json.MarshalIndent(report, "", "  ")
@@ -320,6 +324,7 @@ func analyse(cmd *cobra.Command, args []string) error {
 	}
 
 	// 8. Send the report to the site
+	// TODO: accept site through the command line
 	if err := sendReport("http://localhost:8081/report", &report); err != nil {
 		return err
 	}
