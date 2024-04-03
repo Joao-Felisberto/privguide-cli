@@ -19,13 +19,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func loadRepresentations(dbManager *database.DBManager) error {
-	fmt.Println("===\nLoading DFD into DB\n===")
-	dfdFname, err := fs.GetFile("descriptions/dfd.yml")
+func loadRep(dbManager *database.DBManager, file string, schemaFile string) error {
+	dfdFname, err := fs.GetFile(file)
 	if err != nil {
 		return err
 	}
-	dfdSchemaFname, err := fs.GetFile("schemas/dfd-schema.json")
+	dfdSchemaFname, err := fs.GetFile(schemaFile)
 	if err != nil {
 		return err
 	}
@@ -45,6 +44,48 @@ func loadRepresentations(dbManager *database.DBManager) error {
 	if statusCode != 204 {
 		return fmt.Errorf("unexpected status code: %d", statusCode)
 	}
+
+	return nil
+}
+
+func loadRepresentations(dbManager *database.DBManager) error {
+	entries, err := fs.GetDescriptions()
+	if err != nil {
+		return err
+	}
+
+	for _, e := range entries {
+		fPath := strings.Split(e, "/")
+		fname := fPath[len(fPath)-1]
+
+		tmp := strings.Split(fname, ".")
+		schemaIndicator := tmp[len(tmp)-2]
+
+		schema := fmt.Sprintf("schemas/%s-schema.json", schemaIndicator)
+		/*
+			schema, err := fs.GetFile(fmt.Sprintf("schemas/%s-schema.json", schemaIndicator))
+			if err != nil {
+				return err
+
+			}
+		*/
+
+		fmt.Printf("!! %s %s\n", e, schema)
+		if err := loadRep(dbManager, e, schema); err != nil {
+			return err
+		}
+	}
+
+	/*
+		fmt.Println("===\nLoading DFD into DB\n===")
+		if err := loadRep(dbManager, "descriptions/dfd.yml", "schemas/dfd-schema.json"); err != nil {
+			return err
+		}
+		fmt.Println("===\nLoading DPIA into DB\n===")
+		if err := loadRep(dbManager, "descriptions/dpia.yml", "schemas/dpia-schema.json"); err != nil {
+			return err
+		}
+	*/
 
 	return nil
 }
@@ -273,7 +314,7 @@ func analyse(cmd *cobra.Command, args []string) error {
 	report["attack_trees"] = atkReport
 
 	// 5. Clean database
-	dbManager.CleanDB()
+	// dbManager.CleanDB()
 
 	// 6. Print and store report
 	//	gitCommit := exec.Command("git", "rev-parse", "HEAD")
@@ -325,7 +366,7 @@ func analyse(cmd *cobra.Command, args []string) error {
 
 	// 8. Send the report to the site
 	// TODO: accept site through the command line
-	if err := sendReport("http://localhost:8081/report", &report); err != nil {
+	if err := sendReport("http://localhost:8080/report", &report); err != nil {
 		return err
 	}
 

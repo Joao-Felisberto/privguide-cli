@@ -226,6 +226,8 @@ func YAMLtoRDF(key string, rawData interface{}, rootURI string) []Triple {
 			case bool:
 				tn := strconv.FormatBool(value)
 				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", key), tn))
+			case nil:
+				continue
 			default: // string
 				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", key), value.(string)))
 			}

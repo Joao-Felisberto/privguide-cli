@@ -1,0 +1,42 @@
+last update: 2/3/04
+responsible:
+  - :Someone
+  - :Else
+DPO:
+  - name: :The
+    contact: the@email.com
+  - name: :Man
+    contact: man@email.com
+personal data:
+  - id: :DataType1
+    kind: personal # special | legal data
+    destinataries: 
+      - tag # tag for the kind of people that wil recieve it
+    retention period: 2d # or policy
+    abides by code of conduct: false # Art 40 GDPR
+    purposes:
+      - :Intent1
+    transfers to third parties: null # contract, adequability decision, binding corporate rules, art 49
+    risks:
+      - id: :Risk 1
+        impact: 0
+        likelyhood: 1
+personal data processing whitelist:
+  - :Intent 1
+  - :Intent 2
+personal data that requires DPIA:
+  - :Intent 3
+  - :Intent 4
+intents:
+  - id: :Intent1
+    scores users: true
+    automated decisions: true
+    systematic monitoring: true
+    large scale processing: false
+    specific: false
+    explicit: false
+    legitimate: false
+    lawful: false
+    adequate: false
+    relevant: false
+    limited: false

@@ -110,3 +110,11 @@ data flows:
     encryption: signal
     periodicity: 1m
     amount of data per period: 1
+  - id: Deliver message
+    from: :send message
+    to: :User
+    data:
+      - :message
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
