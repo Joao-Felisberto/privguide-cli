@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -56,7 +57,7 @@ func NewDBManager(
 }
 
 func (db *DBManager) sendSparqlQuery(query string, method QueryMethod) (*http.Response, error) {
-	fmt.Printf("Sending: %s", query)
+	slog.Debug("Sending query", "query", query)
 	endpoint := fmt.Sprintf("http://%s:%d/%s/%s", db.ip, db.port, db.dataset, method)
 	client := &http.Client{}
 
@@ -105,8 +106,7 @@ func (db *DBManager) AddTriples(triples []schema.Triple) (int, error) {
 
 	response, err := db.sendSparqlQuery(sparqlQuery.String(), UPDATE)
 	if err != nil {
-		fmt.Println("Error sending SPARQL query:", err)
-		return -1, err
+		return -1, fmt.Errorf("error sending SPARQL query: %s", err)
 	}
 	defer response.Body.Close()
 
@@ -121,7 +121,7 @@ func (db *DBManager) ExecuteReasonerRule(file string) error {
 
 	sparqlQuery := string(sparqlQueryBytes)
 
-	fmt.Printf(".Executing:\n%s\n", sparqlQuery)
+	slog.Debug("Executing reasoner rule", "rule", sparqlQuery)
 
 	response, err := db.sendSparqlQuery(sparqlQuery, UPDATE)
 	if err != nil {
@@ -188,7 +188,6 @@ func (db *DBManager) executeAttackTreeNode(attackNode *attacktree.AttackNode) ([
 	for _, node := range attackNode.Children {
 		response, failingNode, err := db.executeAttackTreeNode(node)
 		if err != nil {
-			fmt.Printf("ERROR\n")
 			return response, failingNode, err
 		}
 		// fmt.Printf("- %s\n", response)
@@ -197,7 +196,7 @@ func (db *DBManager) executeAttackTreeNode(attackNode *attacktree.AttackNode) ([
 		}
 	}
 	if thisNodeIsReachable {
-		fmt.Printf("Executing %s\n", attackNode.Description)
+		slog.Info("Executing attack node:", "attack node", attackNode.Description)
 		qFile, err := fs.GetFile(attackNode.Query)
 		if err != nil {
 			return nil, attackNode, err
@@ -205,16 +204,16 @@ func (db *DBManager) executeAttackTreeNode(attackNode *attacktree.AttackNode) ([
 		binds, qErr := db.ExecuteQueryFile(qFile)
 
 		if len(binds) == 0 {
-			fmt.Println("NOT POSSIBLE")
+			slog.Info("NOT POSSIBLE", "node", attackNode.Description)
 			attackNode.SetExecutionStatus(attacktree.NOT_POSSIBLE)
 		} else {
-			fmt.Println("POSSIBLE")
+			slog.Info("POSSIBLE", "node", attackNode.Description)
 			attackNode.SetExecutionStatus(attacktree.POSSIBLE)
 		}
 
 		return binds, attackNode, qErr
 	}
-	fmt.Printf("UNREACHABLE\n")
+	slog.Info("UNREACHABLE", "node", attackNode.Description)
 	return nil, nil, nil
 }
 

@@ -3,12 +3,11 @@ package schema
 import (
 	"errors"
 	"fmt"
-	"log"
+	"log/slog"
 	"os"
 	"strconv"
 	"strings"
 
-	// "github.com/santhosh-tekuri/jsonschema"
 	"github.com/xeipuuv/gojsonschema"
 	"gopkg.in/yaml.v2"
 )
@@ -148,14 +147,14 @@ func ValidateYAMLAgainstSchema(yamlFile string, schemaFile string) (*gojsonschem
 	schemaLoader := gojsonschema.NewReferenceLoader("file://" + schemaFile)
 	schema, err := gojsonschema.NewSchema(schemaLoader)
 	if err != nil {
-		log.Fatalf("Failed to load JSON schema: %v", err)
+		// log.Fatalf("Failed to load JSON schema: %v", err)
 		return nil, fmt.Errorf("failed to load JSON schema: %s", err)
 	}
 
 	// Load YAML data
 	yamlData, err := os.ReadFile(yamlFile)
 	if err != nil {
-		log.Fatalf("Failed to read YAML file: %v", err)
+		// log.Fatalf("Failed to read YAML file: %v", err)
 		return nil, fmt.Errorf("failed to read YAML file: %s", err)
 	}
 
@@ -163,7 +162,7 @@ func ValidateYAMLAgainstSchema(yamlFile string, schemaFile string) (*gojsonschem
 	var yamlObj interface{}
 	err = yaml.Unmarshal(yamlData, &yamlObj)
 	if err != nil {
-		log.Fatalf("Failed to parse YAML data: %v", err)
+		// log.Fatalf("Failed to parse YAML data: %v", err)
 		return nil, fmt.Errorf("failed to parse YAML data: %s", err)
 	}
 
@@ -174,7 +173,7 @@ func ValidateYAMLAgainstSchema(yamlFile string, schemaFile string) (*gojsonschem
 	jsonLoader := gojsonschema.NewGoLoader(jsonData)
 	result, err := schema.Validate(jsonLoader)
 	if err != nil {
-		log.Fatalf("YAML file does not abide by the schema: %v", err)
+		// log.Fatalf("YAML file does not abide by the schema: %v", err)
 		return nil, fmt.Errorf("YAML file does not abide by the schema: %s", err)
 	}
 
@@ -214,7 +213,6 @@ func YAMLtoRDF(key string, rawData interface{}, rootURI string) []Triple {
 				} else {
 					delete(value, "id")
 				}
-				fmt.Printf("ID: %s\n", id)
 
 				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", key), id))
 				triples = append(triples, YAMLtoRDF(fmt.Sprintf("%v", key), value, id)...)
@@ -283,7 +281,7 @@ func YAMLtoRDF(key string, rawData interface{}, rootURI string) []Triple {
 			}
 		}
 	default:
-		fmt.Printf("ERROR: %s: %s\n", key, data)
+		slog.Error("Unparseable key-value pair", key, data)
 	}
 
 	return triples

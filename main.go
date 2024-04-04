@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"os"
 	"os/exec"
@@ -70,7 +71,6 @@ func loadRepresentations(dbManager *database.DBManager) error {
 			}
 		*/
 
-		fmt.Printf("!! %s %s\n", e, schema)
 		if err := loadRep(dbManager, e, schema); err != nil {
 			return err
 		}
@@ -116,7 +116,7 @@ func reasoner(dbManager *database.DBManager) error {
 */
 
 func policies(dbManager *database.DBManager, regulation string) (map[string]interface{}, error) {
-	fmt.Println("===\nPolicy Compliance\n===")
+	slog.Info("===Policy Compliance===")
 	polFile, err := fs.GetFile(fmt.Sprintf("regulations/%s/policies.yml", regulation))
 	if err != nil {
 		return nil, err
@@ -168,9 +168,9 @@ func policies(dbManager *database.DBManager, regulation string) (map[string]inte
 		// TODO: operate on the results
 		b, err := json.MarshalIndent(res, "", "  ")
 		if err != nil {
-			fmt.Println("error parsing query results:", err)
+			slog.Error("error parsing query results:", "error", err)
 		}
-		fmt.Printf("Violations of '%s': %s\n", pol.Title, b)
+		slog.Info("Violations:", "policy", pol.Title, "violations", b)
 		report[pol.Title] = map[string]interface{}{
 			"maximum violations": pol.MaxViolations,
 			"is consistency":     pol.IsConsistency,
@@ -183,7 +183,7 @@ func policies(dbManager *database.DBManager, regulation string) (map[string]inte
 }
 
 func attackTrees(dbManager *database.DBManager) (map[string]interface{}, error) {
-	fmt.Println("===\nAttack Trees\n===")
+	slog.Info("===Attack Trees===")
 	atkDir, err := fs.GetFile("attack_trees/descriptions/")
 	if err != nil {
 		return nil, err
@@ -332,23 +332,22 @@ func analyse(cmd *cobra.Command, args []string) error {
 
 	projDir, err := os.Getwd()
 	if err != nil {
-		fmt.Println(err)
+		return err
 	}
 	projPath := strings.Split(projDir, "/")
 	projDir = projPath[len(projPath)-1]
-
-	fmt.Printf("%s %s:%s\n", projDir, strings.Trim(branchOut.String(), "\n"), time)
 
 	report["branch"] = strings.Trim(branchOut.String(), "\n")
 	// report["time"] = commitOut.String()
 	report["time"] = time
 	report["project"] = projDir
 
-	jsonReport, err := json.MarshalIndent(report, "", "  ")
+	// jsonReport, err := json.MarshalIndent(report, "", "  ")
+	jsonReport, err := json.Marshal(report)
 	if err != nil {
-		fmt.Println("error parsing report:", err)
+		slog.Error("error parsing report:", "error", err)
 	}
-	fmt.Printf("==============\nReport: %s\n", jsonReport)
+	slog.Info("Report", "report", jsonReport)
 
 	if err := os.WriteFile("report.json", []byte(jsonReport), 0666); err != nil {
 		return err
@@ -357,9 +356,9 @@ func analyse(cmd *cobra.Command, args []string) error {
 	// 7. Check whether the violations are acceptable
 	violations := validateReportInternal(&report)
 	if len(violations) != 0 {
-		fmt.Fprintf(os.Stderr, "There are policies with too many violations\n")
+		slog.Error("There are policies with too many violations\n")
 		for _, v := range violations {
-			fmt.Fprintf(os.Stderr, "\t- %s\n", v)
+			slog.Error(fmt.Sprintf("\t- %s\n", v))
 		}
 		// os.Exit(1)
 	}
@@ -370,21 +369,16 @@ func analyse(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	fmt.Println("HERE")
 	return nil
 }
 
 func main() {
 	appName := "devprivops"
 
-	//	dfdSchema := fmt.Sprintf("./.%s/schemas/dfd-schema.json", appName)
-	//	attackTreeSchema := fmt.Sprintf("./.%s/schemas/atk-tree-schema.json", appName)
-	//	dfdSchema, err := fs.GetFile("schemas/dfd-schema.json")
-	//	if err != nil {
-	//		return fmt.Errorf("Could not find the DFD schema, is the program correctly installed? %s", err)
-	//	}
-	//	attackTreeSchema, err := fs.GetFile("schemas/atk-tree-schema.json")
-
+	/*
+		logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
+		slog.SetDefault(logger)
+	*/
 	var rootCmd = &cobra.Command{
 		Use:   appName,
 		Short: fmt.Sprintf("A CLI application to analyze %s", appName),
@@ -404,7 +398,7 @@ func main() {
 		Use:   "dev",
 		Short: "Development tests only",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			fmt.Println("Running development command")
+			slog.Info("Running development command")
 			return nil
 		},
 	}
@@ -416,7 +410,7 @@ func main() {
 	rootCmd.AddCommand(devCmd)
 
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
+		slog.Error(err.Error())
 		os.Exit(1)
 	}
 }
