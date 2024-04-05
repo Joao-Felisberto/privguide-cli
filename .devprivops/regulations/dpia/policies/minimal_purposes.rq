@@ -1,0 +1,11 @@
+PREFIX ex: <https://example.com/>
+
+# NOTE: requires a DFD
+
+SELECT ?purpose
+WHERE {
+    ex:ROOT ex:processes/ex:purpose ?purpose .
+    FILTER NOT EXISTS {
+        ex:ROOT ex:purposes ?purpose .
+    } 
+}

@@ -39,16 +39,16 @@
                         "type": "string"
                     }
                 },
-                "intents": {
+                "purposes": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/Intent"
+                        "$ref": "#/definitions/Purpose"
                     }
                 }
             },
             "required": [
                 "DPO",
-                "intents",
+                "purposes",
                 "last update",
                 "personal data",
                 "personal data processing whitelist",
@@ -74,7 +74,7 @@
             ],
             "title": "Dpo"
         },
-        "Intent": {
+        "Purpose": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
@@ -129,7 +129,7 @@
                 "specific",
                 "systematic monitoring"
             ],
-            "title": "Intent"
+            "title": "purpose"
         },
         "PersonalDatum": {
             "type": "object",

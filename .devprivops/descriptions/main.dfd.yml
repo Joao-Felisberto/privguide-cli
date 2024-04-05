@@ -22,7 +22,7 @@ processes:
       - :message
     location:
       - Portugal
-    purpose: message routing
+    purpose: :message routing
     contractual obligation: false
     legally mandated: false
     legal implications: false

@@ -1,0 +1,11 @@
+PREFIX ex: <https://example.com/>
+
+# NOTE: requires DFD
+
+SELECT ?data 
+WHERE {
+    ex:ROOT ex:personal_data ?data .
+    FILTER NOT EXISTS {
+        ex:ROOT ex:data_types ?data .
+    }
+}

@@ -1,0 +1,6 @@
+PREFIX ex: <https://example.com/>
+
+SELECT *
+WHERE {
+    ex:NULL ?p ?o .
+}

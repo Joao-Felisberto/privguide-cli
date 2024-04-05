@@ -1,0 +1,14 @@
+PREFIX ex: <https://example.com/>
+
+# NOTE: requires DFD definition
+
+SELECT ?data ?dest
+WHERE {
+    ex:ROOT ex:personal_data ?data .
+    ?data ex:destinataries ?dest .
+    FILTER NOT EXISTS {
+        ex:ROOT ex:external_entities ?ent .
+        ?ent ex:categories ?dest .
+    }
+}
+

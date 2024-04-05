@@ -1,0 +1,10 @@
+PREFIX ex: <https://example.com/>
+
+SELECT ?data ?purpose
+WHERE {
+    ex:ROOT ex:personal_data ?data .
+    ?data ex:purposes ?purpose .
+    FILTER NOT EXISTS {
+        ex:ROOT ex:purposes ?purpose .
+    }
+}

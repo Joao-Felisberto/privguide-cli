@@ -1,0 +1,53 @@
+# Consistency
+
+- file: regulations/dpia/consistency/valid_update_date.rq
+  title: Last update date must be a valid date
+  description: Ensure the last update date is a valid date
+  is consistency: true
+  maximum violations: 0
+  mapping message: ""
+- file: regulations/dpia/consistency/destinataries_exist.rq
+  title: Personal data requires valid destinataries
+  description: Ensure all the personal data has a valid destinatary
+  is consistency: true
+  maximum violations: 0
+  mapping message: ""
+- file: regulations/dpia/consistency/valid_retention_period.rq
+  title: Retention period has to be a valid duration
+  description: Ensure the retention period represents a valid time duration 
+  is consistency: true
+  maximum violations: 0
+  mapping message: ""
+- file: regulations/dpia/consistency/no_undefined_purposes.rq
+  title: All purposes have to be defined
+  description: Ensure the purposes have definitions
+  is consistency: true
+  maximum violations: 0
+  mapping message: ""
+- file: regulations/dpia/consistency/no_undefined_personal_data.rq
+  title: All personal data must be defined
+  description: Ensure all personal data has a definition in a DFD
+  is consistency: true
+  maximum violations: 0
+  mapping message: ""
+- file: regulations/dpia/consistency/no_undefined_processing_purpose.rq
+  title: All purposes of processing must be defined
+  description: Ensure all processing purposes have definitions
+  is consistency: true
+  maximum violations: 0
+  mapping message: ""
+
+# Policy
+
+# - file: regulations/dpia/policies/required_dpo.rq
+#   title: Project requires DPO
+#   description: Ensure the project has an associated DPO if required as mandated by the GDPR
+#   is consistency: false
+#   maximum violations: 0
+#   mapping message: ""
+- file: regulations/dpia/policies/minimal_purposes.rq
+  title: Data can only be used for the declared purposes
+  description: Ensure no data type is processed for more purposes than declared in the DPIA
+  is consistency: false
+  maximum violations: 0
+  mapping message: ""

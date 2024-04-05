@@ -1,0 +1,11 @@
+PREFIX ex: <https://example.com/>
+
+SELECT ?date
+WHERE {
+    ex:ROOT ex:last_update ?date
+    FILTER NOT EXISTS {
+        FILTER(
+            REGEX(?date, "^[0-9]{2}/[0-9]{2}/[0-9]{4}")
+        )
+    }
+}
