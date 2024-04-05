@@ -1,8 +1,8 @@
 {
     "$schema": "http://json-schema.org/draft-06/schema#",
-    "$ref": "#/definitions/Welcome2",
+    "$ref": "#/definitions/Welcome9",
     "definitions": {
-        "Welcome2": {
+        "Welcome9": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
@@ -33,7 +33,7 @@
                         "type": "string"
                     }
                 },
-                "personal data that requires DPIA": {
+                "personal data processing that requires DPIA": {
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -48,14 +48,14 @@
             },
             "required": [
                 "DPO",
-                "purposes",
                 "last update",
                 "personal data",
+                "personal data processing that requires DPIA",
                 "personal data processing whitelist",
-                "personal data that requires DPIA",
+                "purposes",
                 "responsible"
             ],
-            "title": "Welcome2"
+            "title": "Welcome9"
         },
         "Dpo": {
             "type": "object",
@@ -73,63 +73,6 @@
                 "name"
             ],
             "title": "Dpo"
-        },
-        "Purpose": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "id": {
-                    "type": "string"
-                },
-                "scores users": {
-                    "type": "boolean"
-                },
-                "automated decisions": {
-                    "type": "boolean"
-                },
-                "systematic monitoring": {
-                    "type": "boolean"
-                },
-                "large scale processing": {
-                    "type": "boolean"
-                },
-                "specific": {
-                    "type": "boolean"
-                },
-                "explicit": {
-                    "type": "boolean"
-                },
-                "legitimate": {
-                    "type": "boolean"
-                },
-                "lawful": {
-                    "type": "boolean"
-                },
-                "adequate": {
-                    "type": "boolean"
-                },
-                "relevant": {
-                    "type": "boolean"
-                },
-                "limited": {
-                    "type": "boolean"
-                }
-            },
-            "required": [
-                "adequate",
-                "automated decisions",
-                "explicit",
-                "id",
-                "large scale processing",
-                "lawful",
-                "legitimate",
-                "limited",
-                "relevant",
-                "scores users",
-                "specific",
-                "systematic monitoring"
-            ],
-            "title": "purpose"
         },
         "PersonalDatum": {
             "type": "object",
@@ -201,6 +144,63 @@
                 "likelyhood"
             ],
             "title": "Risk"
+        },
+        "Purpose": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "scores users": {
+                    "type": "boolean"
+                },
+                "automated decisions": {
+                    "type": "boolean"
+                },
+                "systematic monitoring": {
+                    "type": "boolean"
+                },
+                "large scale processing": {
+                    "type": "boolean"
+                },
+                "specific": {
+                    "type": "boolean"
+                },
+                "explicit": {
+                    "type": "boolean"
+                },
+                "legitimate": {
+                    "type": "boolean"
+                },
+                "lawful": {
+                    "type": "boolean"
+                },
+                "adequate": {
+                    "type": "boolean"
+                },
+                "relevant": {
+                    "type": "boolean"
+                },
+                "limited": {
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "adequate",
+                "automated decisions",
+                "explicit",
+                "id",
+                "large scale processing",
+                "lawful",
+                "legitimate",
+                "limited",
+                "relevant",
+                "scores users",
+                "specific",
+                "systematic monitoring"
+            ],
+            "title": "Purpose"
         }
     }
 }

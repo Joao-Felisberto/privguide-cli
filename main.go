@@ -237,6 +237,56 @@ func validateReportInternal(report *map[string]interface{}) []string {
 	return violated
 }
 
+func verifyRequirements(dbManager *database.DBManager) (*map[string]interface{}, error) {
+	requirementsFile, err := fs.GetFile("requirements/requirements.yml")
+	if err != nil {
+		return nil, err
+	}
+	requirementsSchema, err := fs.GetFile("schemas/requirement-schema.json")
+	if err != nil {
+		return nil, err
+	}
+	requirementsRaw, err := schema.ReadYAML(requirementsFile, requirementsSchema)
+	if err != nil {
+		return nil, err
+	}
+	userStories, err := database.USFromYAML(requirementsRaw.([]interface{}))
+	if err != nil {
+		return nil, err
+	}
+
+	report := map[string]interface{}{}
+	for _, us := range userStories {
+		report[us.UseCase] = map[string]interface{}{
+			"is misuse case": us.IsMisuseCase,
+			"requirements":   []map[string]interface{}{},
+		}
+		for _, r := range us.Requirements {
+			f, err := fs.GetFile(r.Query)
+			if err != nil {
+				return nil, err
+			}
+			res, err := dbManager.ExecuteQueryFile(f)
+			if err != nil {
+				return nil, err
+			}
+			if res == nil {
+				res = []map[string]interface{}{}
+			}
+			usReport := report[us.UseCase].(map[string]interface{})
+			usReport["requirements"] = append(usReport["requirements"].([]map[string]interface{}),
+				map[string]interface{}{
+					"title":       r.Title,
+					"description": r.Description,
+					"results":     res,
+				},
+			)
+		}
+	}
+
+	return &report, nil
+}
+
 func sendReport(url string, report *map[string]interface{}) error {
 	// Define the URL
 	// url := "http://localhost:8080/report"
@@ -343,15 +393,6 @@ func analyse(cmd *cobra.Command, args []string) error {
 	report["project"] = projDir
 
 	// jsonReport, err := json.MarshalIndent(report, "", "  ")
-	jsonReport, err := json.Marshal(report)
-	if err != nil {
-		slog.Error("error parsing report:", "error", err)
-	}
-	slog.Info("Report", "report", jsonReport)
-
-	if err := os.WriteFile("report.json", []byte(jsonReport), 0666); err != nil {
-		return err
-	}
 
 	// 7. Check whether the violations are acceptable
 	violations := validateReportInternal(&report)
@@ -363,8 +404,26 @@ func analyse(cmd *cobra.Command, args []string) error {
 		// os.Exit(1)
 	}
 
-	// 8. Send the report to the site
+	// 8. Validate whether requirements are met
+	usReport, err := verifyRequirements(&dbManager)
+	if err != nil {
+		slog.Error("Error validating requirements", "error", err)
+	}
+	report["user stories"] = usReport
+
+	// 9. Send the report to the site
 	// TODO: accept site through the command line
+	jsonReport, err := json.Marshal(report)
+	if err != nil {
+		slog.Error("error parsing report:", "error", err)
+	}
+	slog.Info("Report")
+	clean, _ := json.MarshalIndent(report, "", "  ")
+	fmt.Println(string(clean))
+
+	if err := os.WriteFile("report.json", []byte(jsonReport), 0666); err != nil {
+		return err
+	}
 	if err := sendReport("http://localhost:8080/report", &report); err != nil {
 		return err
 	}
