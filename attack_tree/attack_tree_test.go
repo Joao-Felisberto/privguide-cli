@@ -25,7 +25,7 @@ children:
 	}
 	defer os.Remove("tmp.yml")
 
-	atkTree, err := attacktree.NewAttackTreeFromYaml("tmp.yml", "../schemas/atk-tree-schema.json")
+	atkTree, err := attacktree.NewAttackTreeFromYaml("tmp.yml", "../.devprivops/schemas/atk-tree-schema.json")
 	if err != nil {
 		t.Fatal(err)
 	}
