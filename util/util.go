@@ -21,3 +21,13 @@ func Filter[T any](arr []T, filterFn func(T) bool) []T {
 
 	return new
 }
+
+func MapCast[K comparable, V any](m map[interface{}]interface{}) map[K]V {
+	newMap := map[K]V{}
+
+	for k, v := range m {
+		newMap[k.(K)] = v.(V)
+	}
+
+	return newMap
+}

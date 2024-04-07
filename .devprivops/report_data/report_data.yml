@@ -1,0 +1,5 @@
+- url: hello.test
+  query: report_data/query.rq
+  heading: Some heading text that won't be edited
+  description: Some more lenghty description of the data obtained, not to be ormated as a heading.
+  data row line: The line in which the query results will be included

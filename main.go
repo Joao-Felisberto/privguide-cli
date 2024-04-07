@@ -90,9 +90,8 @@ func loadRepresentations(dbManager *database.DBManager) error {
 	return nil
 }
 
-/*
 func reasoner(dbManager *database.DBManager) error {
-	fmt.Println("===\nReasoner Rules\n===")
+	slog.Info("===Reasoner Rules===")
 	reasonDir, err := fs.GetFile("reasoner")
 	if err != nil {
 		return err
@@ -113,7 +112,6 @@ func reasoner(dbManager *database.DBManager) error {
 
 	return nil
 }
-*/
 
 func policies(dbManager *database.DBManager, regulation string) (map[string]interface{}, error) {
 	slog.Info("===Policy Compliance===")
@@ -287,6 +285,41 @@ func verifyRequirements(dbManager *database.DBManager) (*map[string]interface{},
 	return &report, nil
 }
 
+func getExtraData(dbManager *database.DBManager) (*[]map[string]interface{}, error) {
+	extraDataFile, err := fs.GetFile("report_data/report_data.yml")
+	if err != nil {
+		return nil, err
+	}
+	extraDataSchema, err := fs.GetFile("schemas/report_data-schema.json")
+	if err != nil {
+		return nil, err
+	}
+	extraDataRaw, err := schema.ReadYAML(extraDataFile, extraDataSchema)
+	if err != nil {
+		return nil, err
+	}
+
+	extraData := extraDataRaw.([]interface{})
+	report := util.Map(extraData, func(dRaw interface{}) map[string]interface{} {
+		d := util.MapCast[string, interface{}](dRaw.(map[interface{}]interface{}))
+
+		f, err := fs.GetFile(d["query"].(string))
+		if err != nil {
+			panic(fmt.Sprintf("Error getting query file %s", d["query"].(string)))
+		}
+
+		d["results"], err = dbManager.ExecuteQueryFile(f)
+		if err != nil {
+			panic("Error processing query")
+		}
+
+		delete(d, "query")
+		return d
+	})
+
+	return &report, nil
+}
+
 func sendReport(url string, report *map[string]interface{}) error {
 	// Define the URL
 	// url := "http://localhost:8080/report"
@@ -334,11 +367,9 @@ func analyse(cmd *cobra.Command, args []string) error {
 	}
 
 	// 2. Run all the reasoner rules
-	/*
-		if err = reasoner(&dbManager); err != nil {
-			return err
-		}
-	*/
+	if err = reasoner(&dbManager); err != nil {
+		return err
+	}
 
 	// 3. Verify policy compliance
 	report["policies"] = map[string]interface{}{}
@@ -410,6 +441,13 @@ func analyse(cmd *cobra.Command, args []string) error {
 		slog.Error("Error validating requirements", "error", err)
 	}
 	report["user stories"] = usReport
+
+	// 9. Get extra data
+	extraData, err := getExtraData(&dbManager)
+	if err != nil {
+		slog.Error("Error fetching extra report data", "error", err)
+	}
+	report["extra data"] = extraData
 
 	// 9. Send the report to the site
 	// TODO: accept site through the command line
