@@ -7,8 +7,12 @@ WHERE {
     ex:ROOT ex:personal_data ?data .
     ?data ex:destinataries ?dest .
     FILTER NOT EXISTS {
-        ex:ROOT ex:external_entities ?ent .
-        ?ent ex:categories ?dest .
+        {
+            ex:ROOT ex:external_entities ?ent .
+            ?ent ex:categories ?dest .
+        } UNION {
+            ex:ROOT ex:external_entities ?dest .
+        }
     }
 }
 

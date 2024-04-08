@@ -10,6 +10,8 @@ WHERE {
         ?_ ex:type ?dtId
     } UNION {
         ?_ ex:data ?dtId
+    } UNION {
+        ?_ ex:aggregates ?dtId
     }
     FILTER NOT EXISTS {
         ex:ROOT ex:data_types ?dtId

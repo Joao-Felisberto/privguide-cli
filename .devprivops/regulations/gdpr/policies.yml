@@ -59,7 +59,21 @@
 #   mapping message: ""
 - file: regulations/gdpr/policies/insufficient_rights_over_data.rq
   title: Insuficient rights over data
-  description: The user cannot read, update and delete all data collected about them 
+  description: The user cannot read, update and delete all data collected about them
   is consistency: false
   maximum violations: 0
   mapping message: ""
+- file: regulations/gdpr/policies/data_minimization.rq
+  title: Only the strictly required data shall enter a process
+  description: The data flows to a process shall not provide more data than it needs
+  is consistency: false
+  maximum violations: 0
+  mapping message: ""
+
+# TODO:
+#   - Article 6 Lawfulness of processing
+#   - Article 7 Conditions for consent
+#   - Propagate erasure requests
+#   - NIST recommended cyphers
+#   - Section 3: DPIA
+#   - Chapter 5: are these lists provided? Do companies have to evaluate this or do they know?

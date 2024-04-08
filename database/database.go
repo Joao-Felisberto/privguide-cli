@@ -135,25 +135,25 @@ func (db *DBManager) ExecuteReasonerRule(file string) error {
 func (db *DBManager) ExecuteQueryFile(file string) ([]map[string]interface{}, error) {
 	sparqlQueryBytes, err := os.ReadFile(file)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("could not read file '%s': %s", file, err)
 	}
 
 	sparqlQuery := string(sparqlQueryBytes)
 
 	response, err := db.sendSparqlQuery(sparqlQuery, QUERY)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to execute query '%s': %s", file, err)
 	}
 	defer response.Body.Close()
 
 	resTxt, err := io.ReadAll(response.Body)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to read result of '%s': %s", file, err)
 	}
 
 	var resJSON map[string]interface{}
 	if err := json.Unmarshal(resTxt, &resJSON); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to unmarshal result of '%s', was there an error in the query? %s. Result was %s", file, err, resTxt)
 	}
 
 	results, ok := resJSON["results"].(map[string]interface{})

@@ -30,6 +30,12 @@
   is consistency: true
   maximum violations: 0
   mapping message: ""
+- file: regulations/dpia/consistency/no_undefined_external_entities.rq
+  title: All external entities must be defined
+  description: Ensure all external entities have a definition in a DFD
+  is consistency: true
+  maximum violations: 0
+  mapping message: ""
 - file: regulations/dpia/consistency/no_undefined_processing_purpose.rq
   title: All purposes of processing must be defined
   description: Ensure all processing purposes have definitions

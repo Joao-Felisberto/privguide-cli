@@ -157,6 +157,12 @@
                 "id": {
                     "type": "string"
                 },
+                "aggregates": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "validity": {
                     "type": "string"
                 },
@@ -165,6 +171,7 @@
                 }
             },
             "required": [
+                "aggregates",
                 "category",
                 "id",
                 "validity"
@@ -239,9 +246,6 @@
                         "type": "string"
                     }
                 },
-                "caches": {
-                    "type": "string"
-                },
                 "location": {
                     "type": "array",
                     "items": {
@@ -260,11 +264,12 @@
                 "legal implications": {
                     "type": "boolean"
                 },
+                "automated decision making": {
+                    "type": "boolean"
+                },
                 "vital interest": {
                     "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
+                    "items": {}
                 },
                 "public interest": {
                     "type": "boolean"
@@ -286,6 +291,7 @@
                 }
             },
             "required": [
+                "automated decision making",
                 "certification",
                 "consumes",
                 "contractual obligation",

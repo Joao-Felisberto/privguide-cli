@@ -1,5 +1,6 @@
 data types:
   - id: message
+    aggregates: []
     validity: eternal
     category: message
 external entities:
@@ -28,6 +29,7 @@ processes:
     legal implications: false
     vital interest: []
     public interest: false
+    automated decision making: false
     is official authority: false
     legitimate interest:
       - :User
@@ -39,8 +41,8 @@ data stores:
       - type: :message
         storage period: eternal
         create: :C store message
-        read:   :R store message e
-        update: :U store message e
+        read:   :R store message
+        update: :U store message
         delete: :D store message
     location:
       - Portugal

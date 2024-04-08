@@ -1,0 +1,16 @@
+PREFIX ex: <https://example.com/>
+
+SELECT ?df ?dest ?data
+WHERE {
+    ex:ROOT ex:data_flows ?df .
+    ?df ex:to ?dest .
+    ?df ex:data ?data
+
+    FILTER NOT EXISTS {
+        {
+            ?dest ex:consumes ?data .
+        } UNION {
+            ?dest ex:data_stored/ex:type ?data .
+        }
+    }
+}

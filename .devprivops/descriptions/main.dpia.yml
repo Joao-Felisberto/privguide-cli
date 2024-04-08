@@ -1,4 +1,4 @@
-last update: 2/3/2004
+last update: 02/03/2004
 responsible:
   - :Someone
   - :Else
@@ -8,27 +8,24 @@ DPO:
   - name: :Man
     contact: man@email.com
 personal data:
-  - id: :DataType1
+  - id: message
     kind: personal # special | legal data
     destinataries: 
-      - :human # tag for the kind of people that wil recieve it
+      - :User # tag for the kind of people that wil recieve it
     retention period: 2d # or policy
     abides by code of conduct: false # Art 40 GDPR
     purposes:
-      - :Intent1
+      - :message routing
     transfers to third parties: null # contract, adequability decision, binding corporate rules, art 49
     risks:
-      - id: :Risk 1
+      - id: Risk 1
         impact: 0
         likelyhood: 1
 personal data processing whitelist:
-  - :Intent 1
-  - :Intent 2
-personal data processing that requires DPIA:
-  - :Intent 3
-  - :Intent 4
+  - :message routing
+personal data processing that requires DPIA: []
 purposes:
-  - id: :Intent1
+  - id: message routing
     scores users: true
     automated decisions: true
     systematic monitoring: true

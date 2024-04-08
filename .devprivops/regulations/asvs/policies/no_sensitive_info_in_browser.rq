@@ -2,8 +2,11 @@ PREFIX ex: <https://example.com/>
 
 SELECT ?dsId ?dtId
 WHERE {
-    ex:ROOT ex:data_stores ?dsId
-    ?dsId ex:data_stored/ex:type ?dtId
-
-    ?dtId ex:categories ex:sensitive
+    ex:ROOT ex:data_stores ?dsId .
+    ?dsId ex:data_stored ?dt .
+	
+	?dt ex:type ?dtId .
+	?dt ex:location "browser" .
+    
+	?dtId ex:categories ex:sensitive .
 }
