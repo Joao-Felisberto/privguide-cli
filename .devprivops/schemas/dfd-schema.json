@@ -73,15 +73,29 @@
                 },
                 "amount of data per period": {
                     "type": "integer"
+                },
+                "certification": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "safeguards": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             },
             "required": [
                 "amount of data per period",
+                "certification",
                 "data",
                 "encryption",
                 "from",
                 "id",
                 "periodicity",
+                "safeguards",
                 "to"
             ],
             "title": "DataFlow"
@@ -106,14 +120,24 @@
                     }
                 },
                 "certification": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "safeguards": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             },
             "required": [
                 "certification",
                 "data stored",
                 "id",
-                "location"
+                "location",
+                "safeguards"
             ],
             "title": "DataStore"
         },
@@ -159,9 +183,7 @@
                 },
                 "aggregates": {
                     "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
+                    "items": {}
                 },
                 "validity": {
                     "type": "string"
@@ -252,8 +274,11 @@
                         "type": "string"
                     }
                 },
-                "purpose": {
-                    "type": "string"
+                "purposes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "contractual obligation": {
                     "type": "boolean"
@@ -264,14 +289,14 @@
                 "legal implications": {
                     "type": "boolean"
                 },
-                "automated decision making": {
-                    "type": "boolean"
-                },
                 "vital interest": {
                     "type": "array",
                     "items": {}
                 },
                 "public interest": {
+                    "type": "boolean"
+                },
+                "automated decision making": {
                     "type": "boolean"
                 },
                 "is official authority": {
@@ -287,7 +312,16 @@
                     "type": "boolean"
                 },
                 "certification": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "safeguards": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             },
             "required": [
@@ -304,7 +338,8 @@
                 "produces",
                 "professional secrecy",
                 "public interest",
-                "purpose",
+                "purposes",
+                "safeguards",
                 "vital interest"
             ],
             "title": "Process"

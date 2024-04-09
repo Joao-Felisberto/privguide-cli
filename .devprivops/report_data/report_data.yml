@@ -1,5 +1,5 @@
-- url: hello.test
-  query: report_data/query.rq
-  heading: Some heading text that won't be edited
-  description: Some more lenghty description of the data obtained, not to be ormated as a heading.
-  data row line: The line in which the query results will be included
+- url: regulations.dpia
+  query: report_data/dpia/consent.rq
+  heading: List of things every user has to consent to
+  description: For each interaction with the system, lists every data processing, storage and sharing to which a user has to consent to
+  data row line: ""

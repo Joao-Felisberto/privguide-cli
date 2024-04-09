@@ -9,7 +9,9 @@ DPO:
     contact: man@email.com
 personal data:
   - id: message
-    kind: personal # special | legal data
+    kind: :personal # :special | :legal_data
+    required by law: [""]
+    necessary to enter contract: [""]
     destinataries: 
       - :User # tag for the kind of people that wil recieve it
     retention period: 2d # or policy
@@ -26,8 +28,12 @@ personal data processing whitelist:
 personal data processing that requires DPIA: []
 purposes:
   - id: message routing
+    requires new technologies: false
+    risk to rights and freedoms of:
+      - :User
     scores users: true
     automated decisions: true
+    legal impact for the user: true
     systematic monitoring: true
     large scale processing: false
     specific: false
@@ -37,3 +43,7 @@ purposes:
     adequate: false
     relevant: false
     limited: false
+    supervirory authority veredict:
+      contact:
+        - :Supervisor
+      allowed: true

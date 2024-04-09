@@ -1,8 +1,8 @@
 {
     "$schema": "http://json-schema.org/draft-06/schema#",
-    "$ref": "#/definitions/Welcome9",
+    "$ref": "#/definitions/DPIA",
     "definitions": {
-        "Welcome9": {
+        "DPIA": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
@@ -35,9 +35,7 @@
                 },
                 "personal data processing that requires DPIA": {
                     "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
+                    "items": {}
                 },
                 "purposes": {
                     "type": "array",
@@ -55,7 +53,7 @@
                 "purposes",
                 "responsible"
             ],
-            "title": "Welcome9"
+            "title": "DPIA"
         },
         "Dpo": {
             "type": "object",
@@ -83,6 +81,18 @@
                 },
                 "kind": {
                     "type": "string"
+                },
+                "required by law": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "necessary to enter contract": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "destinataries": {
                     "type": "array",
@@ -117,7 +127,9 @@
                 "destinataries",
                 "id",
                 "kind",
+                "necessary to enter contract",
                 "purposes",
+                "required by law",
                 "retention period",
                 "risks",
                 "transfers to third parties"
@@ -152,10 +164,22 @@
                 "id": {
                     "type": "string"
                 },
+                "requires new technologies": {
+                    "type": "boolean"
+                },
+                "risk to rights and freedoms of": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "scores users": {
                     "type": "boolean"
                 },
                 "automated decisions": {
+                    "type": "boolean"
+                },
+                "legal impact for the user": {
                     "type": "boolean"
                 },
                 "systematic monitoring": {
@@ -184,6 +208,9 @@
                 },
                 "limited": {
                     "type": "boolean"
+                },
+                "supervirory authority veredict": {
+                    "$ref": "#/definitions/SuperviroryAuthorityVeredict"
                 }
             },
             "required": [
@@ -193,14 +220,38 @@
                 "id",
                 "large scale processing",
                 "lawful",
+                "legal impact for the user",
                 "legitimate",
                 "limited",
                 "relevant",
+                "requires new technologies",
+                "risk to rights and freedoms of",
                 "scores users",
                 "specific",
+                "supervirory authority veredict",
                 "systematic monitoring"
             ],
             "title": "Purpose"
+        },
+        "SuperviroryAuthorityVeredict": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "contact": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "allowed": {
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "allowed",
+                "contact"
+            ],
+            "title": "SuperviroryAuthorityVeredict"
         }
     }
 }

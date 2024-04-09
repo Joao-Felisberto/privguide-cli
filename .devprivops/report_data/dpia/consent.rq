@@ -1,0 +1,45 @@
+PREFIX ex: <https://example.com/>
+
+# Sect 2 Art 13
+# X id and contact of controller/its rep
+# X DPO contact
+# o purposes and legal basis for processing
+# o legitimate interest and of whom (when based on Art 6 1f)
+# o (categories of) recipients
+# + destinations (3rd parties), whether there is adequacy decision by the Commission, safeguards on the transfer
+# o storage period/criteria
+# X right to rectify, erase and port data
+# X right to withdraw consent
+# X right to complain with a supervising authority
+# !! whether the data is a legal requirement or necessary to enter a contract
+# o existence of automated decision making (explain the logic of the decision making and value/consequences for the data subject)
+
+SELECT *
+WHERE {
+  ex:ROOT ex:external_entities ?from .
+  ?from ex:categories ex:human .
+  ?from (^ex:from/ex:to)+ ?to .
+  
+  {
+    # data store
+    ?to ex:data_stored/ex:type ?dt .
+    ?to ex:safeguards ?safeguards .
+    ?to ex:data_stored/ex:storage_period ?storage_period .
+  } UNION {
+  	# process
+    ?to ex:consumes ?dt .
+    ?to ex:purposes ?purposes .
+    ?to ex:legitimate_interest ?legitimate_interest_of .
+    ?to ex:safeguards ?safeguards .
+    ?to ex:automated_decision_making ?automated_decision_making .
+  } UNION {
+    # external entity
+    ?to ex:categories ?category .
+  } UNION {
+    # data flow
+    ex:ROOT ex:data_flows ?to .
+    ?to ex:safeguards ?safeguards .
+  }
+  
+  ?to ex:location ?location .
+}

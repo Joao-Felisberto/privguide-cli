@@ -23,7 +23,8 @@ processes:
       - :message
     location:
       - Portugal
-    purpose: :message routing
+    purposes: 
+      - :message routing
     contractual obligation: false
     legally mandated: false
     legal implications: false
@@ -34,7 +35,8 @@ processes:
     legitimate interest:
       - :User
     professional secrecy: false
-    certification: ""
+    certification: [""]
+    safeguards: [""]
 data stores:
   - id: message db
     data stored:
@@ -46,7 +48,8 @@ data stores:
         delete: :D store message
     location:
       - Portugal
-    certification: ""
+    certification: [""]
+    safeguards: [""]
 data flows:
   - id: C message
     from: :User
@@ -56,6 +59,8 @@ data flows:
     encryption: signal
     periodicity: 1m
     amount of data per period: 1
+    certification: [""]
+    safeguards: [""]
   - id: C store message
     from: :send message
     to: :message db
@@ -64,6 +69,8 @@ data flows:
     encryption: signal
     periodicity: 1m
     amount of data per period: 1
+    certification: [""]
+    safeguards: [""]
   - id: R message
     from: :User
     to: :send message
@@ -72,6 +79,8 @@ data flows:
     encryption: signal
     periodicity: 1m
     amount of data per period: 1
+    certification: [""]
+    safeguards: [""]
   - id: R store message
     from: :send message
     to: :message db
@@ -80,6 +89,8 @@ data flows:
     encryption: signal
     periodicity: 1m
     amount of data per period: 1
+    certification: [""]
+    safeguards: [""]
   - id: U message
     from: :User
     to: :send message
@@ -88,6 +99,8 @@ data flows:
     encryption: signal
     periodicity: 1m
     amount of data per period: 1
+    certification: [""]
+    safeguards: [""]
   - id: U store message
     from: :send message
     to: :message db
@@ -96,6 +109,8 @@ data flows:
     encryption: signal
     periodicity: 1m
     amount of data per period: 1
+    certification: [""]
+    safeguards: [""]
   - id: D message
     from: :User
     to: :send message
@@ -104,6 +119,8 @@ data flows:
     encryption: signal
     periodicity: 1m
     amount of data per period: 1
+    certification: [""]
+    safeguards: [""]
   - id: D store message
     from: :send message
     to: :message db
@@ -112,6 +129,8 @@ data flows:
     encryption: signal
     periodicity: 1m
     amount of data per period: 1
+    certification: [""]
+    safeguards: [""]
   - id: Deliver message
     from: :send message
     to: :User
@@ -120,3 +139,5 @@ data flows:
     encryption: signal
     periodicity: 1m
     amount of data per period: 1
+    certification: [""]
+    safeguards: [""]

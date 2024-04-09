@@ -449,7 +449,7 @@ func analyse(cmd *cobra.Command, args []string) error {
 	}
 	report["extra data"] = extraData
 
-	// 9. Send the report to the site
+	// 10. Send the report to the site
 	// TODO: accept site through the command line
 	jsonReport, err := json.Marshal(report)
 	if err != nil {
