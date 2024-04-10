@@ -20,6 +20,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const REPORT_ENDPOINT_FLAG_NAME = "report-endpoint"
+
 func loadRep(dbManager *database.DBManager, file string, schemaFile string) error {
 	dfdFname, err := fs.GetFile(file)
 	if err != nil {
@@ -349,6 +351,7 @@ func analyse(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	dataset := args[4]
+	reportEndpoint := cmd.Flag(REPORT_ENDPOINT_FLAG_NAME).Value.String()
 
 	dbManager := database.NewDBManager(
 		username,
@@ -462,8 +465,10 @@ func analyse(cmd *cobra.Command, args []string) error {
 	if err := os.WriteFile("report.json", []byte(jsonReport), 0666); err != nil {
 		return err
 	}
-	if err := sendReport("http://localhost:8080/report", &report); err != nil {
-		return err
+	if reportEndpoint != "" {
+		if err := sendReport(reportEndpoint, &report); err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -471,11 +476,8 @@ func analyse(cmd *cobra.Command, args []string) error {
 
 func main() {
 	appName := "devprivops"
+	reportEndpoint := ""
 
-	/*
-		logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
-		slog.SetDefault(logger)
-	*/
 	var rootCmd = &cobra.Command{
 		Use:   appName,
 		Short: fmt.Sprintf("A CLI application to analyze %s", appName),
@@ -500,8 +502,7 @@ func main() {
 		},
 	}
 
-	//	analyseCmd.Flags().StringVar(&dfdSchema, "dfd-schema", dfdSchema, "Custom DFD schema file")
-	//	analyseCmd.Flags().StringVar(&attackTreeSchema, "attack-tree-schema", attackTreeSchema, "Custom attack tree schema file")
+	analyseCmd.Flags().StringVar(&reportEndpoint, REPORT_ENDPOINT_FLAG_NAME, "", "Endpoint where to send the final report")
 
 	rootCmd.AddCommand(analyseCmd)
 	rootCmd.AddCommand(devCmd)

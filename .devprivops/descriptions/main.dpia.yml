@@ -10,8 +10,8 @@ DPO:
 personal data:
   - id: message
     kind: :personal # :special | :legal_data
-    required by law: [""]
-    necessary to enter contract: [""]
+    required by law: []
+    necessary to enter contract: []
     destinataries: 
       - :User # tag for the kind of people that wil recieve it
     retention period: 2d # or policy
@@ -36,13 +36,15 @@ purposes:
     legal impact for the user: true
     systematic monitoring: true
     large scale processing: false
-    specific: false
-    explicit: false
-    legitimate: false
-    lawful: false
-    adequate: false
-    relevant: false
-    limited: false
+    lawful: true
+    fair: true
+    transparent: true
+    specific: true
+    explicit: true
+    legitimate: true
+    adequate: true
+    relevant: true
+    limited: true
     supervirory authority veredict:
       contact:
         - :Supervisor

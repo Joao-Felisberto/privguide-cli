@@ -183,18 +183,23 @@
                 },
                 "aggregates": {
                     "type": "array",
-                    "items": {}
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "validity": {
                     "type": "string"
                 },
-                "category": {
-                    "type": "string"
+                "categories": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             },
             "required": [
                 "aggregates",
-                "category",
+                "categories",
                 "id",
                 "validity"
             ],
@@ -291,7 +296,9 @@
                 },
                 "vital interest": {
                     "type": "array",
-                    "items": {}
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "public interest": {
                     "type": "boolean"

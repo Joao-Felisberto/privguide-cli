@@ -1,8 +1,8 @@
 {
     "$schema": "http://json-schema.org/draft-06/schema#",
-    "$ref": "#/definitions/DPIA",
+    "$ref": "#/definitions/Welcome4",
     "definitions": {
-        "DPIA": {
+        "Welcome4": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
@@ -35,7 +35,9 @@
                 },
                 "personal data processing that requires DPIA": {
                     "type": "array",
-                    "items": {}
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "purposes": {
                     "type": "array",
@@ -53,7 +55,7 @@
                 "purposes",
                 "responsible"
             ],
-            "title": "DPIA"
+            "title": "Welcome4"
         },
         "Dpo": {
             "type": "object",
@@ -188,6 +190,15 @@
                 "large scale processing": {
                     "type": "boolean"
                 },
+                "lawful": {
+                    "type": "boolean"
+                },
+                "fair": {
+                    "type": "boolean"
+                },
+                "transparent": {
+                    "type": "boolean"
+                },
                 "specific": {
                     "type": "boolean"
                 },
@@ -195,9 +206,6 @@
                     "type": "boolean"
                 },
                 "legitimate": {
-                    "type": "boolean"
-                },
-                "lawful": {
                     "type": "boolean"
                 },
                 "adequate": {
@@ -217,6 +225,7 @@
                 "adequate",
                 "automated decisions",
                 "explicit",
+                "fair",
                 "id",
                 "large scale processing",
                 "lawful",
@@ -229,7 +238,8 @@
                 "scores users",
                 "specific",
                 "supervirory authority veredict",
-                "systematic monitoring"
+                "systematic monitoring",
+                "transparent"
             ],
             "title": "Purpose"
         },
