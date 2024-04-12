@@ -20,9 +20,12 @@ personal data:
       - :message routing
     transfers to third parties: null # contract, adequability decision, binding corporate rules, art 49
     risks:
-      - id: Risk 1
-        impact: 0
-        likelyhood: 1
+      - :Risk 1
+risks:
+  - id: Risk 1
+    impact: 0
+    likelyhood: 1
+    accepted mitigations: []
 personal data processing whitelist:
   - :message routing
 personal data processing that requires DPIA: []

@@ -77,3 +77,5 @@
 #   - NIST recommended cyphers
 #   - Section 3 (p55): DPIA
 #   - Chapter 5: are these lists provided? Do companies have to evaluate this or do they know?
+# NOTES:
+#   - consent is per purpose: should encode into DPIA and verify collection and validation in DFD?

@@ -288,6 +288,8 @@ func verifyRequirements(dbManager *database.DBManager) (*map[string]interface{},
 }
 
 func getExtraData(dbManager *database.DBManager) (*[]map[string]interface{}, error) {
+	slog.Info("===Extra Data===")
+
 	extraDataFile, err := fs.GetFile("report_data/report_data.yml")
 	if err != nil {
 		return nil, err
@@ -310,10 +312,16 @@ func getExtraData(dbManager *database.DBManager) (*[]map[string]interface{}, err
 			panic(fmt.Sprintf("Error getting query file %s", d["query"].(string)))
 		}
 
+		slog.Info("Getting extra information:", "query", f)
 		d["results"], err = dbManager.ExecuteQueryFile(f)
 		if err != nil {
 			panic("Error processing query")
 		}
+		resJson, err := json.Marshal(d["results"])
+		if err != nil {
+			panic("Error marshaling the results")
+		}
+		slog.Info("Extra information extracted:", "info", resJson)
 
 		delete(d, "query")
 		return d
@@ -453,15 +461,16 @@ func analyse(cmd *cobra.Command, args []string) error {
 	report["extra data"] = extraData
 
 	// 10. Send the report to the site
-	// TODO: accept site through the command line
 	jsonReport, err := json.Marshal(report)
 	if err != nil {
 		slog.Error("error parsing report:", "error", err)
 	}
-	slog.Info("Report")
-	clean, _ := json.MarshalIndent(report, "", "  ")
-	fmt.Println(string(clean))
-
+	/*
+		slog.Info("Report")
+		clean, _ := json.MarshalIndent(report, "", "  ")
+		fmt.Println(string(clean))
+	*/
+	slog.Info("Report written to 'report.json'")
 	if err := os.WriteFile("report.json", []byte(jsonReport), 0666); err != nil {
 		return err
 	}

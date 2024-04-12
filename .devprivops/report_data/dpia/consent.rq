@@ -23,14 +23,12 @@ WHERE {
   {
     # data store
     ?to ex:data_stored/ex:type ?dt .
-    ?to ex:safeguards ?safeguards .
     ?to ex:data_stored/ex:storage_period ?storage_period .
   } UNION {
   	# process
     ?to ex:consumes ?dt .
     ?to ex:purposes ?purposes .
     ?to ex:legitimate_interest ?legitimate_interest_of .
-    ?to ex:safeguards ?safeguards .
     ?to ex:automated_decision_making ?automated_decision_making .
   } UNION {
     # external entity
@@ -38,8 +36,10 @@ WHERE {
   } UNION {
     # data flow
     ex:ROOT ex:data_flows ?to .
+  } UNION {
+    # common optional params
     ?to ex:safeguards ?safeguards .
+  } UNION {
+    ?to ex:location ?location .
   }
-  
-  ?to ex:location ?location .
 }

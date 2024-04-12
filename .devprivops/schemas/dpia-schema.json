@@ -1,8 +1,8 @@
 {
     "$schema": "http://json-schema.org/draft-06/schema#",
-    "$ref": "#/definitions/Welcome4",
+    "$ref": "#/definitions/DPIA",
     "definitions": {
-        "Welcome4": {
+        "DPIA": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
@@ -25,6 +25,12 @@
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/PersonalDatum"
+                    }
+                },
+                "risks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Risk"
                     }
                 },
                 "personal data processing whitelist": {
@@ -53,9 +59,10 @@
                 "personal data processing that requires DPIA",
                 "personal data processing whitelist",
                 "purposes",
-                "responsible"
+                "responsible",
+                "risks"
             ],
-            "title": "Welcome4"
+            "title": "DPIA"
         },
         "Dpo": {
             "type": "object",
@@ -120,7 +127,7 @@
                 "risks": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/Risk"
+                        "type": "string"
                     }
                 }
             },
@@ -137,27 +144,6 @@
                 "transfers to third parties"
             ],
             "title": "PersonalDatum"
-        },
-        "Risk": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "id": {
-                    "type": "string"
-                },
-                "impact": {
-                    "type": "integer"
-                },
-                "likelyhood": {
-                    "type": "integer"
-                }
-            },
-            "required": [
-                "id",
-                "impact",
-                "likelyhood"
-            ],
-            "title": "Risk"
         },
         "Purpose": {
             "type": "object",
@@ -262,6 +248,34 @@
                 "contact"
             ],
             "title": "SuperviroryAuthorityVeredict"
+        },
+        "Risk": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "impact": {
+                    "type": "integer"
+                },
+                "likelyhood": {
+                    "type": "integer"
+                },
+                "accepted mitigations": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": [
+                "accepted mitigations",
+                "id",
+                "impact",
+                "likelyhood"
+            ],
+            "title": "Risk"
         }
     }
 }

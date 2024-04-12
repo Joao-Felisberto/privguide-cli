@@ -8,23 +8,23 @@ WHERE {
 
     # Art 5 1 a | is this the right place to have this info?
     FILTER NOT EXISTS {
-        ?purpose ex:lawful "true" . # Defined by Art 6 1
-        ?purpose ex:fair "true" .
-        ?purpose ex:transparent "true" .
+        ?purpose ex:lawful true . # Defined by Art 6 1
+        ?purpose ex:fair true .
+        ?purpose ex:transparent true .
     }
 
     # Art 5 1 b
     FILTER NOT EXISTS {
-        ?purpose ex:specific "true" .
-        ?purpose ex:explicit "true" .
-        ?purpose ex:legitimate "true" .
+        ?purpose ex:specific true .
+        ?purpose ex:explicit true .
+        ?purpose ex:legitimate true .
     }
 
     # Art 5 1 c
     FILTER NOT EXISTS {
-        ?purpose ex:adequate "true" .
-        ?purpose ex:relevant "true" .
-        ?purpose ex:limited "true" .
+        ?purpose ex:adequate true .
+        ?purpose ex:relevant true .
+        ?purpose ex:limited true .
     }
 
     # Art 5 1 e ?????????????

@@ -1,5 +1,5 @@
 - url: regulations.dpia
   query: report_data/dpia/consent.rq
-  heading: List of things every user has to consent to
-  description: For each interaction with the system, lists every data processing, storage and sharing to which a user has to consent to
+  heading: List of information to be provided for each personal data point collected 
+  description: For each personal data point collected, lists every data processing, storage and share with third party to which a user has to consent to
   data row line: ""

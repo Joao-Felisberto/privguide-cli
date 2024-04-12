@@ -241,6 +241,12 @@
                 },
                 "produces public information": {
                     "type": "boolean"
+                },
+                "safeguards": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             },
             "required": [
@@ -250,7 +256,8 @@
                 "id",
                 "location",
                 "produces",
-                "produces public information"
+                "produces public information",
+                "safeguards"
             ],
             "title": "ExternalEntity"
         },

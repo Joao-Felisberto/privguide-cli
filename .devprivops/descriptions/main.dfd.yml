@@ -17,6 +17,7 @@ external entities:
       - :human
     age: ">16"
     produces public information: false
+    safeguards: []
 processes:
   - id: send message
     consumes:

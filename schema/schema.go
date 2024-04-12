@@ -41,7 +41,7 @@ func NewTriple(s, p, o string) Triple {
 			// TODO: allow root URI customization
 			o = strings.ReplaceAll(o, " ", "_")
 			o = fmt.Sprintf(`<https://example.com/%s>`, o[1:])
-		} else {
+		} else if o != "true" && o != "false" {
 			o = fmt.Sprintf(`"%s"`, o)
 		}
 	}
