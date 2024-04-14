@@ -5,14 +5,15 @@ PREFIX ex: <https://example.com/>
 SELECT ?purpose
 WHERE {
     {
-        ex:ROOT ex:personal_data ?dt .
-        ?dt ex:purposes ?purpose .
+        ex:ROOT ex:personal_data/ex:purposes ?purpose .
     } UNION {
         ex:ROOT ex:personal_data_processing_whitelist ?purpose .
     } UNION {
         ex:ROOT ex:personal_data_processing_that_requires_DPIA ?purpose .
     } 
+
     FILTER NOT EXISTS {
-        ex:ROOT ex:purposes ?purpose .
+        ex:ROOT ex:processings ?processing .
+        ?processing ex:purposes ?purpose .
     }
 }

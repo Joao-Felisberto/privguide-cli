@@ -1,0 +1,12 @@
+PREFIX ex: <https://example.com/>
+
+# NOTE: requires DFD
+
+SELECT ?proc
+WHERE {
+    ex:ROOT ex:processes ?proc .
+
+    FILTER NOT EXISTS {
+        ex:ROOT ex:processings ?proc .
+    }
+}

@@ -29,11 +29,19 @@ risks:
 personal data processing whitelist:
   - :message routing
 personal data processing that requires DPIA: []
-purposes:
-  - id: message routing
+processings:
+  - id: send message
     requires new technologies: false
     risk to rights and freedoms of:
       - :User
+    required for contract: []
+    legally mandated: false
+    vital interest: []
+    public interest: false
+    is official authority: false
+    legitimate interest:
+      - :User
+    professional secrecy: false
     scores users: true
     automated decisions: true
     legal impact for the user: true
@@ -45,9 +53,11 @@ purposes:
     specific: true
     explicit: true
     legitimate: true
-    adequate: true
-    relevant: true
-    limited: true
+    purposes:
+      - id: message routing
+        adequate: true 
+        relevant: true 
+        limited: true
     supervirory authority veredict:
       contact:
         - :Supervisor

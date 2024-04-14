@@ -1,8 +1,8 @@
 {
     "$schema": "http://json-schema.org/draft-06/schema#",
-    "$ref": "#/definitions/DPIA",
+    "$ref": "#/definitions/Welcome10",
     "definitions": {
-        "DPIA": {
+        "Welcome10": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
@@ -45,10 +45,10 @@
                         "type": "string"
                     }
                 },
-                "purposes": {
+                "processings": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/Purpose"
+                        "$ref": "#/definitions/Processing"
                     }
                 }
             },
@@ -58,11 +58,11 @@
                 "personal data",
                 "personal data processing that requires DPIA",
                 "personal data processing whitelist",
-                "purposes",
+                "processings",
                 "responsible",
                 "risks"
             ],
-            "title": "DPIA"
+            "title": "Welcome10"
         },
         "Dpo": {
             "type": "object",
@@ -145,7 +145,7 @@
             ],
             "title": "PersonalDatum"
         },
-        "Purpose": {
+        "Processing": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
@@ -160,6 +160,36 @@
                     "items": {
                         "type": "string"
                     }
+                },
+                "required for contract": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "legally mandated": {
+                    "type": "boolean"
+                },
+                "vital interest": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "public interest": {
+                    "type": "boolean"
+                },
+                "is official authority": {
+                    "type": "boolean"
+                },
+                "legitimate interest": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "professional secrecy": {
+                    "type": "boolean"
                 },
                 "scores users": {
                     "type": "boolean"
@@ -194,6 +224,50 @@
                 "legitimate": {
                     "type": "boolean"
                 },
+                "purposes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Purpose"
+                    }
+                },
+                "supervirory authority veredict": {
+                    "$ref": "#/definitions/SuperviroryAuthorityVeredict"
+                }
+            },
+            "required": [
+                "automated decisions",
+                "explicit",
+                "fair",
+                "id",
+                "is official authority",
+                "large scale processing",
+                "lawful",
+                "legal impact for the user",
+                "legally mandated",
+                "legitimate",
+                "legitimate interest",
+                "professional secrecy",
+                "public interest",
+                "purposes",
+                "required for contract",
+                "requires new technologies",
+                "risk to rights and freedoms of",
+                "scores users",
+                "specific",
+                "supervirory authority veredict",
+                "systematic monitoring",
+                "transparent",
+                "vital interest"
+            ],
+            "title": "Processing"
+        },
+        "Purpose": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
                 "adequate": {
                     "type": "boolean"
                 },
@@ -202,30 +276,13 @@
                 },
                 "limited": {
                     "type": "boolean"
-                },
-                "supervirory authority veredict": {
-                    "$ref": "#/definitions/SuperviroryAuthorityVeredict"
                 }
             },
             "required": [
                 "adequate",
-                "automated decisions",
-                "explicit",
-                "fair",
                 "id",
-                "large scale processing",
-                "lawful",
-                "legal impact for the user",
-                "legitimate",
                 "limited",
-                "relevant",
-                "requires new technologies",
-                "risk to rights and freedoms of",
-                "scores users",
-                "specific",
-                "supervirory authority veredict",
-                "systematic monitoring",
-                "transparent"
+                "relevant"
             ],
             "title": "Purpose"
         },

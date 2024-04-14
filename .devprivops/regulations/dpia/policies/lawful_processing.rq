@@ -4,27 +4,28 @@ PREFIX ex: <https://example.com/>
 
 SELECT *
 WHERE {
-    ex:ROOT ex:purposes ?purpose . 
+    ex:ROOT ex:processings ?processing . 
 
     # Art 5 1 a | is this the right place to have this info?
     FILTER NOT EXISTS {
-        ?purpose ex:lawful true . # Defined by Art 6 1
-        ?purpose ex:fair true .
-        ?purpose ex:transparent true .
+        ?processing ex:lawful true . # Defined by Art 6 1
+        ?processing ex:fair true .
+        ?processing ex:transparent true .
     }
 
     # Art 5 1 b
     FILTER NOT EXISTS {
-        ?purpose ex:specific true .
-        ?purpose ex:explicit true .
-        ?purpose ex:legitimate true .
+        ?processing ex:specific true .
+        ?processing ex:explicit true .
+        ?processing ex:legitimate true .
     }
 
     # Art 5 1 c
+    ?processing ex:purposes ?p .
     FILTER NOT EXISTS {
-        ?purpose ex:adequate true .
-        ?purpose ex:relevant true .
-        ?purpose ex:limited true .
+        ?p ex:adequate true .
+        ?p ex:relevant true .
+        ?p ex:limited true .
     }
 
     # Art 5 1 e ?????????????

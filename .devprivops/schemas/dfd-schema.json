@@ -292,39 +292,6 @@
                         "type": "string"
                     }
                 },
-                "contractual obligation": {
-                    "type": "boolean"
-                },
-                "legally mandated": {
-                    "type": "boolean"
-                },
-                "legal implications": {
-                    "type": "boolean"
-                },
-                "vital interest": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "public interest": {
-                    "type": "boolean"
-                },
-                "automated decision making": {
-                    "type": "boolean"
-                },
-                "is official authority": {
-                    "type": "boolean"
-                },
-                "legitimate interest": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "professional secrecy": {
-                    "type": "boolean"
-                },
                 "certification": {
                     "type": "array",
                     "items": {
@@ -339,22 +306,13 @@
                 }
             },
             "required": [
-                "automated decision making",
                 "certification",
                 "consumes",
-                "contractual obligation",
                 "id",
-                "is official authority",
-                "legal implications",
-                "legally mandated",
-                "legitimate interest",
                 "location",
                 "produces",
-                "professional secrecy",
-                "public interest",
                 "purposes",
-                "safeguards",
-                "vital interest"
+                "safeguards"
             ],
             "title": "Process"
         }

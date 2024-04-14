@@ -19,6 +19,7 @@ WHERE {
   ex:ROOT ex:external_entities ?from .
   ?from ex:categories ex:human .
   ?from (^ex:from/ex:to)+ ?to .
+  OPTIONAL { ?to ex:location ?location . }
   
   {
     # data store
@@ -27,9 +28,11 @@ WHERE {
   } UNION {
   	# process
     ?to ex:consumes ?dt .
-    ?to ex:purposes ?purposes .
-    ?to ex:legitimate_interest ?legitimate_interest_of .
-    ?to ex:automated_decision_making ?automated_decision_making .
+    ex:ROOT ex:processings ?toDPIA .
+
+    ?toDPIA ex:purposes ?purposes .
+    ?toDPIA ex:legitimate_interest ?legitimate_interest_of .
+    ?toDPIA ex:automated_decision_making ?automated_decision_making .
   } UNION {
     # external entity
     ?to ex:categories ?category .
@@ -39,7 +42,5 @@ WHERE {
   } UNION {
     # common optional params
     ?to ex:safeguards ?safeguards .
-  } UNION {
-    ?to ex:location ?location .
   }
 }

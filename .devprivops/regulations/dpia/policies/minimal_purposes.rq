@@ -4,8 +4,9 @@ PREFIX ex: <https://example.com/>
 
 SELECT ?purpose
 WHERE {
-    ex:ROOT ex:processes/ex:purpose ?purpose .
+    ex:ROOT ex:processes/ex:purposes ?purpose .
+
     FILTER NOT EXISTS {
-        ex:ROOT ex:purposes ?purpose .
+        ex:ROOT ex:processings/ex:purposes ?purpose .
     } 
 }

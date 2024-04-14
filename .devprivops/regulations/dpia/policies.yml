@@ -18,15 +18,15 @@
   is consistency: true
   maximum violations: 0
   mapping message: ""
-- file: regulations/dpia/consistency/no_undefined_processing_purpose.rq
+- file: regulations/dpia/consistency/no_undefined_purpose.rq
   title: All purposes of processing must be defined
   description: Ensure all processing purposes have definitions
   is consistency: true
   maximum violations: 0
   mapping message: ""
-- file: regulations/dpia/consistency/no_undefined_purposes.rq
-  title: All purposes have to be defined
-  description: Ensure the purposes have definitions
+- file: regulations/dpia/consistency/no_undefined_processing.rq
+  title: All processings have to undergo a DPIA
+  description: Ensure the processings are mentioned in the DPIA, to the required extent.
   is consistency: true
   maximum violations: 0
   mapping message: ""
@@ -51,12 +51,12 @@
   is consistency: false
   maximum violations: 0
   mapping message: ""
-- file: regulations/dpia/policies/minimal_purposes.rq
-  title: Data can only be used for the declared purposes
-  description: Ensure no data type is processed for more purposes than declared in the DPIA
-  is consistency: false
-  maximum violations: 0
-  mapping message: ""
+# - file: regulations/dpia/policies/minimal_purposes.rq
+#   title: Data can only be used for the declared purposes
+#   description: Ensure no data type is processed for more purposes than declared in the DPIA
+#   is consistency: false
+#   maximum violations: 0
+#   mapping message: ""
 - file: regulations/dpia/policies/required_dpo.rq
   title: Project requires DPO
   description: Ensure the project has an associated DPO if required as mandated by the GDPR

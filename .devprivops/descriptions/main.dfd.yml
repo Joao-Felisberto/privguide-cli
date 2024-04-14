@@ -28,16 +28,6 @@ processes:
       - Portugal
     purposes: 
       - :message routing
-    contractual obligation: false
-    legally mandated: false
-    legal implications: false
-    vital interest: []
-    public interest: false
-    automated decision making: false
-    is official authority: false
-    legitimate interest:
-      - :User
-    professional secrecy: false
     certification: []
     safeguards: []
 data stores:

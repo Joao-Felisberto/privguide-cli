@@ -172,6 +172,7 @@ func policies(dbManager *database.DBManager, regulation string) (map[string]inte
 		}
 		slog.Info("Violations:", "policy", pol.Title, "violations", b)
 		report[pol.Title] = map[string]interface{}{
+			"description":        pol.Description,
 			"maximum violations": pol.MaxViolations,
 			"is consistency":     pol.IsConsistency,
 			"violations":         res,
@@ -315,11 +316,11 @@ func getExtraData(dbManager *database.DBManager) (*[]map[string]interface{}, err
 		slog.Info("Getting extra information:", "query", f)
 		d["results"], err = dbManager.ExecuteQueryFile(f)
 		if err != nil {
-			panic("Error processing query")
+			panic(fmt.Sprintf("Error processing query: %s", err))
 		}
 		resJson, err := json.Marshal(d["results"])
 		if err != nil {
-			panic("Error marshaling the results")
+			panic(fmt.Sprintf("Error marshaling the results: %s", err))
 		}
 		slog.Info("Extra information extracted:", "info", resJson)
 
