@@ -19,8 +19,6 @@ personal data:
     purposes:
       - :message routing
     transfers to third parties: null # contract, adequability decision, binding corporate rules, art 49
-    risks:
-      - :Risk 1
 risks:
   - id: Risk 1
     impact: 0
@@ -58,6 +56,8 @@ processings:
         adequate: true 
         relevant: true 
         limited: true
+    risks:
+      - :Risk 1
     supervirory authority veredict:
       contact:
         - :Supervisor

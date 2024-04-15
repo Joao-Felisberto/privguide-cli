@@ -4,8 +4,7 @@ PREFIX ex: <https://example.com/>
 
 SELECT ?ext_ent
 WHERE {
-    ex:ROOT ex:personal_data ?data .
-    ?data ex:destinataries ?ext_ent .
+    ex:ROOT ex:personal_data/ex:destinataries ?ext_ent .
     FILTER NOT EXISTS {
         ex:ROOT ex:external_entities ?ext_ent .
     }

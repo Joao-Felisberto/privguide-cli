@@ -42,6 +42,12 @@
   is consistency: true
   maximum violations: 0
   mapping message: ""
+- file: regulations/dpia/consistency/no_undefined_risks.rq
+  title: All risks must be defined
+  description: Ensure all risks have a definition
+  is consistency: true
+  maximum violations: 0
+  mapping message: ""
 
 # Policy
 
@@ -51,15 +57,21 @@
   is consistency: false
   maximum violations: 0
   mapping message: ""
-# - file: regulations/dpia/policies/minimal_purposes.rq
-#   title: Data can only be used for the declared purposes
-#   description: Ensure no data type is processed for more purposes than declared in the DPIA
-#   is consistency: false
-#   maximum violations: 0
-#   mapping message: ""
+- file: regulations/dpia/policies/minimal_purposes.rq
+  title: Data can only be used for the declared purposes
+  description: Ensure no data type is processed for more purposes than declared in the DPIA
+  is consistency: false
+  maximum violations: 0
+  mapping message: ""
 - file: regulations/dpia/policies/required_dpo.rq
   title: Project requires DPO
   description: Ensure the project has an associated DPO if required as mandated by the GDPR
+  is consistency: false
+  maximum violations: 0
+  mapping message: ""
+- file: regulations/dpia/policies/dpia.rq
+  title: DPIA
+  description: Ensure the project passes the DPIA
   is consistency: false
   maximum violations: 0
   mapping message: ""

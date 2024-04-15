@@ -1,8 +1,8 @@
 {
     "$schema": "http://json-schema.org/draft-06/schema#",
-    "$ref": "#/definitions/Welcome10",
+    "$ref": "#/definitions/Welcome9",
     "definitions": {
-        "Welcome10": {
+        "Welcome9": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
@@ -41,9 +41,7 @@
                 },
                 "personal data processing that requires DPIA": {
                     "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
+                    "items": {}
                 },
                 "processings": {
                     "type": "array",
@@ -62,7 +60,7 @@
                 "responsible",
                 "risks"
             ],
-            "title": "Welcome10"
+            "title": "Welcome9"
         },
         "Dpo": {
             "type": "object",
@@ -93,15 +91,11 @@
                 },
                 "required by law": {
                     "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
+                    "items": {}
                 },
                 "necessary to enter contract": {
                     "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
+                    "items": {}
                 },
                 "destinataries": {
                     "type": "array",
@@ -123,12 +117,6 @@
                 },
                 "transfers to third parties": {
                     "type": "null"
-                },
-                "risks": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
                 }
             },
             "required": [
@@ -140,7 +128,6 @@
                 "purposes",
                 "required by law",
                 "retention period",
-                "risks",
                 "transfers to third parties"
             ],
             "title": "PersonalDatum"
@@ -163,18 +150,14 @@
                 },
                 "required for contract": {
                     "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
+                    "items": {}
                 },
                 "legally mandated": {
                     "type": "boolean"
                 },
                 "vital interest": {
                     "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
+                    "items": {}
                 },
                 "public interest": {
                     "type": "boolean"
@@ -230,6 +213,12 @@
                         "$ref": "#/definitions/Purpose"
                     }
                 },
+                "risks": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "supervirory authority veredict": {
                     "$ref": "#/definitions/SuperviroryAuthorityVeredict"
                 }
@@ -252,6 +241,7 @@
                 "required for contract",
                 "requires new technologies",
                 "risk to rights and freedoms of",
+                "risks",
                 "scores users",
                 "specific",
                 "supervirory authority veredict",
@@ -321,9 +311,7 @@
                 },
                 "accepted mitigations": {
                     "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
+                    "items": {}
                 }
             },
             "required": [

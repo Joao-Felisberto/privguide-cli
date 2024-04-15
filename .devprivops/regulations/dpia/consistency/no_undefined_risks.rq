@@ -1,0 +1,12 @@
+PREFIX ex: <https://example.com/>
+
+# NOTE: requires DFD
+
+SELECT ?risk
+WHERE {
+    ex:ROOT ex:processings/ex:risks ?risk .
+    FILTER NOT EXISTS {
+        ex:ROOT ex:risks ?risk .
+    }
+}
+
