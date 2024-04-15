@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -21,6 +22,15 @@ import (
 )
 
 const REPORT_ENDPOINT_FLAG_NAME = "report-endpoint"
+
+func getURIMetadata() (*[]database.URIMetadata, error) {
+	uriFile, err := fs.GetFile("uris.yml")
+	if err != nil {
+		return nil, err
+	}
+
+	return database.FromFile(uriFile)
+}
 
 func loadRep(dbManager *database.DBManager, file string, schemaFile string) error {
 	dfdFname, err := fs.GetFile(file)
@@ -40,7 +50,33 @@ func loadRep(dbManager *database.DBManager, file string, schemaFile string) erro
 	if err != nil {
 		return err
 	}
-	statusCode, err := dbManager.AddTriples(schema.YAMLtoRDF("https://example.com/ROOT", dfd, "https://example.com/ROOT"))
+
+	uriMetadata, err := getURIMetadata()
+	if err != nil {
+		return err
+	}
+	uris := util.Filter(*uriMetadata, func(metadata database.URIMetadata) bool {
+		return slices.Contains(metadata.Files, file)
+	})
+	if len(uris) == 0 {
+		return fmt.Errorf("no base uri for '%s', please add it to 'uris.yml'", file)
+	}
+	uri := uris[0]
+	uriMap := util.MapToMap(*uriMetadata, func(uri_ database.URIMetadata) (string, string) {
+		return uri_.Abreviation, uri_.URI
+	})
+
+	slog.Info("Check the map", "map", uriMap)
+	statusCode, err := dbManager.AddTriples(schema.YAMLtoRDF(
+		fmt.Sprintf("%s/ROOT", uri.URI),
+		dfd,
+		fmt.Sprintf("%s/ROOT", uri.URI),
+		uri.URI,
+		&uriMap,
+	),
+		// map[string]string{uri.Abreviation: uri.URI},
+		uriMap,
+	)
 	if err != nil {
 		return err
 	}

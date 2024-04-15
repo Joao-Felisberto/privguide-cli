@@ -16,6 +16,8 @@ func TestNewTriple(t *testing.T) {
 		"http://example.com/ex1",
 		"http://example.com/ex2",
 		"http://example.com/ex3",
+		"http://example.com",
+		&map[string]string{"ex": "https://example.com"},
 	)
 
 	if triple.Subject != "<http://example.com/ex1>" {
@@ -32,6 +34,8 @@ func TestNewTriple(t *testing.T) {
 		"http://example.com/ex4",
 		"http://example.com/ex5",
 		"6",
+		"http://example.com",
+		&map[string]string{"ex": "https://example.com"},
 	)
 
 	if triple.Subject != "<http://example.com/ex4>" {
@@ -86,7 +90,7 @@ a:
 	rootURI := "https://example.com/ROOT"
 
 	// Convert YAML to RDF triples
-	triples := schema.YAMLtoRDF(rootURI, data, rootURI)
+	triples := schema.YAMLtoRDF(rootURI, data, rootURI, "https://example.com", &map[string]string{"ex": "https://example.com"})
 
 	expected := []schema.Triple{
 		{"<https://example.com/ROOT>", "<https://example.com/a>", "<https://example.com/aId>"},
@@ -142,7 +146,7 @@ other:
 	rootURI := "https://example.com/ROOT"
 
 	// Convert YAML to RDF triples
-	triples := schema.YAMLtoRDF(rootURI, data, rootURI)
+	triples := schema.YAMLtoRDF(rootURI, data, rootURI, "https://example.com", &map[string]string{"ex": "https://example.com"})
 
 	expected := []schema.Triple{
 		{"<https://example.com/ROOT>", "<https://example.com/main>", "<https://example.com/e1>"},

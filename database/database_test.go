@@ -25,7 +25,9 @@ func TestAddTriples(t *testing.T) {
 	code, err := db.AddTriples([]schema.Triple{
 		{Subject: "<https://example.com/1>", Predicate: "<https://example.com/2>", Object: "\"1\""},
 		{Subject: "<https://example.com/3>", Predicate: "<https://example.com/4>", Object: "\"2\""},
-	})
+	},
+		map[string]string{"ex": "https://example.com"},
+	)
 
 	if err != nil {
 		t.Fatal(err)

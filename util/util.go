@@ -31,3 +31,14 @@ func MapCast[K comparable, V any](m map[interface{}]interface{}) map[K]V {
 
 	return newMap
 }
+
+func MapToMap[T any, K comparable, V any](list []T, mapper func(T) (K, V)) map[K]V {
+	res := map[K]V{}
+
+	for _, e := range list {
+		k, v := mapper(e)
+		res[k] = v
+	}
+
+	return res
+}

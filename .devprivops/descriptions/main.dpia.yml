@@ -25,7 +25,7 @@ risks:
     likelyhood: 1
     accepted mitigations: []
 personal data processing whitelist:
-  - :message routing
+  - dfd:message routing
 personal data processing that requires DPIA: []
 processings:
   - id: send message

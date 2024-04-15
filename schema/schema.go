@@ -1,16 +1,18 @@
 package schema
 
 import (
-	"errors"
 	"fmt"
 	"log/slog"
 	"os"
+	"regexp"
 	"strconv"
 	"strings"
 
 	"github.com/xeipuuv/gojsonschema"
 	"gopkg.in/yaml.v2"
 )
+
+var prefixRe = regexp.MustCompile(`^([a-zA-Z]+):(.*)`)
 
 type YAMLVal interface{ int | string }
 
@@ -20,7 +22,7 @@ type Triple struct {
 	Object    interface{}
 }
 
-func NewTriple(s, p, o string) Triple {
+func NewTriple(s, p, o string, uriBase string, uriMap *map[string]string) Triple {
 	isURI := s[0] == '<' && s[len(s)-1] == '>'
 	if !isURI {
 		s = fmt.Sprintf(`<%s>`, s)
@@ -37,10 +39,19 @@ func NewTriple(s, p, o string) Triple {
 		o = strings.ReplaceAll(o, " ", "_")
 		o = fmt.Sprintf(`<%s>`, o)
 	} else {
+		matches := prefixRe.FindStringSubmatch(o)
 		if len(o) > 0 && o[0] == ':' {
-			// TODO: allow root URI customization
 			o = strings.ReplaceAll(o, " ", "_")
-			o = fmt.Sprintf(`<https://example.com/%s>`, o[1:])
+			o = fmt.Sprintf(`<%s/%s>`, uriBase, o[1:])
+		} else if len(matches) > 2 {
+			prefix := matches[1]
+			id := matches[2]
+
+			uri := (*uriMap)[prefix]
+
+			o = strings.ReplaceAll(id, " ", "_")
+			o = fmt.Sprintf(`<%s/%s>`, uri, o)
+			slog.Info("HERE", "o", o, "map", uriMap)
 		} else if o != "true" && o != "false" {
 			o = fmt.Sprintf(`"%s"`, o)
 		}
@@ -74,6 +85,7 @@ func convertToJSON(data interface{}) interface{} {
 	}
 }
 
+/*
 func toStringKeys(val interface{}) (interface{}, error) {
 	switch val := val.(type) {
 	case map[interface{}]interface{}:
@@ -100,6 +112,7 @@ func toStringKeys(val interface{}) (interface{}, error) {
 		return val, nil
 	}
 }
+*/
 
 func ReadYAML(yamlFile string, schemaFile string) (interface{}, error) {
 
@@ -192,12 +205,12 @@ func ValidateYAMLAgainstSchema(yamlFile string, schemaFile string) (*gojsonschem
 	return result, nil
 }
 
-func generateAnonID() string {
+func generateAnonID(uriBase string) string {
 	idCounter++
-	return fmt.Sprintf("https://example.com/%d", idCounter)
+	return fmt.Sprintf("%s/%d", uriBase, idCounter)
 }
 
-func YAMLtoRDF(key string, rawData interface{}, rootURI string) []Triple {
+func YAMLtoRDF(key string, rawData interface{}, rootURI string, uriBase string, uriMap *map[string]string) []Triple {
 	triples := []Triple{}
 
 	switch data := rawData.(type) {
@@ -207,27 +220,27 @@ func YAMLtoRDF(key string, rawData interface{}, rootURI string) []Triple {
 			case map[interface{}]interface{}:
 				// id := generateAnonID()
 
-				id := fmt.Sprintf("https://example.com/%v", value["id"])
-				if id == "https://example.com/<nil>" {
-					id = generateAnonID()
+				id := fmt.Sprintf("%s/%v", uriBase, value["id"])
+				if id == fmt.Sprintf("%s/<nil>", uriBase) {
+					id = generateAnonID(uriBase)
 				} else {
 					delete(value, "id")
 				}
 
-				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", key), id))
-				triples = append(triples, YAMLtoRDF(fmt.Sprintf("%v", key), value, id)...)
+				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("%s/%v", uriBase, key), id, uriBase, uriMap))
+				triples = append(triples, YAMLtoRDF(fmt.Sprintf("%v", key), value, id, uriBase, uriMap)...)
 			case []interface{}:
-				triples = append(triples, YAMLtoRDF(fmt.Sprintf("%v", key), value, rootURI)...)
+				triples = append(triples, YAMLtoRDF(fmt.Sprintf("%v", key), value, rootURI, uriBase, uriMap)...)
 			case int:
 				tn := strconv.Itoa(value)
-				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", key), tn))
+				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("%s/%v", uriBase, key), tn, uriBase, uriMap))
 			case bool:
 				tn := strconv.FormatBool(value)
-				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", key), tn))
+				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("%s/%v", uriBase, key), tn, uriBase, uriMap))
 			case nil:
 				continue
 			default: // string
-				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", key), value.(string)))
+				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("%s/%v", uriBase, key), value.(string), uriBase, uriMap))
 			}
 		}
 	case map[string]interface{}:
@@ -236,23 +249,23 @@ func YAMLtoRDF(key string, rawData interface{}, rootURI string) []Triple {
 			case map[interface{}]interface{}:
 				// id := generateAnonID()
 
-				id := fmt.Sprintf("https://example.com/%v", value["id"])
-				if id == "https://example.com/<nil>" {
-					id = generateAnonID()
+				id := fmt.Sprintf("%s/%v", uriBase, value["id"])
+				if id == fmt.Sprintf("%s/<nil>", uriBase) {
+					id = generateAnonID(uriBase)
 				} else {
 					delete(value, "id")
 				}
 				// fmt.Printf("ID: %s\n", id)
 
-				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", key), id))
-				triples = append(triples, YAMLtoRDF(fmt.Sprintf("%v", key), value, id)...)
+				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("%s/%v", uriBase, key), id, uriBase, uriMap))
+				triples = append(triples, YAMLtoRDF(fmt.Sprintf("%v", key), value, id, uriBase, uriMap)...)
 			case []interface{}:
-				triples = append(triples, YAMLtoRDF(fmt.Sprintf("%v", key), value, rootURI)...)
+				triples = append(triples, YAMLtoRDF(fmt.Sprintf("%v", key), value, rootURI, uriBase, uriMap)...)
 			case int:
 				tn := strconv.Itoa(value)
-				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", key), tn))
+				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("%s/%v", uriBase, key), tn, uriBase, uriMap))
 			default: // string
-				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", key), value.(string)))
+				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("%s/%v", uriBase, key), value.(string), uriBase, uriMap))
 			}
 		}
 	case []interface{}:
@@ -264,20 +277,20 @@ func YAMLtoRDF(key string, rawData interface{}, rootURI string) []Triple {
 				// TODO: support array of arrays
 				panic("Cannot have array of arrays")
 			case map[interface{}]interface{}:
-				id := fmt.Sprintf("https://example.com/%v", e["id"])
-				if id == "https://example.com/<nil>" {
-					id = generateAnonID()
+				id := fmt.Sprintf("%s/%v", uriBase, e["id"])
+				if id == fmt.Sprintf("%s/<nil>", uriBase) {
+					id = generateAnonID(uriBase)
 				} else {
 					delete(e, "id")
 				}
 
-				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%s", key), id))
-				triples = append(triples, YAMLtoRDF(id, e, id)...)
+				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("%s/%s", uriBase, key), id, uriBase, uriMap))
+				triples = append(triples, YAMLtoRDF(id, e, id, uriBase, uriMap)...)
 			case int:
 				eInt := strconv.Itoa(e)
-				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", key), eInt))
+				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("%s/%v", uriBase, key), eInt, uriBase, uriMap))
 			default: // string
-				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("https://example.com/%v", key), e.(string)))
+				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("%s/%v", uriBase, key), e.(string), uriBase, uriMap))
 			}
 		}
 	default:

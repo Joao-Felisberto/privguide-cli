@@ -87,18 +87,26 @@ func (db *DBManager) CleanDB() (*http.Response, error) {
 	)
 }
 
-func (db *DBManager) AddTriples(triples []schema.Triple) (int, error) {
+func (db *DBManager) AddTriples(triples []schema.Triple, prefixes map[string]string) (int, error) {
 	sparqlTemplate := `
-		PREFIX ex: <https://example.com/>
+		{{ range $key, $value := .Prefixes }} PREFIX {{ $key }}: <{{ $value }}>
+		{{ end }}
+
         INSERT DATA {
-		{{ range . }}{{ .Subject }} {{ .Predicate }} {{ .Object }} .
+		{{ range .Triples }}{{ .Subject }} {{ .Predicate }} {{ .Object }} .
 		{{ end }}
         }
     `
 	var sparqlQuery strings.Builder
 
 	tpl := template.Must(template.New("insert triples").Parse(sparqlTemplate))
-	if err := tpl.Execute(&sparqlQuery, triples); err != nil {
+	if err := tpl.Execute(&sparqlQuery, struct {
+		Triples  []schema.Triple
+		Prefixes map[string]string
+	}{
+		triples,
+		prefixes,
+	}); err != nil {
 		return -1, err
 	}
 
