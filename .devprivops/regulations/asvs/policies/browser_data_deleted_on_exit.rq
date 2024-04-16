@@ -1,15 +1,15 @@
-PREFIX ex: <https://example.com/>
+PREFIX dfd: <https://devprivops.com/dfd/>
 
 SELECT ?dsId ?dtId
 WHERE {
-    ex:ROOT ex:data_stores ?dsId .
-    ?dsId ex:data_stored ?dataStored . 
-    ?dataStored ex:type ?dtId .
+    dfd:ROOT dfd:data_stores ?dsId .
+    ?dsId dfd:data_stored ?dataStored . 
+    ?dataStored dfd:type ?dtId .
 
-    ?dsId ex:location "browser" .
-    ?dtId ex:category ex:authenticated_only . # TODO: detect data obtained while authenticated
+    ?dsId dfd:location "browser" .
+    ?dtId dfd:category dfd:authenticated_only . # TODO: detect data obtained while authenticated
 
     FILTER NOT EXISTS {
-        ?dataStored ex:storage_period: "session" .
+        ?dataStored dfd:storage_period: "session" .
     }
 }

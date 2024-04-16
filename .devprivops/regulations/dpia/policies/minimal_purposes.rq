@@ -1,12 +1,13 @@
-PREFIX ex: <https://example.com/>
+PREFIX dfd: <https://devprivops.com/dfd/>
+PREFIX dpia: <https://devprivops.com/dpia/>
 
 # NOTE: requires a DFD
 
 SELECT ?purpose
 WHERE {
-    ex:ROOT ex:processes/ex:purposes ?purpose .
+    dfd:ROOT dfd:processes/dfd:purposes ?purpose .
 
     FILTER NOT EXISTS {
-        ex:ROOT ex:processings/ex:purposes ?purpose .
+        dpia:ROOT dpia:processings/dpia:purposes ?purpose .
     } 
 }

@@ -3,10 +3,10 @@ data types:
     aggregates: []
     validity: eternal
     categories:
-      - :confidential
-      - :personal
+      - dpia:confidential
+      - dpia:personal
 external entities:
-  - id: User 
+  - id: dpia:User 
     consumes:
       - :message
     produces: 
@@ -14,7 +14,7 @@ external entities:
     location:
       - Portugal
     categories:
-      - :human
+      - dpia:human
     age: ">16"
     produces public information: false
     safeguards: []
@@ -27,7 +27,7 @@ processes:
     location:
       - Portugal
     purposes: 
-      - :message routing
+      - dpia:message routing
     certification: []
     safeguards: []
 data stores:
@@ -45,7 +45,7 @@ data stores:
     safeguards: []
 data flows:
   - id: C message
-    from: :User
+    from: dpia:User
     to: :send message
     data:
       - :message
@@ -65,7 +65,7 @@ data flows:
     certification: []
     safeguards: []
   - id: R message
-    from: :User
+    from: dpia:User
     to: :send message
     data:
       - :message
@@ -85,7 +85,7 @@ data flows:
     certification: []
     safeguards: []
   - id: U message
-    from: :User
+    from: dpia:User
     to: :send message
     data:
       - :message
@@ -105,7 +105,7 @@ data flows:
     certification: []
     safeguards: []
   - id: D message
-    from: :User
+    from: dpia:User
     to: :send message
     data:
       - :message
@@ -126,7 +126,7 @@ data flows:
     safeguards: []
   - id: Deliver message
     from: :send message
-    to: :User
+    to: dpia:User
     data:
       - :message
     encryption: signal

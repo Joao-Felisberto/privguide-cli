@@ -1,4 +1,5 @@
-PREFIX ex: <https://example.com/>
+PREFIX dfd: <https://devprivops.com/dfd/>
+PREFIX dpia: <https://devprivops.com/dpia/>
 
 # Sect 2 Art 13
 # X id and contact of controller/its rep
@@ -16,31 +17,33 @@ PREFIX ex: <https://example.com/>
 
 SELECT *
 WHERE {
-  ex:ROOT ex:external_entities ?from .
-  ?from ex:categories ex:human .
-  ?from (^ex:from/ex:to)+ ?to .
-  OPTIONAL { ?to ex:location ?location . }
-  
-  {
-    # data store
-    ?to ex:data_stored/ex:type ?dt .
-    ?to ex:data_stored/ex:storage_period ?storage_period .
-  } UNION {
-  	# process
-    ?to ex:consumes ?dt .
-    ex:ROOT ex:processings ?toDPIA .
+    dfd:ROOT dfd:external_entities ?from .
+    ?from dfd:categories dpia:human .
+    ?from (^dfd:from/dfd:to)+ ?to .
+    OPTIONAL { ?to dfd:location ?location . }
 
-    ?toDPIA ex:purposes ?purposes .
-    ?toDPIA ex:legitimate_interest ?legitimate_interest_of .
-    ?toDPIA ex:automated_decision_making ?automated_decision_making .
-  } UNION {
-    # external entity
-    ?to ex:categories ?category .
-  } UNION {
-    # data flow
-    ex:ROOT ex:data_flows ?to .
-  } UNION {
-    # common optional params
-    ?to ex:safeguards ?safeguards .
-  }
+    {
+        # data store
+        ?to dfd:data_stored/dfd:type ?dt .
+        ?to dfd:data_stored/dfd:storage_period ?storage_period .
+    } UNION {
+        # process
+        ?to dfd:consumes ?dt .
+        dpia:ROOT dpia:processings ?toDPIA .
+
+        ?toDPIA dpia:purposes ?purposes .
+        ?toDPIA dpia:legitimate_interest ?legitimate_interest_of .
+        ?toDPIA dpia:automated_decisions ?automated_decision_making .
+    } UNION {
+        # external entity
+        ?to dfd:categories ?category .
+    } 
+#    UNION {
+#        # data flow
+#        dfd:ROOT dfd:data_flows ?to .
+#    } 
+    UNION {
+        # common optional params
+        ?to dfd:safeguards ?safeguards .
+    }
 }

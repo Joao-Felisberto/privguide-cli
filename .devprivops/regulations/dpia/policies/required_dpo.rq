@@ -1,6 +1,7 @@
-PREFIX ex: <https://example.com/>
+PREFIX dfd: <https://devprivops.com/dfd/>
+PREFIX dpia: <https://devprivops.com/dpia/>
 
 SELECT *
 WHERE {
-    ex:NULL ?p ?o .
+    dfd:NULL ?p ?o .
 }

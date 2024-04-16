@@ -8,7 +8,7 @@ DPO:
   - name: :Man
     contact: man@email.com
 personal data:
-  - id: message
+  - id: dfd:message
     kind: :personal # :special | :legal_data
     required by law: []
     necessary to enter contract: []
@@ -25,10 +25,10 @@ risks:
     likelyhood: 1
     accepted mitigations: []
 personal data processing whitelist:
-  - dfd:message routing
+  - :message routing
 personal data processing that requires DPIA: []
 processings:
-  - id: send message
+  - id: dfd:send message
     requires new technologies: false
     risk to rights and freedoms of:
       - :User

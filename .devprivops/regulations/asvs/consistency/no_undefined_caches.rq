@@ -1,10 +1,10 @@
-PREFIX ex: <https://example.com/>
+PREFIX dfd: <https://devprivops.com/dfd/>
 
 SELECT ?cacheId
 WHERE {
-    ?_ ex:caches ?cacheId
+    ?_ dfd:caches ?cacheId
     FILTER NOT EXISTS {
-        ex:ROOT ex:data_stores ?cacheId
+        dfd:ROOT dfd:data_stores ?cacheId
     }
 }
 

@@ -1,31 +1,31 @@
-PREFIX ex: <https://example.com/>
+PREFIX dpia: <https://devprivops.com/dpia/>
 
 # Based on Article 5,6
 
 SELECT *
 WHERE {
-    ex:ROOT ex:processings ?processing . 
+    dpia:ROOT dpia:processings ?processing . 
 
     # Art 5 1 a | is this the right place to have this info?
     FILTER NOT EXISTS {
-        ?processing ex:lawful true . # Defined by Art 6 1
-        ?processing ex:fair true .
-        ?processing ex:transparent true .
+        ?processing dpia:lawful true . # Defined by Art 6 1
+        ?processing dpia:fair true .
+        ?processing dpia:transparent true .
     }
 
     # Art 5 1 b
     FILTER NOT EXISTS {
-        ?processing ex:specific true .
-        ?processing ex:explicit true .
-        ?processing ex:legitimate true .
+        ?processing dpia:specific true .
+        ?processing dpia:explicit true .
+        ?processing dpia:legitimate true .
     }
 
     # Art 5 1 c
-    ?processing ex:purposes ?p .
+    ?processing dpia:purposes ?p .
     FILTER NOT EXISTS {
-        ?p ex:adequate true .
-        ?p ex:relevant true .
-        ?p ex:limited true .
+        ?p dpia:adequate true .
+        ?p dpia:relevant true .
+        ?p dpia:limited true .
     }
 
     # Art 5 1 e ?????????????

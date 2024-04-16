@@ -1,19 +1,19 @@
-PREFIX ex: <https://example.com/>
+PREFIX dfd: <https://devprivops.com/dfd/>
 
 SELECT ?dtId
 WHERE {
     {
-        ?_ ex:consumes ?dtId
+        ?_ dfd:consumes ?dtId
     } UNION {
-        ?_ ex:produces ?dtId
+        ?_ dfd:produces ?dtId
     } UNION {
-        ?_ ex:type ?dtId
+        ?_ dfd:type ?dtId
     } UNION {
-        ?_ ex:data ?dtId
+        ?_ dfd:data ?dtId
     } UNION {
-        ?_ ex:aggregates ?dtId
+        ?_ dfd:aggregates ?dtId
     }
     FILTER NOT EXISTS {
-        ex:ROOT ex:data_types ?dtId
+        dfd:ROOT dfd:data_types ?dtId
     }
 }

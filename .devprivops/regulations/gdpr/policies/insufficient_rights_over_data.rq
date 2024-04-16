@@ -1,28 +1,28 @@
-PREFIX ex: <https://example.com/>
+PREFIX dfd: <https://devprivops.com/dfd/>
 
 # Useless since it is enforced by the schema
 SELECT ?ds ?dtName ?missingPredicate
 WHERE {
-  ?ds ex:data_stored ?dt .
-  ?dt ex:type ?dtName .
+  ?ds dfd:data_stored ?dt .
+  ?dt dfd:type ?dtName .
 
   OPTIONAL {
     {
-      ?dt ex:create ?dfId .
+      ?dt dfd:create ?dfId .
       BIND("create" as ?missingPredicate)
     } UNION {
-      ?dt ex:read ?dfId .
+      ?dt dfd:read ?dfId .
       BIND("read" as ?missingPredicate)
     } UNION {
-      ?dt ex:update ?dfId .
+      ?dt dfd:update ?dfId .
       BIND("update" as ?missingPredicate)
     } UNION {
-      ?dt ex:delete ?dfId .
+      ?dt dfd:delete ?dfId .
       BIND("delete" as ?missingPredicate)
     }
   }
 
   FILTER NOT EXISTS {
-    ex:ROOT ex:data_flows ?df .
+    dfd:ROOT dfd:data_flows ?df .
   }
 }

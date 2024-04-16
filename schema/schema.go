@@ -25,19 +25,57 @@ type Triple struct {
 func NewTriple(s, p, o string, uriBase string, uriMap *map[string]string) Triple {
 	isURI := s[0] == '<' && s[len(s)-1] == '>'
 	if !isURI {
-		s = fmt.Sprintf(`<%s>`, s)
+		parts := strings.Split(s, "/")
+		new := parts[len(parts)-1]
+		matches := prefixRe.FindStringSubmatch(new)
+
+		if len(matches) > 2 {
+			prefix := matches[1]
+			id := matches[2]
+
+			uri := (*uriMap)[prefix]
+
+			// slog.Info("New Subject!", "s", s, "uri", uri, "id", id)
+			new = strings.ReplaceAll(id, " ", "_")
+			new = fmt.Sprintf(`<%s/%s>`, uri, new)
+			// slog.Info("NEW", "uri", new)
+			s = new
+		} else {
+			s = fmt.Sprintf(`<%s>`, s)
+		}
 	}
 	s = strings.ReplaceAll(s, " ", "_")
+
 	isURI = p[0] == '<' && p[len(p)-1] == '>'
 	if !isURI {
 		p = strings.ReplaceAll(p, " ", "_")
 		p = fmt.Sprintf(`<%s>`, p)
 	}
 
+	// hasBeen := strings.Count(o, ":") > 1
+	// was := o
+
 	isURI = strings.HasPrefix(o, "https://") || strings.HasPrefix(o, "http://")
 	if isURI {
 		o = strings.ReplaceAll(o, " ", "_")
-		o = fmt.Sprintf(`<%s>`, o)
+		parts := strings.Split(o, "/")
+		tmp := parts[len(parts)-1]
+		matches := prefixRe.FindStringSubmatch(tmp)
+
+		if len(o) > 0 && o[0] == ':' {
+			// o = strings.ReplaceAll(o, " ", "_")
+			o = fmt.Sprintf(`<%s/%s>`, uriBase, o[1:])
+		} else if len(matches) > 2 {
+			prefix := matches[1]
+			id := matches[2]
+
+			uri := (*uriMap)[prefix]
+
+			// o = strings.ReplaceAll(id, " ", "_")
+			o = fmt.Sprintf(`<%s/%s>`, uri, id)
+		} else {
+			o = fmt.Sprintf(`<%s>`, o)
+		}
 	} else {
 		matches := prefixRe.FindStringSubmatch(o)
 		if len(o) > 0 && o[0] == ':' {
@@ -51,11 +89,16 @@ func NewTriple(s, p, o string, uriBase string, uriMap *map[string]string) Triple
 
 			o = strings.ReplaceAll(id, " ", "_")
 			o = fmt.Sprintf(`<%s/%s>`, uri, o)
-			slog.Info("HERE", "o", o, "map", uriMap)
 		} else if o != "true" && o != "false" {
 			o = fmt.Sprintf(`"%s"`, o)
 		}
 	}
+
+	/*
+		if isURI {
+			slog.Info("HERE", "uri", isURI, "before", was, "after", o)
+		}
+	*/
 
 	return Triple{s, p, o}
 }
@@ -210,12 +253,53 @@ func generateAnonID(uriBase string) string {
 	return fmt.Sprintf("%s/%d", uriBase, idCounter)
 }
 
+func tmp(uriBase string, key interface{}, uriMap *map[string]string) string {
+	subject := fmt.Sprintf("%s/%v", uriBase, key)
+
+	matches := prefixRe.FindStringSubmatch(key.(string))
+	slog.Info("!!!!!! MATCHES", "n", len(matches), "key", key)
+	if len(matches) > 2 {
+		prefix := matches[1]
+		id := matches[2]
+
+		uri := (*uriMap)[prefix]
+
+		slog.Info("New Subject!", "uri", prefix, "key", key)
+		subject = strings.ReplaceAll(id, " ", "_")
+		subject = fmt.Sprintf(`%s/%s`, uri, subject)
+	}
+
+	return subject
+}
+
 func YAMLtoRDF(key string, rawData interface{}, rootURI string, uriBase string, uriMap *map[string]string) []Triple {
 	triples := []Triple{}
+
+	/*
+		parts := strings.Split(rootURI, "/")
+		new := parts[len(parts)-1]
+		matches := prefixRe.FindStringSubmatch(new)
+
+		// slog.Info("!!!!!! MATCHES", "n", len(matches), "key", key)
+		if len(matches) > 2 {
+			prefix := matches[1]
+			id := matches[2]
+
+			uri := (*uriMap)[prefix]
+
+			slog.Info("New Subject!", "uri", prefix, "key", key)
+			new = strings.ReplaceAll(id, " ", "_")
+			new = fmt.Sprintf(`%s/%s`, uri, new)
+			slog.Info("NEW", "uri", new)
+		}
+		// slog.Info(rootURI)
+		// subject := fmt.Sprintf("%s/%v", uriBase, key)
+	*/
 
 	switch data := rawData.(type) {
 	case map[interface{}]interface{}:
 		for key, rawValue := range data {
+			// subject := tmp(uriBase, key, uriMap)
 			switch value := rawValue.(type) {
 			case map[interface{}]interface{}:
 				// id := generateAnonID()
@@ -245,6 +329,7 @@ func YAMLtoRDF(key string, rawData interface{}, rootURI string, uriBase string, 
 		}
 	case map[string]interface{}:
 		for key, rawValue := range data {
+			// subject := tmp(uriBase, key, uriMap)
 			switch value := rawValue.(type) {
 			case map[interface{}]interface{}:
 				// id := generateAnonID()
@@ -269,6 +354,7 @@ func YAMLtoRDF(key string, rawData interface{}, rootURI string, uriBase string, 
 			}
 		}
 	case []interface{}:
+		// subject := tmp(uriBase, key, uriMap)
 		for _, rawElement := range data {
 			// id := generateAnonID()
 

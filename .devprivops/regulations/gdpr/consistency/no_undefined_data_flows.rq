@@ -1,18 +1,18 @@
-PREFIX ex: <https://example.com/>
+PREFIX dfd: <https://devprivops.com/dfd/>
 
 SELECT ?dfId
 WHERE {
     {
-        ?_ ex:create ?dfId
+        ?_ dfd:create ?dfId
     } UNION {
-        ?_ ex:read ?dfId
+        ?_ dfd:read ?dfId
     } UNION {
-        ?_ ex:update ?dfId
+        ?_ dfd:update ?dfId
     } UNION {
-        ?_ ex:delete ?dfId
+        ?_ dfd:delete ?dfId
     }
     FILTER NOT EXISTS {
-        ex:ROOT ex:data_flows ?dfId 
+        dfd:ROOT dfd:data_flows ?dfId 
     }
 }
 

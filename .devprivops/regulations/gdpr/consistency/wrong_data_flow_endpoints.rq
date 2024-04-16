@@ -1,15 +1,15 @@
-PREFIX ex: <https://example.com/>
+PREFIX dfd: <https://devprivops.com/dfd/>
 
 SELECT ?df ?matchedPredicate ?serviceId
 WHERE {
   	{
-    	?df ex:from ?serviceId .
+    	?df dfd:from ?serviceId .
         BIND("from" AS ?matchedPredicate)
   	} UNION {
-        ?df ex:to ?serviceId .
+        ?df dfd:to ?serviceId .
         BIND("to" AS ?matchedPredicate)
     }
   	MINUS {
-        ex:ROOT ex:external_entities|ex:processes|ex:data_stores ?serviceId .
+        dfd:ROOT dfd:external_entities|dfd:processes|dfd:data_stores ?serviceId .
     }
 }

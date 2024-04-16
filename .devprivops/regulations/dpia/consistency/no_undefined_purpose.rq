@@ -1,19 +1,17 @@
-PREFIX ex: <https://example.com/>
-
-# NOTE: requires DFD
+PREFIX dpia: <https://devprivops.com/dpia/>
 
 SELECT ?purpose
 WHERE {
     {
-        ex:ROOT ex:personal_data/ex:purposes ?purpose .
+        dpia:ROOT dpia:personal_data/dpia:purposes ?purpose .
     } UNION {
-        ex:ROOT ex:personal_data_processing_whitelist ?purpose .
+        dpia:ROOT dpia:personal_data_processing_whitelist ?purpose .
     } UNION {
-        ex:ROOT ex:personal_data_processing_that_requires_DPIA ?purpose .
+        dpia:ROOT dpia:personal_data_processing_that_requires_DPIA ?purpose .
     } 
 
     FILTER NOT EXISTS {
-        ex:ROOT ex:processings ?processing .
-        ?processing ex:purposes ?purpose .
+        dpia:ROOT dpia:processings ?processing .
+        ?processing dpia:purposes ?purpose .
     }
 }

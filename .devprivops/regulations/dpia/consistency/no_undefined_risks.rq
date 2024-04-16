@@ -1,12 +1,10 @@
-PREFIX ex: <https://example.com/>
-
-# NOTE: requires DFD
+PREFIX dpia: <https://devprivops.com/dpia/>
 
 SELECT ?risk
 WHERE {
-    ex:ROOT ex:processings/ex:risks ?risk .
+    dpia:ROOT dpia:processings/dpia:risks ?risk .
     FILTER NOT EXISTS {
-        ex:ROOT ex:risks ?risk .
+        dpia:ROOT dpia:risks ?risk .
     }
 }
 

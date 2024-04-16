@@ -1,48 +1,48 @@
-PREFIX ex: <https://example.com/>
+PREFIX dpia: <https://devprivops.com/dpia/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
 # Based on Article 35
 
 SELECT *
 WHERE {
-    ex:ROOT ex:processings ?proc .
-    ?proc ex:risks ?risk .
+    dpia:ROOT dpia:processings ?proc .
+    ?proc dpia:risks ?risk .
 
     # 1 High risk
-    ?risk ex:impact ?impact . 
-    ?risk ex:likelyhood ?likelyhood . 
+    ?risk dpia:impact ?impact . 
+    ?risk dpia:likelyhood ?likelyhood . 
     BIND ((xsd:number(?impact) * xsd:number(?likelyhood)) AS ?riskFactor) .
 
     # 2 Seek advisory from DPO
     FILTER NOT EXISTS {
-        ?proc ex:supervirory_authority_veredict/ex:contact ?contact .
+        ?proc dpia:supervirory_authority_veredict/dpia:contact ?contact .
     }
 
     # 3 required if
     #   a) systematic monitoring, automated processing, profiling, produces legal effects
     FILTER NOT EXISTS {
-        ?proc ex:systematic_monitoring false .
-        ?proc ex:automated_decisions false .
-        ?proc ex:scores_users false . # REVIEW WHETHER THIS IS THE RIGHT PREDICATE
-        ?proc ex:legal_impact_for_the_user false .
+        ?proc dpia:systematic_monitoring false .
+        ?proc dpia:automated_decisions false .
+        ?proc dpia:scores_users false . # REVIEW WHETHER THIS IS THE RIGHT PREDICATE
+        ?proc dpia:legal_impact_for_the_user false .
     }
 
     #   b) processing in large scale of special categories or criminal convictions
     FILTER NOT EXISTS {
-        ?proc ex:large_scale_processing false .
+        ?proc dpia:large_scale_processing false .
         # TODO add categories
     }
 
     #   c) systematic monitoring
     FILTER NOT EXISTS {
-        ?proc ex:systematic_monitoring false .
+        ?proc dpia:systematic_monitoring false .
     }
 
     # 4 The supervisory authority says what kinds of processings require DPIA
-    ex:ROOT ex:personal_data_processing_that_requires_DPIA ?proc .
+    dpia:ROOT dpia:personal_data_processing_that_requires_DPIA ?proc .
 
     # 5 The supervisory authority says what kinds of processings DO NOT require DPIA
     FILTER NOT EXISTS {
-        ex:ROOT ex:personal_data_processing_whitelist ?proc .
+        dpia:ROOT dpia:personal_data_processing_whitelist ?proc .
     }
 }

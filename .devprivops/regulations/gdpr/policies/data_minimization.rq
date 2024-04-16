@@ -1,16 +1,16 @@
-PREFIX ex: <https://example.com/>
+PREFIX dfd: <https://devprivops.com/dfd/>
 
 SELECT ?df ?dest ?data
 WHERE {
-    ex:ROOT ex:data_flows ?df .
-    ?df ex:to ?dest .
-    ?df ex:data ?data
+    dfd:ROOT dfd:data_flows ?df .
+    ?df dfd:to ?dest .
+    ?df dfd:data ?data
 
     FILTER NOT EXISTS {
         {
-            ?dest ex:consumes ?data .
+            ?dest dfd:consumes ?data .
         } UNION {
-            ?dest ex:data_stored/ex:type ?data .
+            ?dest dfd:data_stored/dfd:type ?data .
         }
     }
 }

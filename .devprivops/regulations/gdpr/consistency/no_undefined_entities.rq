@@ -1,14 +1,19 @@
-PREFIX ex: <https://example.com/>
+PREFIX dfd: <https://devprivops.com/dfd/>
+PREFIX dpia: <https://devprivops.com/dpia/>
 
 SELECT ?eId
 WHERE {
     {
-        ?_ ex:vital_interest ?eId
+        ?_ dpia:vital_interest ?eId .
     } UNION {
-        ?_ ex:legitimate_interest ?eId
+        ?_ dpia:legitimate_interest ?eId .
     } 
 
     FILTER NOT EXISTS {
-        ex:ROOT ex:external_entities ?eId 
+        {
+            dfd:ROOT dfd:external_entities ?eId .
+        } UNION {
+            dfd:ROOT dfd:external_entities/dfd:categories ?eId .
+        }
     }
 }

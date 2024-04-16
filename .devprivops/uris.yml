@@ -1,13 +1,8 @@
-# - abreviation: ex
-#   uri: https://example.com
-#   files:
-#     - descriptions/main.dfd.yml
-#     - descriptions/main.dpia.yml
 - abreviation: dfd
-  uri: http://devprivops.com/dfd
+  uri: https://devprivops.com/dfd
   files:
     - descriptions/main.dfd.yml
 - abreviation: dpia
-  uri: http://devprivops.com/dpia
+  uri: https://devprivops.com/dpia
   files:
     - descriptions/main.dpia.yml

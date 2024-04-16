@@ -1,17 +1,18 @@
-PREFIX ex: <https://example.com/>
+PREFIX dfd: <https://devprivops.com/dfd/>
+PREFIX dpia: <https://devprivops.com/dpia/>
 
 # NOTE: requires DFD definition
 
 SELECT ?data ?dest
 WHERE {
-    ex:ROOT ex:personal_data ?data .
-    ?data ex:destinataries ?dest .
+    dpia:ROOT dpia:personal_data ?data .
+    ?data dpia:destinataries ?dest .
     FILTER NOT EXISTS {
         {
-            ex:ROOT ex:external_entities ?ent .
-            ?ent ex:categories ?dest .
+            dfd:ROOT dfd:external_entities ?ent .
+            ?ent dfd:categories ?dest .
         } UNION {
-            ex:ROOT ex:external_entities ?dest .
+            dfd:ROOT dfd:external_entities ?dest .
         }
     }
 }

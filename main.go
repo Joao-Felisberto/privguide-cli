@@ -66,7 +66,6 @@ func loadRep(dbManager *database.DBManager, file string, schemaFile string) erro
 		return uri_.Abreviation, uri_.URI
 	})
 
-	slog.Info("Check the map", "map", uriMap)
 	statusCode, err := dbManager.AddTriples(schema.YAMLtoRDF(
 		fmt.Sprintf("%s/ROOT", uri.URI),
 		dfd,

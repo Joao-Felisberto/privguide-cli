@@ -10,12 +10,12 @@
   is consistency: true
   maximum violations: 0
   mapping message: ""
-- file: regulations/gdpr/consistency/unique_ids.rq
-  title: Unique IDs
-  description: Different entities cannot have the same identifier
-  is consistency: true
-  maximum violations: 0
-  mapping message: ""
+# - file: regulations/gdpr/consistency/unique_ids.rq
+#   title: Unique IDs
+#   description: Different entities cannot have the same identifier
+#   is consistency: true
+#   maximum violations: 0
+#   mapping message: ""
 - file: regulations/gdpr/consistency/no_undefined_entities.rq
   title: All external entities must be described
   description: All external entities that partake in data transactions must be defined

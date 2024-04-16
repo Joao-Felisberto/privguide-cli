@@ -1,12 +1,12 @@
-PREFIX ex: <https://example.com/>
+PREFIX dfd: <https://devprivops.com/dfd/>
 
 SELECT ?dsId ?dtId
 WHERE {
-    ex:ROOT ex:data_stores ?dsId .
-    ?dsId ex:data_stored ?dt .
+    dfd:ROOT dfd:data_stores ?dsId .
+    ?dsId dfd:data_stored ?dt .
 	
-	?dt ex:type ?dtId .
-	?dt ex:location "browser" .
+	?dt dfd:type ?dtId .
+	?dt dfd:location "browser" .
     
-	?dtId ex:categories ex:sensitive .
+	?dtId dfd:categories dfd:sensitive .
 }
