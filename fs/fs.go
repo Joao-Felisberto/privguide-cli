@@ -30,9 +30,9 @@ func GetFile(relativePath string) (string, error) {
 	return localPath, nil
 }
 
-func GetDescriptions() ([]string, error) {
-	localPath := fmt.Sprintf("./.%s/descriptions/", appName)
-	defaultPath := fmt.Sprintf("/etc/%s/descriptions/", appName)
+func GetDescriptions(root string) ([]string, error) {
+	localPath := fmt.Sprintf("./.%s/%s/", appName, root)
+	defaultPath := fmt.Sprintf("/etc/%s/%s/", appName, root)
 
 	files := []string{}
 
@@ -43,7 +43,7 @@ func GetDescriptions() ([]string, error) {
 
 	for _, e := range entries {
 		// fpath := fmt.Sprintf("%s%s", localPath, e.Name())
-		files = append(files, fmt.Sprintf("descriptions/%s", e.Name()))
+		files = append(files, fmt.Sprintf("%s/%s", root, e.Name()))
 	}
 
 	entries, err = os.ReadDir(defaultPath)
@@ -53,7 +53,7 @@ func GetDescriptions() ([]string, error) {
 
 	for _, e := range entries {
 		// fpath := fmt.Sprintf("%s%s", defaultPath, e.Name())
-		files = append(files, fmt.Sprintf("descriptions/%s", e.Name()))
+		files = append(files, fmt.Sprintf("%s/%s", root, e.Name()))
 	}
 
 	return files, nil

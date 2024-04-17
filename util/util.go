@@ -42,3 +42,13 @@ func MapToMap[T any, K comparable, V any](list []T, mapper func(T) (K, V)) map[K
 
 	return res
 }
+
+func Any[T any](list []T, condition func(T) bool) bool {
+	for _, e := range list {
+		if condition(e) {
+			return true
+		}
+	}
+
+	return false
+}

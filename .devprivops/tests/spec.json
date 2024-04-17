@@ -1,0 +1,11 @@
+[
+    {
+        "stateDir": "tests/scenario1",
+        "tests": [
+            {
+                "query": "regulations/asvs/consistency/no_undefined_caches.rq",
+                "expectedResult": []
+            }
+        ]
+    }
+]

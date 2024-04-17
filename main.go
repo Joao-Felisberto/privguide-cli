@@ -8,7 +8,8 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
-	"slices"
+	"reflect"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -29,23 +30,21 @@ func getURIMetadata() (*[]database.URIMetadata, error) {
 		return nil, err
 	}
 
-	return database.FromFile(uriFile)
+	return database.URIsFromFile(uriFile)
 }
 
 func loadRep(dbManager *database.DBManager, file string, schemaFile string) error {
-	dfdFname, err := fs.GetFile(file)
+	repName, err := fs.GetFile(file)
 	if err != nil {
 		return err
 	}
-	dfdSchemaFname, err := fs.GetFile(schemaFile)
+	repSchemaFname, err := fs.GetFile(schemaFile)
 	if err != nil {
 		return err
 	}
-	dfd, err := schema.ReadYAML(
-		//		fmt.Sprintf("./.%s/dfd/dfd.yml", appName),
-		//		fmt.Sprintf("./.%s/dfd/dfd-schema.json", appName),
-		dfdFname,
-		dfdSchemaFname,
+	rep, err := schema.ReadYAML(
+		repName,
+		repSchemaFname,
 	)
 	if err != nil {
 		return err
@@ -56,7 +55,8 @@ func loadRep(dbManager *database.DBManager, file string, schemaFile string) erro
 		return err
 	}
 	uris := util.Filter(*uriMetadata, func(metadata database.URIMetadata) bool {
-		return slices.Contains(metadata.Files, file)
+		// return slices.Contains(metadata.Files, file)
+		return util.Any(metadata.Files, func(r *regexp.Regexp) bool { return r.MatchString(file) })
 	})
 	if len(uris) == 0 {
 		return fmt.Errorf("no base uri for '%s', please add it to 'uris.yml'", file)
@@ -68,7 +68,7 @@ func loadRep(dbManager *database.DBManager, file string, schemaFile string) erro
 
 	statusCode, err := dbManager.AddTriples(schema.YAMLtoRDF(
 		fmt.Sprintf("%s/ROOT", uri.URI),
-		dfd,
+		rep,
 		fmt.Sprintf("%s/ROOT", uri.URI),
 		uri.URI,
 		&uriMap,
@@ -86,8 +86,8 @@ func loadRep(dbManager *database.DBManager, file string, schemaFile string) erro
 	return nil
 }
 
-func loadRepresentations(dbManager *database.DBManager) error {
-	entries, err := fs.GetDescriptions()
+func loadRepresentations(dbManager *database.DBManager, root string) error {
+	entries, err := fs.GetDescriptions(root)
 	if err != nil {
 		return err
 	}
@@ -409,7 +409,7 @@ func analyse(cmd *cobra.Command, args []string) error {
 	report := map[string]interface{}{}
 
 	// 1. Load DFD into DB
-	if err = loadRepresentations(&dbManager); err != nil {
+	if err = loadRepresentations(&dbManager, "descriptions"); err != nil {
 		return err
 	}
 
@@ -519,6 +519,80 @@ func analyse(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+func runScenario(dbManager *database.DBManager, scenario database.TestScenario) error {
+	dbManager.CleanDB()
+	slog.Info("Loading scenario", "scenario", scenario.StateDir)
+
+	err := loadRepresentations(dbManager, scenario.StateDir)
+	if err != nil {
+		return err
+	}
+
+	for _, t := range scenario.Tests {
+		slog.Info("Running test", "test", t.Query)
+		res, err := dbManager.ExecuteQueryFile(t.Query)
+		if err != nil {
+			return err
+		}
+
+		if !reflect.DeepEqual(res, t.ExpectedResult) {
+			return fmt.Errorf("result of '%s' does not match expectations: got '%s', expected '%s'", t.Query, res, t.ExpectedResult)
+		}
+	}
+
+	slog.Info("All tests passed!", "scenario", scenario.StateDir)
+	return nil
+}
+
+func test(cmd *cobra.Command, args []string) error {
+	username := args[0]
+	password := args[1]
+	ip := args[2]
+	port, err := strconv.Atoi(args[3])
+	if err != nil {
+		return err
+	}
+	dataset := args[4]
+
+	dbManager := database.NewDBManager(
+		username,
+		password,
+		ip,
+		port,
+		dataset,
+	)
+
+	// 1. Load data
+
+	testFile, err := fs.GetFile("tests/spec.json")
+	if err != nil {
+		return err
+	}
+
+	tests, err := database.TestsFromFile(testFile)
+	if err != nil {
+		return err
+	}
+
+	/*
+		a, err := json.MarshalIndent(tests, "", " ")
+		if err != nil {
+			return err
+		}
+		fmt.Println(string(a))
+	*/
+
+	// 2. For each scenario, run the tests
+	for _, t := range tests {
+		err := runScenario(&dbManager, t)
+		if err != nil {
+			return fmt.Errorf("test failed for scenario '%s': %s", t.StateDir, err)
+		}
+	}
+
+	return nil
+}
+
 func main() {
 	appName := "devprivops"
 	reportEndpoint := ""
@@ -538,19 +612,17 @@ func main() {
 		RunE:  analyse,
 	}
 
-	var devCmd = &cobra.Command{
-		Use:   "dev",
-		Short: "Development tests only",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			slog.Info("Running development command")
-			return nil
-		},
+	var testCmd = &cobra.Command{
+		Use:   "test",
+		Short: "Tests the queries against user-defined scenarios",
+		Args:  cobra.ExactArgs(5),
+		RunE:  test,
 	}
 
 	analyseCmd.Flags().StringVar(&reportEndpoint, REPORT_ENDPOINT_FLAG_NAME, "", "Endpoint where to send the final report")
 
 	rootCmd.AddCommand(analyseCmd)
-	rootCmd.AddCommand(devCmd)
+	rootCmd.AddCommand(testCmd)
 
 	if err := rootCmd.Execute(); err != nil {
 		slog.Error(err.Error())
