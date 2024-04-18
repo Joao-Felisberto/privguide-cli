@@ -1,8 +1,8 @@
 - abreviation: dfd
   uri: https://devprivops.com/dfd
   files:
-    - descriptions/.*\.dfd\.yml
+    - .*\.dfd\.yml
 - abreviation: dpia
   uri: https://devprivops.com/dpia
   files:
-    - descriptions/.*\.dpia\.yml
+    - .*\.dpia\.yml

@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"reflect"
 )
 
 type TestScenario struct {
@@ -13,8 +12,8 @@ type TestScenario struct {
 }
 
 type Test struct {
-	Query          string      `json:"query"`
-	ExpectedResult interface{} `json:"expectedResult"`
+	Query          string                   `json:"query"`
+	ExpectedResult []map[string]interface{} `json:"expectedResult"`
 }
 
 func TestsFromFile(file string) ([]TestScenario, error) {
@@ -30,8 +29,4 @@ func TestsFromFile(file string) ([]TestScenario, error) {
 	}
 
 	return tests, nil
-}
-
-func (t *Test) IsValidResult(actual interface{}) bool {
-	return reflect.DeepEqual(t.ExpectedResult, actual)
 }

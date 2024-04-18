@@ -174,7 +174,7 @@ func (db *DBManager) ExecuteQueryFile(file string) ([]map[string]interface{}, er
 		return nil, errors.New("bindings not found in response")
 	}
 
-	var binds []map[string]interface{}
+	binds := []map[string]interface{}{}
 	for _, bind := range bindings {
 		bindMap, ok := bind.(map[string]interface{})
 		if !ok {
@@ -186,7 +186,6 @@ func (db *DBManager) ExecuteQueryFile(file string) ([]map[string]interface{}, er
 		binds = append(binds, bindMap)
 	}
 
-	// fmt.Printf("BEFORE: %d\n", len(binds))
 	return binds, nil
 }
 

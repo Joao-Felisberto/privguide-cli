@@ -530,13 +530,17 @@ func runScenario(dbManager *database.DBManager, scenario database.TestScenario) 
 
 	for _, t := range scenario.Tests {
 		slog.Info("Running test", "test", t.Query)
-		res, err := dbManager.ExecuteQueryFile(t.Query)
+		file, err := fs.GetFile(t.Query)
 		if err != nil {
-			return err
+			return fmt.Errorf("error reading test file '%s': %s", t.Query, err)
+		}
+		res, err := dbManager.ExecuteQueryFile(file)
+		if err != nil {
+			return fmt.Errorf("error running test '%s': %s", file, err)
 		}
 
-		if !reflect.DeepEqual(res, t.ExpectedResult) {
-			return fmt.Errorf("result of '%s' does not match expectations: got '%s', expected '%s'", t.Query, res, t.ExpectedResult)
+		if !reflect.DeepEqual(t.ExpectedResult, res) {
+			return fmt.Errorf("result of '%s' does not match expectations: got '%v', expected '%v'", file, res, t.ExpectedResult)
 		}
 	}
 
