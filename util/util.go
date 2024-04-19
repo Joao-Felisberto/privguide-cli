@@ -1,5 +1,12 @@
 package util
 
+import (
+	"log/slog"
+	"os"
+	"path/filepath"
+	"strings"
+)
+
 func Map[T1 any, T2 any](arr []T1, mapper func(T1) T2) []T2 {
 	new := []T2{}
 
@@ -51,4 +58,32 @@ func Any[T any](list []T, condition func(T) bool) bool {
 	}
 
 	return false
+}
+
+func CreateFileWithData(filePath string, data string) error {
+	path := strings.Split(filePath, "/")
+	if len(path) > 1 {
+		dirs := path[:len(path)-1]
+
+		err := os.MkdirAll(filepath.Join(dirs...), os.ModePerm)
+		if err != nil {
+			return err
+		}
+	}
+
+	err := os.WriteFile(filePath, []byte(data), 0666)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func DeleteFileAndParentPath(filePath string) {
+	path := strings.Split(filePath, "/")
+	for i := len(path); i >= 0; i-- {
+		path := filepath.Join(path[:i]...)
+		slog.Info("deleting", "full", filePath, "to delete", path)
+		os.Remove(path)
+	}
 }

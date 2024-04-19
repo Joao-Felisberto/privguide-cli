@@ -24,40 +24,42 @@ type AttackNode struct {
 	ExecutionStatus ExecutionStatus
 }
 
-func (node *AttackNode) SetExecutionStatus(status ExecutionStatus) {
-	node.ExecutionStatus = status
-}
-
 type AttackTree struct {
 	Root AttackNode
 }
 
+func (node *AttackNode) SetExecutionStatus(status ExecutionStatus) {
+	node.ExecutionStatus = status
+}
+
 func parseNode(data interface{}) (*AttackNode, error) {
 	switch node := data.(type) {
-	case map[string]interface{}: // , map[interface{}]interface{}:
-		description, descOk := node["description"].(string)
-		query, queryOk := node["query"].(string)
-		childrenData, childrenOk := node["children"].([]interface{})
+	/*
+		case map[string]interface{}: // , map[interface{}]interface{}:
+			description, descOk := node["description"].(string)
+			query, queryOk := node["query"].(string)
+			childrenData, childrenOk := node["children"].([]interface{})
 
-		if !descOk || !queryOk || !childrenOk {
-			return nil, errors.New("missing required fields in node")
-		}
-
-		children := make([]*AttackNode, len(childrenData))
-		for i, childData := range childrenData {
-			childNode, err := parseNode(childData)
-			if err != nil {
-				return nil, fmt.Errorf("error parsing child node: %w", err)
+			if !descOk || !queryOk || !childrenOk {
+				return nil, errors.New("missing required fields in node")
 			}
-			children[i] = childNode
-		}
 
-		return &AttackNode{
-			Description:     description,
-			Query:           query,
-			Children:        children,
-			ExecutionStatus: NOT_EXECUTED,
-		}, nil
+			children := make([]*AttackNode, len(childrenData))
+			for i, childData := range childrenData {
+				childNode, err := parseNode(childData)
+				if err != nil {
+					return nil, fmt.Errorf("error parsing child node: %w", err)
+				}
+				children[i] = childNode
+			}
+
+			return &AttackNode{
+				Description:     description,
+				Query:           query,
+				Children:        children,
+				ExecutionStatus: NOT_EXECUTED,
+			}, nil
+	*/
 	case map[interface{}]interface{}:
 		description, descOk := node["description"].(string)
 		query, queryOk := node["query"].(string)
@@ -93,11 +95,10 @@ func NewAttackTreeFromYaml(yamlFile string, atkTreeSchema string) (*AttackTree, 
 		return nil, err
 	}
 
-	// fmt.Printf("%s\n", reflect.TypeOf(yamlTree))
-
 	rootNode, err := parseNode(yamlTree)
 	if err != nil {
 		return nil, err
 	}
+
 	return &AttackTree{Root: *rootNode}, nil
 }

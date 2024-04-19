@@ -7,6 +7,21 @@ import (
 	attacktree "github.com/Joao-Felisberto/devprivops/attack_tree"
 )
 
+func TestSetExecutionStatus(t *testing.T) {
+	node := attacktree.AttackNode{
+		Description:     "",
+		Query:           "",
+		Children:        []*attacktree.AttackNode{},
+		ExecutionStatus: attacktree.NOT_EXECUTED,
+	}
+
+	node.SetExecutionStatus(attacktree.POSSIBLE)
+
+	if node.ExecutionStatus != attacktree.POSSIBLE {
+		t.Errorf("Actual execution status is not 'POSSIBLE' but '%#v'", node.ExecutionStatus)
+	}
+}
+
 func TestNewAttackTreeFromYaml(t *testing.T) {
 	fileData := `
 description: R
