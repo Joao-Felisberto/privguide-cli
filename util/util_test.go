@@ -81,6 +81,36 @@ func TestAny(t *testing.T) {
 	}
 }
 
+func TestCompareSets(t *testing.T) {
+	set1 := []int{1, 2, 3}
+	set2 := []int{1, 2, 3}
+
+	if !util.CompareSets(set1, set2) {
+		t.Errorf("Sets should be equal: %d %d", set1, set2)
+	}
+
+	set1 = []int{1, 2}
+	if util.CompareSets(set1, set2) {
+		t.Errorf("Sets should be different: set1 has less elements: %d %d", set1, set2)
+	}
+
+	set1 = []int{1, 2, 1000}
+	if util.CompareSets(set1, set2) {
+		t.Errorf("Sets should be different: set1 has an element not present in set2: %d %d", set1, set2)
+	}
+	set1 = []int{1, 2, 3}
+
+	set2 = []int{1, 2}
+	if util.CompareSets(set1, set2) {
+		t.Errorf("Sets should be different: set2 has less elements: %d %d", set1, set2)
+	}
+
+	set2 = []int{1, 2, 1000}
+	if util.CompareSets(set1, set2) {
+		t.Errorf("Sets should be different: set2 has an element not present in set2: %d %d", set1, set2)
+	}
+}
+
 func TestCreateFileWithData(t *testing.T) {
 	for _, f := range []string{"file.txt", "./some/file.txt", "./some/dir/and/file.txt"} {
 		err := util.CreateFileWithData(f, "data")

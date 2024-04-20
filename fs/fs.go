@@ -18,10 +18,18 @@ import (
 const appName = "devprivops"
 
 func GetFile(relativePath string) (string, error) {
-	localPath := fmt.Sprintf("./.%s/%s", appName, relativePath)
+	return getFile(
+		relativePath,
+		fmt.Sprintf("./.%s", appName),
+		fmt.Sprintf("/etc/%s", appName),
+	)
+}
+
+func getFile(relativePath string, localRoot string, globalRoot string) (string, error) {
+	localPath := fmt.Sprintf("%s/%s", localRoot, relativePath)
 	if _, err := os.Stat(localPath); errors.Is(err, os.ErrNotExist) {
 		// path/to/whatever does not exist
-		defaultPath := fmt.Sprintf("/etc/%s/%s", appName, relativePath)
+		defaultPath := fmt.Sprintf("%s/%s", globalRoot, relativePath)
 		if _, err := os.Stat(defaultPath); errors.Is(err, os.ErrNotExist) {
 			return "", err
 		}
@@ -30,9 +38,17 @@ func GetFile(relativePath string) (string, error) {
 	return localPath, nil
 }
 
-func GetDescriptions(root string) ([]string, error) {
-	localPath := fmt.Sprintf("./.%s/%s/", appName, root)
-	defaultPath := fmt.Sprintf("/etc/%s/%s/", appName, root)
+func GetDescriptions(descriptionRoot string) ([]string, error) {
+	return getDescriptions(
+		descriptionRoot,
+		fmt.Sprintf("./.%s", appName),
+		fmt.Sprintf("/etc/%s", appName),
+	)
+}
+
+func getDescriptions(descriptionRoot string, localRoot string, globalRoot string) ([]string, error) {
+	localPath := fmt.Sprintf("%s/%s/", localRoot, descriptionRoot)
+	globalPath := fmt.Sprintf("%s/%s/", globalRoot, descriptionRoot)
 
 	files := []string{}
 
@@ -42,26 +58,31 @@ func GetDescriptions(root string) ([]string, error) {
 	}
 
 	for _, e := range entries {
-		// fpath := fmt.Sprintf("%s%s", localPath, e.Name())
-		files = append(files, fmt.Sprintf("%s/%s", root, e.Name()))
+		files = append(files, fmt.Sprintf("%s/%s", descriptionRoot, e.Name()))
 	}
 
-	entries, err = os.ReadDir(defaultPath)
+	entries, err = os.ReadDir(globalPath)
 	if err != nil {
 		return files, nil
 	}
 
 	for _, e := range entries {
-		// fpath := fmt.Sprintf("%s%s", defaultPath, e.Name())
-		files = append(files, fmt.Sprintf("%s/%s", root, e.Name()))
+		files = append(files, fmt.Sprintf("%s/%s", descriptionRoot, e.Name()))
 	}
 
 	return files, nil
 }
 
 func GetRegulations() ([]string, error) {
-	localPath := fmt.Sprintf("./.%s/regulations/", appName)
-	defaultPath := fmt.Sprintf("/etc/%s/regulations/", appName)
+	return getRegulations(
+		fmt.Sprintf("./.%s", appName),
+		fmt.Sprintf("/etc/%s", appName),
+	)
+}
+
+func getRegulations(localRoot string, globalRoot string) ([]string, error) {
+	localPath := fmt.Sprintf("%s/regulations/", localRoot)
+	defaultPath := fmt.Sprintf("%s/regulations/", globalRoot)
 
 	files := []string{}
 

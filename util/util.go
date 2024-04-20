@@ -4,6 +4,7 @@ import (
 	"log/slog"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 )
 
@@ -58,6 +59,20 @@ func Any[T any](list []T, condition func(T) bool) bool {
 	}
 
 	return false
+}
+
+func CompareSets[T comparable](set1 []T, set2 []T) bool {
+	if len(set1) != len(set2) {
+		return false
+	}
+
+	for _, e := range set1 {
+		if !slices.Contains(set2, e) {
+			return false
+		}
+	}
+
+	return true
 }
 
 func CreateFileWithData(filePath string, data string) error {
