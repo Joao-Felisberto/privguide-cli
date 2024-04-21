@@ -54,7 +54,7 @@ func TestMapToMap(t *testing.T) {
 		{"b", 2},
 	}
 
-	stringIntMap := util.MapToMap(stringIntPairs, func(p struct {
+	stringIntMap := util.ArrayToMap(stringIntPairs, func(p struct {
 		s string
 		i int
 	}) (string, int) {

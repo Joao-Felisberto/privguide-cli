@@ -9,12 +9,18 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+// Represents each URI and the metadata associated with it
 type URIMetadata struct {
-	Abreviation string
-	URI         string
-	Files       []*regexp.Regexp
+	Abreviation string           // The abreviated form of the URI
+	URI         string           // The complete URI
+	Files       []*regexp.Regexp // The regex that files in which all entities should have this uri by default match
 }
 
+// Fetches all URI information from the given file
+//
+// `file`: The file with the URIs
+//
+// returns: the list of URIs or an error when the file could not be read or parsed
 func URIsFromFile(file string) (*[]URIMetadata, error) {
 	rawData, err := os.ReadFile(file)
 	if err != nil {

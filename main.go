@@ -1,3 +1,4 @@
+// Program entry point
 package main
 
 import (
@@ -11,6 +12,7 @@ import (
 
 // const REPORT_ENDPOINT_FLAG_NAME = "report-endpoint"
 
+// Builds the command and delegates execution to the appropriate function from the cmd package
 func main() {
 	appName := "devprivops"
 	reportEndpoint := ""

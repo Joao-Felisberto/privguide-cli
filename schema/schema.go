@@ -1,3 +1,4 @@
+// Utilities to read YAML and validate it against a provided JSON schema
 package schema
 
 import (
@@ -12,16 +13,31 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+// Regex for identifying ids in the application format and separating the URI root from the identifier
 var prefixRe = regexp.MustCompile(`^([a-zA-Z]+):(.*)`)
 
-type YAMLVal interface{ int | string }
-
+// Represents a triple of subject, predicate and object.
 type Triple struct {
-	Subject   string
-	Predicate string
-	Object    interface{}
+	Subject   string      // The triple's subject
+	Predicate string      // The triple's predicate
+	Object    interface{} // The triple's object
 }
 
+// Creates a new triple upholding the following rules:
+//   - subject and predicate have to be a URI
+//   - predicate can either be a URI or a primitive data type
+//
+// `s`: the subject
+//
+// `p`: the predicate
+//
+// `o`: the object
+//
+// `uriBase`: the base for URIs whose base is not specified
+//
+// `uriMap`: map of all URI prefixes and their expanded form
+//
+// returns: A triple
 func NewTriple(s, p, o string, uriBase string, uriMap *map[string]string) Triple {
 	isURI := s[0] == '<' && s[len(s)-1] == '>'
 	if !isURI {
@@ -92,8 +108,14 @@ func NewTriple(s, p, o string, uriBase string, uriMap *map[string]string) Triple
 	return Triple{s, p, o}
 }
 
+// Internal counter of non specified IDs
 var idCounter int
 
+// Pre processes the yaml data to be in a format that can be manipulated
+//
+// `data`: The raw YAML data
+//
+// returns: The data in a processable format
 func convertToJSON(data interface{}) interface{} {
 	switch v := data.(type) {
 	case map[interface{}]interface{}:
@@ -116,8 +138,14 @@ func convertToJSON(data interface{}) interface{} {
 	}
 }
 
+// Reads a YAML file and validates it against a schema
+//
+// `yamlFile`: The path to the yaml file to read
+//
+// `schemaFile`: The path to the json schema the yaml file should follow. If "", there is no schema validation
+//
+// returns: the YAML data or an error if the file or schema could not be read or the schema could not be validated
 func ReadYAML(yamlFile string, schemaFile string) (interface{}, error) {
-
 	yamlData, err := os.ReadFile(yamlFile)
 	if err != nil {
 		return nil, fmt.Errorf("error reading file: %s", err)
@@ -144,6 +172,13 @@ func ReadYAML(yamlFile string, schemaFile string) (interface{}, error) {
 	return rawData, nil
 }
 
+// Reads a YAML file and validates it against a schema
+//
+// `yamlFile`: The path to the yaml file to read
+//
+// `schemaFile`: The path to the json schema the yaml file should follow. If "", there is no schema validation
+//
+// returns: the schema validation results or an error if the file or schema could not be read or the schema could not be validated
 func ValidateYAMLAgainstSchema(yamlFile string, schemaFile string) (*gojsonschema.Result, error) {
 	// Load JSON schema
 	schemaLoader := gojsonschema.NewReferenceLoader("file://" + schemaFile)
@@ -178,6 +213,12 @@ func ValidateYAMLAgainstSchema(yamlFile string, schemaFile string) (*gojsonschem
 	return result, nil
 }
 
+// Generate a new anonymous id with the given uri base. The counter is global and not per-base.
+// Increments an internal global counter every time it runs.
+//
+// `uriBase`: The base of the returned URI
+//
+// returns: the URI
 func generateAnonID(uriBase string) string {
 	idCounter++
 	return fmt.Sprintf("%s/%d", uriBase, idCounter)

@@ -1,17 +1,24 @@
 package database
 
+// Describes a user story and its associated requirements
 type UserStory struct {
-	UseCase      string
-	IsMisuseCase bool
-	Requirements []Requirement
+	UseCase      string        // The use case name
+	IsMisuseCase bool          // Whether it should be regarded as a misuse case
+	Requirements []Requirement // The list of requirements to be satisfied
 }
 
+// Describes a requirement
 type Requirement struct {
-	Title       string
-	Description string
-	Query       string
+	Title       string // The requirement's title
+	Description string // Its description
+	Query       string // The query that encodes the requirement validation
 }
 
+// Reads the user stories from a map.
+//
+// `yaml`: The map with the requirement data
+//
+// returns: the list of user stories or an error when the map parsed
 func USFromYAML(yaml []interface{}) ([]*UserStory, error) {
 	userStories := []*UserStory{}
 	for _, usRaw := range yaml {

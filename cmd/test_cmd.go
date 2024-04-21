@@ -11,6 +11,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Executes all tests for a given scenario
+//
+// `dbManager`: The DBManager connecting to the database
+//
+// `scenario`: The scenario whose tests are to be executed
+//
+// returns: error if tehre was any error reading files or validating their schemas, connecting to the database or executing queries
 func runScenario(dbManager *database.DBManager, scenario database.TestScenario) error {
 	dbManager.CleanDB()
 	slog.Info("Loading scenario", "scenario", scenario.StateDir)
@@ -40,6 +47,14 @@ func runScenario(dbManager *database.DBManager, scenario database.TestScenario) 
 	return nil
 }
 
+// Main entry point to the test command.
+// Run all the tests of each scenario.
+//
+// `cmd`: The cobra command
+//
+// `args`: The args of said command
+//
+// returns: an error when reading any of the scenarios fails
 func Test(cmd *cobra.Command, args []string) error {
 	username := args[0]
 	password := args[1]

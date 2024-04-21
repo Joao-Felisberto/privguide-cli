@@ -1,3 +1,4 @@
+// Package for each of the commands' internal logic
 package cmd
 
 import (
@@ -20,6 +21,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Run all reasoner rules
+//
+// # The reasoner rules live under the `reasoner` subdirectory under each configuration directory
+//
+// `dbManager`: The DBManager connecting to the database
+//
+// returns: an error when the rule could not be read from the file or run
 func reasoner(dbManager *database.DBManager) error {
 	slog.Info("===Reasoner Rules===")
 	reasonDir, err := fs.GetFile("reasoner")
@@ -43,6 +51,12 @@ func reasoner(dbManager *database.DBManager) error {
 	return nil
 }
 
+// Runs all policies of a regulation
+//
+// `dbManager`: The DBManager connecting to the database
+// `regulation`: The path to the regulation (relative to the regulations path)
+//
+// returns: the execution report if everything succeeds, or an error when the policy could not be read from the file, does not abide by the schema, or has execution errors
 func policies(dbManager *database.DBManager, regulation string) (map[string]interface{}, error) {
 	slog.Info("===Policy Compliance===")
 	polFile, err := fs.GetFile(fmt.Sprintf("regulations/%s/policies.yml", regulation))
@@ -108,6 +122,11 @@ func policies(dbManager *database.DBManager, regulation string) (map[string]inte
 	return report, nil
 }
 
+// Execute all the attack/harm trees
+//
+// `dbManager`: The DBManager connecting to the database
+//
+// returns: the execution report if everything succeeds, or an error when the tree could not be read from the file or does not abide by the schema
 func attackTrees(dbManager *database.DBManager) (map[string]interface{}, error) {
 	slog.Info("===Attack Trees===")
 	atkDir, err := fs.GetFile("attack_trees/descriptions/")
@@ -144,6 +163,11 @@ func attackTrees(dbManager *database.DBManager) (map[string]interface{}, error) 
 	return report, nil
 }
 
+// Takes the report and validates whether the system has only acceptable flaws and can pass to the next steps of the pipeline
+//
+// `report`: the final report
+//
+// returns: the list of unacceptable violations
 func validateReport(report *map[string]interface{}) []string {
 	regulations := (*report)["policies"].(map[string]interface{})
 	violated := []string{}
@@ -163,6 +187,11 @@ func validateReport(report *map[string]interface{}) []string {
 	return violated
 }
 
+// Runs the requirements queries to check whether or not the system supports the implementation of the requirements
+//
+// `dbManager`: The DBManager connecting to the database
+//
+// returns: the execution report if everything succeeds, or an error when the requirements could not be read from the file or does not abide by the schema, or the execution of a requirement was not cmopleted successfully
 func verifyRequirements(dbManager *database.DBManager) (*map[string]interface{}, error) {
 	requirementsFile, err := fs.GetFile("requirements/requirements.yml")
 	if err != nil {
@@ -213,6 +242,11 @@ func verifyRequirements(dbManager *database.DBManager) (*map[string]interface{},
 	return &report, nil
 }
 
+// Runs the queries for extra data to be included in the report
+//
+// `dbManager`: The DBManager connecting to the database
+//
+// returns: the execution report if everything succeeds, or an error when the queries could not be read from the file or does not abide by the schema, or the execution of a query was not completed successfully
 func getExtraData(dbManager *database.DBManager) (*[]map[string]interface{}, error) {
 	slog.Info("===Extra Data===")
 
@@ -256,6 +290,13 @@ func getExtraData(dbManager *database.DBManager) (*[]map[string]interface{}, err
 	return &report, nil
 }
 
+// Sends the provided report through HTTP to a server  that can read it
+//
+// `url`: The server URL
+//
+// `report`: The report to send
+//
+// returns: an error if there are issues sending the report
 func sendReport(url string, report *map[string]interface{}) error {
 	// Read report.json file
 	reportData, err := os.ReadFile("report.json")
@@ -273,6 +314,24 @@ func sendReport(url string, report *map[string]interface{}) error {
 	return nil
 }
 
+// Main entry point for the `analyse` command
+// Analyse the system descriptions to know whether the system abides by the provided rules
+//
+// The execution flow is as follows:
+//  1. Load DFD into DB
+//  2. Run all the reasoner rules
+//  3. Verify policy compliance
+//  4. Run all attack trees
+//  7. Check whether the violations are acceptable
+//  8. Validate whether requirements are met
+//  9. Get extra data
+//  10. Send the report to the site
+//
+// `cmd`: The cobra command
+//
+// `args`: The args of said command
+//
+// returns: an error when any of the phases fails
 func Analyse(cmd *cobra.Command, args []string) error {
 	username := args[0]
 	password := args[1]

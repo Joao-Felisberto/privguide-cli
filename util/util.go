@@ -1,3 +1,4 @@
+// Miscelaneous utilities used in the project
 package util
 
 import (
@@ -8,6 +9,13 @@ import (
 	"strings"
 )
 
+// The generic iterator map function
+//
+// `arr`: the original array
+//
+// `mapper`: the function used to map each element
+//
+// returns: the array containing the result of applying the `mapper` function to each element of `arr`
 func Map[T1 any, T2 any](arr []T1, mapper func(T1) T2) []T2 {
 	new := []T2{}
 
@@ -18,11 +26,18 @@ func Map[T1 any, T2 any](arr []T1, mapper func(T1) T2) []T2 {
 	return new
 }
 
-func Filter[T any](arr []T, filterFn func(T) bool) []T {
+// The generic iterator filter function
+//
+// `arr`: the original array from which to filter
+//
+// `filter`: The function that decides whether an element should be in the final array
+//
+// returns: The elements of `arr` for which `filter` returned `true`
+func Filter[T any](arr []T, filter func(T) bool) []T {
 	new := []T{}
 
 	for _, e := range arr {
-		if filterFn(e) {
+		if filter(e) {
 			new = append(new, e)
 		}
 	}
@@ -30,6 +45,11 @@ func Filter[T any](arr []T, filterFn func(T) bool) []T {
 	return new
 }
 
+// Cast a generic map into a map of a specific key and value types. Errors will make the function panic
+//
+// `m`: The map to convert
+//
+// returns: The converted map
 func MapCast[K comparable, V any](m map[interface{}]interface{}) map[K]V {
 	newMap := map[K]V{}
 
@@ -40,10 +60,17 @@ func MapCast[K comparable, V any](m map[interface{}]interface{}) map[K]V {
 	return newMap
 }
 
-func MapToMap[T any, K comparable, V any](list []T, mapper func(T) (K, V)) map[K]V {
+// Converts an array into a map through a mapping function that returns a key-value pair
+//
+// `arr`: The starting array
+//
+// `mapper`: The function to map an element of the array into a key-value pair
+//
+// returns: The map of keys to values
+func ArrayToMap[T any, K comparable, V any](arr []T, mapper func(T) (K, V)) map[K]V {
 	res := map[K]V{}
 
-	for _, e := range list {
+	for _, e := range arr {
 		k, v := mapper(e)
 		res[k] = v
 	}
@@ -51,8 +78,15 @@ func MapToMap[T any, K comparable, V any](list []T, mapper func(T) (K, V)) map[K
 	return res
 }
 
-func Any[T any](list []T, condition func(T) bool) bool {
-	for _, e := range list {
+// Finds out whether at least one element of an array
+//
+// `arr`: the array
+//
+// `condition`: the function at least one element of the array should obbey
+//
+// returns: Whether at least one element of the array obeys the condition
+func Any[T any](arr []T, condition func(T) bool) bool {
+	for _, e := range arr {
 		if condition(e) {
 			return true
 		}
@@ -61,6 +95,13 @@ func Any[T any](list []T, condition func(T) bool) bool {
 	return false
 }
 
+// Compares two arrays disregarding order, as if they were sets
+//
+// `set1`: the first array
+//
+// `set2`: the second array
+//
+// returns: whether the sets are equal
 func CompareSets[T comparable](set1 []T, set2 []T) bool {
 	if len(set1) != len(set2) {
 		return false
@@ -75,6 +116,15 @@ func CompareSets[T comparable](set1 []T, set2 []T) bool {
 	return true
 }
 
+// Creates a file with the given data as string.
+// Also creates parent directories as needed.
+// Directories have permissions 0766 and files 0666.
+//
+// `filePath`: where to store the file
+//
+// `data`: the string to write to the file
+//
+// returns: an error if the file could not be written to or the directories could not be created
 func CreateFileWithData(filePath string, data string) error {
 	path := strings.Split(filePath, "/")
 	if len(path) > 1 {
@@ -94,6 +144,9 @@ func CreateFileWithData(filePath string, data string) error {
 	return nil
 }
 
+// Deletes the file and each of the parent directories.
+//
+// `filePath`: The path to the file to delete
 func DeleteFileAndParentPath(filePath string) {
 	path := strings.Split(filePath, "/")
 	for i := len(path); i >= 0; i-- {

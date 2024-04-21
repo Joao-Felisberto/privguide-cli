@@ -11,8 +11,18 @@ import (
 	"github.com/Joao-Felisberto/devprivops/util"
 )
 
-func loadRep(dbManager *database.DBManager, file string, schemaFile string) error {
-	repName, err := fs.GetFile(file)
+// Validates and loads the representation in the given file into the database
+// The representation must abide by the provided schema.
+//
+// `dbManager`: The DBManager connecting to the database
+//
+// `repFile`: file containing the representation
+//
+// `schemaFile`: file containing the schema
+//
+// returns: error if reading or validating any file or connecting to the database or running a query fails
+func loadRep(dbManager *database.DBManager, repFile string, schemaFile string) error {
+	repName, err := fs.GetFile(repFile)
 	if err != nil {
 		return err
 	}
@@ -33,13 +43,13 @@ func loadRep(dbManager *database.DBManager, file string, schemaFile string) erro
 		return err
 	}
 	uris := util.Filter(*uriMetadata, func(metadata database.URIMetadata) bool {
-		return util.Any(metadata.Files, func(r *regexp.Regexp) bool { return r.MatchString(file) })
+		return util.Any(metadata.Files, func(r *regexp.Regexp) bool { return r.MatchString(repFile) })
 	})
 	if len(uris) == 0 {
-		return fmt.Errorf("no base uri for '%s', please add it to 'uris.yml'", file)
+		return fmt.Errorf("no base uri for '%s', please add it to 'uris.yml'", repFile)
 	}
 	uri := uris[0]
-	uriMap := util.MapToMap(*uriMetadata, func(uri_ database.URIMetadata) (string, string) {
+	uriMap := util.ArrayToMap(*uriMetadata, func(uri_ database.URIMetadata) (string, string) {
 		return uri_.Abreviation, uri_.URI
 	})
 
@@ -62,6 +72,13 @@ func loadRep(dbManager *database.DBManager, file string, schemaFile string) erro
 	return nil
 }
 
+// Loads all representations in the representations directories
+//
+// `dbManager`: The DBManager connecting to the database
+//
+// `root`: The directory with all the representations
+//
+// returns: error if reading or validating any file or connecting to the database or running a query fails
 func loadRepresentations(dbManager *database.DBManager, root string) error {
 	entries, err := fs.GetDescriptions(root)
 	if err != nil {
@@ -85,6 +102,9 @@ func loadRepresentations(dbManager *database.DBManager, root string) error {
 	return nil
 }
 
+// Reads all the URI metadata provided in the `uris.yml` file
+//
+// returns the list of metadata about each URI or an error if reading the file or serializing it fails
 func getURIMetadata() (*[]database.URIMetadata, error) {
 	uriFile, err := fs.GetFile("uris.yml")
 	if err != nil {

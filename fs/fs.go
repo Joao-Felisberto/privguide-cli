@@ -1,3 +1,10 @@
+// Package to abstract file system accesses,
+// namely by handling lookup from both the global and local directories
+//
+// By default, the local path is `.devprivops/` and the global path is `/etc/devprivops/`.
+// Files in the local path override those in the global path
+//
+// This package only supports UNIX paths
 package fs
 
 import (
@@ -15,8 +22,14 @@ import (
 	2. .appName/
 */
 
+// The name of the application
 const appName = "devprivops"
 
+// Returns the full path of a file using the pre-determined paths to the local and global directories
+//
+// `relativePath`: the path relative to either root
+//
+// returns: the full path to the provided file
 func GetFile(relativePath string) (string, error) {
 	return getFile(
 		relativePath,
@@ -25,6 +38,15 @@ func GetFile(relativePath string) (string, error) {
 	)
 }
 
+// Returns the full path of a file using the provided paths to the local and global directories
+//
+// `localRoot`: the root of the local directory
+//
+// `globalRoot`: the root of the global directory
+//
+// `relativePath` the path relative to either root
+//
+// returns: the full path to the provided file
 func getFile(relativePath string, localRoot string, globalRoot string) (string, error) {
 	localPath := fmt.Sprintf("%s/%s", localRoot, relativePath)
 	if _, err := os.Stat(localPath); errors.Is(err, os.ErrNotExist) {
@@ -38,6 +60,11 @@ func getFile(relativePath string, localRoot string, globalRoot string) (string, 
 	return localPath, nil
 }
 
+// Returns the relative paths of the system descriptions under `descriptions/` using the default paths to the local and global directories
+//
+// `relativePath` the path relative to either root
+//
+// returns: the relative paths of the system descriptions
 func GetDescriptions(descriptionRoot string) ([]string, error) {
 	return getDescriptions(
 		descriptionRoot,
@@ -46,6 +73,15 @@ func GetDescriptions(descriptionRoot string) ([]string, error) {
 	)
 }
 
+// Returns the relative paths of the system descriptions under `descriptions/` using the provided paths to the local and global directories
+//
+// `localRoot`: the root of the local directory
+//
+// `globalRoot`: the root of the global directory
+//
+// `relativePath` the path relative to either root
+//
+// returns: the relative paths of the system descriptions
 func getDescriptions(descriptionRoot string, localRoot string, globalRoot string) ([]string, error) {
 	localPath := fmt.Sprintf("%s/%s/", localRoot, descriptionRoot)
 	globalPath := fmt.Sprintf("%s/%s/", globalRoot, descriptionRoot)
@@ -73,6 +109,9 @@ func getDescriptions(descriptionRoot string, localRoot string, globalRoot string
 	return files, nil
 }
 
+// Returns the directory names of the system regulation directories under `regulations/` using the default paths to the local and global directories
+//
+// returns: the directory names of the system regulation directories
 func GetRegulations() ([]string, error) {
 	return getRegulations(
 		fmt.Sprintf("./.%s", appName),
@@ -80,6 +119,13 @@ func GetRegulations() ([]string, error) {
 	)
 }
 
+// Returns the directory names of the system regulation directories under `regulations/` using the default paths to the local and global directories
+//
+// `localRoot`: the root of the local directory
+//
+// `globalRoot`: the root of the global directory
+//
+// returns: the directory names of the system regulation directories
 func getRegulations(localRoot string, globalRoot string) ([]string, error) {
 	localPath := fmt.Sprintf("%s/regulations/", localRoot)
 	defaultPath := fmt.Sprintf("%s/regulations/", globalRoot)
@@ -104,6 +150,7 @@ func getRegulations(localRoot string, globalRoot string) ([]string, error) {
 	return files, nil
 }
 
+// Find all top level directories inside a directory
 func getDirsInDir(path string) ([]string, error) {
 	entries, err := os.ReadDir(path)
 	if err != nil {

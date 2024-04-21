@@ -1,3 +1,4 @@
+// Contains all the data types and utilities to communicate with the database
 package database
 
 import (
@@ -20,24 +21,36 @@ import (
 
 // todo: sanitization https://stackoverflow.com/a/55726984
 
+// The types of query methods allowed by the SparQL1.1 over HTTP standard
 type QueryMethod string
 
 const (
-	QUERY  QueryMethod = "query"
-	UPDATE QueryMethod = "update"
-	DATA   QueryMethod = "data"
-	UPLOAD QueryMethod = "upload"
+	QUERY  QueryMethod = "query"  // A generic query method
+	UPDATE QueryMethod = "update" // An update method
+	DATA   QueryMethod = "data"   // A method that adds raw triples to the database
+	UPLOAD QueryMethod = "upload" // A method that uploads a file with triples
 )
 
+// Models the data needed for each database connection to a triple store that supports HTTP authentication
 type DBManager struct {
-	username string
-	password string
-	ip       string
-	port     int
-	dataset  string
+	username string // the username
+	password string // the password
+	ip       string // the triple store's IP
+	port     int    // the triple store's port
+	dataset  string // the dataset to which to connect
 }
 
-// var id_cnt = 0
+// Creates a new DBManager instance from which it is possible to communicate with the trile store
+//
+// `username`: the username
+//
+// `password`: the password
+//
+// `ip`: the triple store's IP
+//
+// `port`: the triple store's port
+//
+// `dataset`: the dataset to which to connect
 
 func NewDBManager(
 	username string,
@@ -55,6 +68,13 @@ func NewDBManager(
 	}
 }
 
+// Sends a sparql query in a query with a specific method
+//
+// `query`: the query to send
+//
+// `method`: the method to send it with
+//
+// returns: the query response or the error that occured whrn executing the query
 func (db *DBManager) sendSparqlQuery(query string, method QueryMethod) (*http.Response, error) {
 	slog.Debug("Sending query", "query", query)
 	endpoint := fmt.Sprintf("http://%s:%d/%s/%s", db.ip, db.port, db.dataset, method)
@@ -75,6 +95,9 @@ func (db *DBManager) sendSparqlQuery(query string, method QueryMethod) (*http.Re
 	return client.Do(req)
 }
 
+// Removes all triples from the triple store
+//
+// returns: the query response or the error that occured whrn executing the query
 func (db *DBManager) CleanDB() (*http.Response, error) {
 	return db.sendSparqlQuery(`
 		DELETE { 
@@ -86,6 +109,13 @@ func (db *DBManager) CleanDB() (*http.Response, error) {
 	)
 }
 
+// Adds the list of triples to the triple store
+//
+// `triples`: the triples to add
+//
+// `prefixes`: the map of prefix abreviations to the full prefix URI
+//
+// returns: the status code or an error if the query failed
 func (db *DBManager) AddTriples(triples []schema.Triple, prefixes map[string]string) (int, error) {
 	sparqlTemplate := `
 		{{ range $key, $value := .Prefixes }} PREFIX {{ $key }}: <{{ $value }}>
@@ -120,6 +150,11 @@ func (db *DBManager) AddTriples(triples []schema.Triple, prefixes map[string]str
 	return response.StatusCode, nil
 }
 
+// Executes a single reasoner rule
+//
+// `file`: the file where the reasoner rule resides
+//
+// returns: an error if reading or validating the file or running the query result in an error
 func (db *DBManager) ExecuteReasonerRule(file string) error {
 	sparqlQueryBytes, err := os.ReadFile(file)
 	if err != nil {
@@ -139,6 +174,11 @@ func (db *DBManager) ExecuteReasonerRule(file string) error {
 	return nil
 }
 
+// Executes a single query from a file
+//
+// `file`: the file where the reasoner rule resides
+//
+// returns: the execution results or an error if reading or validating the file or running the query result in an error
 func (db *DBManager) ExecuteQueryFile(file string) ([]map[string]interface{}, error) {
 	sparqlQueryBytes, err := os.ReadFile(file)
 	if err != nil {
@@ -188,6 +228,12 @@ func (db *DBManager) ExecuteQueryFile(file string) ([]map[string]interface{}, er
 	return binds, nil
 }
 
+// Executes the query of an attack/harm tree node if it is reachable.
+//
+// `attackNode`: The note whose query is to be executed
+//
+// returns: The execution results, the node that failed previously and the error that caused its failure.
+// Errors can occur when reading or validating the query file or executing the query.
 func (db *DBManager) executeAttackTreeNode(attackNode *attacktree.AttackNode) ([]map[string]interface{}, *attacktree.AttackNode, error) {
 	// attackNode.ExecutionStatus = -1
 	thisNodeIsReachable := len(attackNode.Children) == 0
@@ -223,6 +269,12 @@ func (db *DBManager) executeAttackTreeNode(attackNode *attacktree.AttackNode) ([
 	return nil, nil, nil
 }
 
+// Finds out whether the attack/harm described by the tree is possible in the system.
+//
+// `attackTree`: The tree to be executed
+//
+// returns: The execution results, the node that failed previously and the error that caused its failure.
+// Errors can occur when reading or validating the query file or executing the query.
 func (db *DBManager) ExecuteAttackTree(attackTree *attacktree.AttackTree) ([]map[string]interface{}, *attacktree.AttackNode, error) {
 	return db.executeAttackTreeNode(&attackTree.Root)
 }
