@@ -359,6 +359,16 @@ func Analyse(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
+	// 2. Load and apply config
+	err = loadRep(&dbManager, "config/config.yml", "")
+	if err != nil {
+		return err
+	}
+	_, err = dbManager.ApplyConfig()
+	if err != nil {
+		return err
+	}
+
 	// 2. Run all the reasoner rules
 	if err = reasoner(&dbManager); err != nil {
 		return err

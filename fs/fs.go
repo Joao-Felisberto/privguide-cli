@@ -50,7 +50,6 @@ func GetFile(relativePath string) (string, error) {
 func getFile(relativePath string, localRoot string, globalRoot string) (string, error) {
 	localPath := fmt.Sprintf("%s/%s", localRoot, relativePath)
 	if _, err := os.Stat(localPath); errors.Is(err, os.ErrNotExist) {
-		// path/to/whatever does not exist
 		defaultPath := fmt.Sprintf("%s/%s", globalRoot, relativePath)
 		if _, err := os.Stat(defaultPath); errors.Is(err, os.ErrNotExist) {
 			return "", err

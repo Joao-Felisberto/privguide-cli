@@ -278,3 +278,22 @@ func (db *DBManager) executeAttackTreeNode(attackNode *attacktree.AttackNode) ([
 func (db *DBManager) ExecuteAttackTree(attackTree *attacktree.AttackTree) ([]map[string]interface{}, *attacktree.AttackNode, error) {
 	return db.executeAttackTreeNode(&attackTree.Root)
 }
+
+func (db *DBManager) ApplyConfig() (*http.Response, error) {
+	return db.sendSparqlQuery(`
+PREFIX cfg: <https://devprivops.com/config/>
+
+DELETE {
+  ?s ?p ?o .
+}
+INSERT {
+  ?s ?p ?newValue .
+}
+WHERE {
+  ?s ?p ?o .
+  ?o cfg:value ?newValue .
+}
+`,
+		UPDATE,
+	)
+}

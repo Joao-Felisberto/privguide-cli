@@ -168,7 +168,6 @@ func ReadYAML(yamlFile string, schemaFile string) (interface{}, error) {
 		}
 	}
 
-	//return data, nil
 	return rawData, nil
 }
 
@@ -224,6 +223,7 @@ func generateAnonID(uriBase string) string {
 	return fmt.Sprintf("%s/%d", uriBase, idCounter)
 }
 
+// Converts a YAML file into RDF triples
 func YAMLtoRDF(key string, rawData interface{}, rootURI string, uriBase string, uriMap *map[string]string) []Triple {
 	triples := []Triple{}
 	switch data := rawData.(type) {

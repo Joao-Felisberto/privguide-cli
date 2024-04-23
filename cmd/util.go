@@ -26,9 +26,12 @@ func loadRep(dbManager *database.DBManager, repFile string, schemaFile string) e
 	if err != nil {
 		return err
 	}
-	repSchemaFname, err := fs.GetFile(schemaFile)
-	if err != nil {
-		return err
+	repSchemaFname := ""
+	if schemaFile != "" {
+		repSchemaFname, err = fs.GetFile(schemaFile)
+		if err != nil {
+			return err
+		}
 	}
 	rep, err := schema.ReadYAML(
 		repName,
@@ -53,15 +56,14 @@ func loadRep(dbManager *database.DBManager, repFile string, schemaFile string) e
 		return uri_.Abreviation, uri_.URI
 	})
 
-	statusCode, err := dbManager.AddTriples(schema.YAMLtoRDF(
+	triples := schema.YAMLtoRDF(
 		fmt.Sprintf("%s/ROOT", uri.URI),
 		rep,
 		fmt.Sprintf("%s/ROOT", uri.URI),
 		uri.URI,
 		&uriMap,
-	),
-		uriMap,
 	)
+	statusCode, err := dbManager.AddTriples(triples, uriMap)
 	if err != nil {
 		return err
 	}
