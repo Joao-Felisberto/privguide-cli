@@ -279,6 +279,12 @@ func (db *DBManager) ExecuteAttackTree(attackTree *attacktree.AttackTree) ([]map
 	return db.executeAttackTreeNode(&attackTree.Root)
 }
 
+// Applies the current configuration to the descrption already in the triple store.
+//
+// This means the queries do not have to take into account parts of the system that might be configurable,
+// as the identifiers to configuration variables are replaced by the objects they point to in the config
+//
+// returns: The response of the query or an error, in case it fails to execute
 func (db *DBManager) ApplyConfig() (*http.Response, error) {
 	return db.sendSparqlQuery(`
 PREFIX cfg: <https://devprivops.com/config/>

@@ -237,16 +237,43 @@
                     }
                 },
                 "age": {
-                    "type": "string"
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
                 },
                 "produces public information": {
                     "type": "boolean"
                 },
                 "safeguards": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
+                    "anyOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {
+                    "anyOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ]
                 }
             },
             "required": [
@@ -257,7 +284,8 @@
                 "location",
                 "produces",
                 "produces public information",
-                "safeguards"
+                "safeguards",
+                "options"
             ],
             "title": "ExternalEntity"
         },

@@ -1,3 +1,9 @@
-a:
-  - id: last update
+config:
+  - id: dpia:last update
     value: 02/03/2004
+  - id: dfd:as safeguards
+    value:
+      - encryption
+  - id: dfd:as options
+    value:
+      - some option

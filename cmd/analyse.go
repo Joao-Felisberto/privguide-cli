@@ -57,7 +57,7 @@ func reasoner(dbManager *database.DBManager) error {
 // `regulation`: The path to the regulation (relative to the regulations path)
 //
 // returns: the execution report if everything succeeds, or an error when the policy could not be read from the file, does not abide by the schema, or has execution errors
-func policies(dbManager *database.DBManager, regulation string) (map[string]interface{}, error) {
+func policies(dbManager *database.DBManager, regulation string) ([]map[string]interface{}, error) {
 	slog.Info("===Policy Compliance===")
 	polFile, err := fs.GetFile(fmt.Sprintf("regulations/%s/policies.yml", regulation))
 	if err != nil {
@@ -98,7 +98,7 @@ func policies(dbManager *database.DBManager, regulation string) (map[string]inte
 			q["mapping message"].(string),
 		)
 	})
-	report := map[string]interface{}{}
+	report := []map[string]interface{}{}
 	for _, pol := range queries {
 		res, err := dbManager.ExecuteQueryFile(pol.File)
 		if err != nil {
@@ -110,13 +110,14 @@ func policies(dbManager *database.DBManager, regulation string) (map[string]inte
 			slog.Error("error parsing query results:", "error", err)
 		}
 		slog.Info("Violations:", "policy", pol.Title, "violations", b)
-		report[pol.Title] = map[string]interface{}{
+		report = append(report, map[string]interface{}{
+			"name":               pol.Title,
 			"description":        pol.Description,
 			"maximum violations": pol.MaxViolations,
 			"is consistency":     pol.IsConsistency,
 			"violations":         res,
 			"mapping message":    pol.MappingMessage,
-		}
+		})
 	}
 
 	return report, nil
@@ -127,7 +128,7 @@ func policies(dbManager *database.DBManager, regulation string) (map[string]inte
 // `dbManager`: The DBManager connecting to the database
 //
 // returns: the execution report if everything succeeds, or an error when the tree could not be read from the file or does not abide by the schema
-func attackTrees(dbManager *database.DBManager) (map[string]interface{}, error) {
+func attackTrees(dbManager *database.DBManager) ([]*attacktree.AttackTree, error) {
 	slog.Info("===Attack Trees===")
 	atkDir, err := fs.GetFile("attack_trees/descriptions/")
 	if err != nil {
@@ -141,7 +142,7 @@ func attackTrees(dbManager *database.DBManager) (map[string]interface{}, error) 
 	if err != nil {
 		return nil, err
 	}
-	report := map[string]interface{}{}
+	report := []*attacktree.AttackTree{}
 	for _, file := range files {
 		fPath, err := fs.GetFile(fmt.Sprintf("attack_trees/descriptions/%s", file.Name()))
 		if err != nil {
@@ -158,7 +159,7 @@ func attackTrees(dbManager *database.DBManager) (map[string]interface{}, error) 
 			return nil, fmt.Errorf("error at node '%s': %s", failingNode.Description, err)
 		}
 
-		report[file.Name()] = tree
+		report = append(report, tree)
 	}
 	return report, nil
 }
@@ -169,17 +170,24 @@ func attackTrees(dbManager *database.DBManager) (map[string]interface{}, error) 
 //
 // returns: the list of unacceptable violations
 func validateReport(report *map[string]interface{}) []string {
-	regulations := (*report)["policies"].(map[string]interface{})
+	regulations := (*report)["policies"].([]interface{})
 	violated := []string{}
 
-	for _, policies := range regulations {
-		for polName, policy := range policies.(map[string]interface{}) {
+	m, err := json.MarshalIndent(regulations, "", "  ")
+	if err != nil {
+		return []string{}
+	}
+	fmt.Println(string(m))
+
+	for _, regulation := range regulations {
+		policies := (regulation.(map[string]interface{}))["results"]
+		for _, policy := range policies.([]map[string]interface{}) {
 			// policy = policy.(map[string]interface{})
-			maxViolations := policy.(map[string]interface{})["maximum violations"].(int)
-			violations := len(policy.(map[string]interface{})["violations"].([]map[string]interface{}))
+			maxViolations := policy["maximum violations"].(int)
+			violations := len(policy["violations"].([]map[string]interface{}))
 
 			if violations > maxViolations {
-				violated = append(violated, polName)
+				violated = append(violated, policy["name"].(string))
 			}
 		}
 	}
@@ -192,7 +200,7 @@ func validateReport(report *map[string]interface{}) []string {
 // `dbManager`: The DBManager connecting to the database
 //
 // returns: the execution report if everything succeeds, or an error when the requirements could not be read from the file or does not abide by the schema, or the execution of a requirement was not cmopleted successfully
-func verifyRequirements(dbManager *database.DBManager) (*map[string]interface{}, error) {
+func verifyRequirements(dbManager *database.DBManager) (*[]map[string]interface{}, error) {
 	requirementsFile, err := fs.GetFile("requirements/requirements.yml")
 	if err != nil {
 		return nil, err
@@ -210,9 +218,10 @@ func verifyRequirements(dbManager *database.DBManager) (*map[string]interface{},
 		return nil, err
 	}
 
-	report := map[string]interface{}{}
+	report := []map[string]interface{}{}
 	for _, us := range userStories {
-		report[us.UseCase] = map[string]interface{}{
+		usReport := map[string]interface{}{
+			"use case":       us.UseCase,
 			"is misuse case": us.IsMisuseCase,
 			"requirements":   []map[string]interface{}{},
 		}
@@ -228,7 +237,7 @@ func verifyRequirements(dbManager *database.DBManager) (*map[string]interface{},
 			if res == nil {
 				res = []map[string]interface{}{}
 			}
-			usReport := report[us.UseCase].(map[string]interface{})
+			// usReport := report[us.UseCase].(map[string]interface{})
 			usReport["requirements"] = append(usReport["requirements"].([]map[string]interface{}),
 				map[string]interface{}{
 					"title":       r.Title,
@@ -237,6 +246,7 @@ func verifyRequirements(dbManager *database.DBManager) (*map[string]interface{},
 				},
 			)
 		}
+		report = append(report, usReport)
 	}
 
 	return &report, nil
@@ -375,19 +385,22 @@ func Analyse(cmd *cobra.Command, args []string) error {
 	}
 
 	// 3. Verify policy compliance
-	report["policies"] = map[string]interface{}{}
+	report["policies"] = []interface{}{}
 	regulations, err := fs.GetRegulations()
 	if err != nil {
 		return err
 	}
 	for _, regulation := range regulations {
-		reg := report["policies"].(map[string]interface{})
-		reg[regulation] = map[string]interface{}{}
+		// reg := report["policies"].([]interface{})
 		polReport, err := policies(&dbManager, regulation)
 		if err != nil {
 			return err
 		}
-		reg[regulation] = polReport
+		report["policies"] = append(report["policies"].([]interface{}), map[string]interface{}{
+			"name":    regulation,
+			"results": polReport,
+		})
+		// reg[regulation] = polReport
 	}
 
 	// 4. Run all attack trees
@@ -395,7 +408,7 @@ func Analyse(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	report["attack_trees"] = atkReport
+	report["attack trees"] = atkReport
 
 	// 5. Clean database
 	// dbManager.CleanDB()
@@ -412,7 +425,8 @@ func Analyse(cmd *cobra.Command, args []string) error {
 	//	gitCommit.Run()
 	gitBranch.Run()
 
-	time := fmt.Sprint(time.Now().Unix())
+	// time := fmt.Sprint(time.Now().Unix())
+	time := time.Now().Unix()
 
 	projDir, err := os.Getwd()
 	if err != nil {

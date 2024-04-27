@@ -5,6 +5,19 @@ data types:
     categories:
       - dpia:confidential
       - dpia:personal
+  - id: AccountId
+    aggregates: 
+      - :AccountId
+    validity: eternal
+    categories:
+      - dpia:personal
+  - id: Account
+    aggregates: 
+      - :AccountId
+    validity: eternal
+    categories:
+      - dpia:confidential
+      - dpia:personal
 external entities:
   - id: dpia:User 
     consumes:
@@ -18,6 +31,19 @@ external entities:
     age: ">16"
     produces public information: false
     safeguards: []
+    options: []
+  - id: dpia:AccountSystem 
+    consumes:
+      - :AccountId
+    produces: 
+      - :Account
+    location:
+      - Portugal
+    categories: []
+    age: null
+    produces public information: false
+    safeguards: :as safeguards
+    options: :as options
 processes:
   - id: send message
     consumes:
