@@ -9,7 +9,12 @@ WHERE {
         ?df dfd:to ?serviceId .
         BIND("to" AS ?matchedPredicate)
     }
-  	MINUS {
+
+  	#MINUS {
+    #    dfd:ROOT dfd:external_entities|dfd:processes|dfd:data_stores ?serviceId .
+    #}
+
+  	FILTER NOT EXISTS {
         dfd:ROOT dfd:external_entities|dfd:processes|dfd:data_stores ?serviceId .
     }
 }

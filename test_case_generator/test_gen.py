@@ -285,3 +285,57 @@ if __name__ == '__main__':
 
     to_yaml(dfd3, "../.devprivops/tests/dpia_con/out.dfd.yml")
     to_yaml(dpia3, "../.devprivops/tests/dpia_con/out.dpia.yml")
+
+    data_4_1 = DataStored(
+        ":type 3",
+        "eternal",
+        ":C new",
+        ":R new",
+        ":U new",
+        ":D new",
+    )
+
+    ds_4_1 = DataStore(
+        "new db",
+        [data_4_1],
+        ["Portugal"],
+        [],
+        [],
+        []
+    )
+
+    ee_4_1 = ee1.clone(
+        id_="new ent",
+        consumes=[":type 1"],
+        produces=[":type 2"],
+    )
+
+    df_4_1 = df1.clone(
+        from_=":message",
+        to=":no exists",
+        data=[":type 4", *df1.data],
+        periodicity="invalid",
+    )
+
+    dt_4_1 = dt1.clone(
+        aggregates=[":type 5", *dt1.aggregates],
+        validity="invalid",
+    )
+
+    processing_4_1 = processing1.clone(
+        legitimate_interest=[":human", ":User", ":new one"],
+        vital_interest=[":human", ":User", ":another one"],
+    )
+
+    dfd4 = dfd.clone(
+        external_entities=[ee_4_1, *dfd.external_entities],
+        data_stores=[ds_4_1, *dfd.data_stores],
+        data_flows=[df_4_1, *dfd.data_flows],
+        data_types=[dt_4_1, *dfd.data_types],
+    )
+    dpia4 = dpia.clone(
+        processings=[processing_4_1],
+    )
+
+    to_yaml(dfd4, "../.devprivops/tests/gdpr_con/out.dfd.yml")
+    to_yaml(dpia4, "../.devprivops/tests/gdpr_con/out.dpia.yml")

@@ -1,12 +1,12 @@
 PREFIX dfd: <https://devprivops.com/dfd/>
 
-SELECT ?s ?o
+SELECT ?subject ?time
 WHERE {
-    ?s dfd:validity|dfd:periodicity ?o .
+    ?subject dfd:validity|dfd:periodicity ?time .
     FILTER NOT EXISTS {
         FILTER(
-            REGEX(?o, "^[0-9]+(s|sec|secs|second|seconds|m|min|mins|minute|minutes|h|hr|hrs|hour|hours|d|day|days|w|week|weeks|month|months|y|year|years)$") || 
-            ?o = "eternal"
+            REGEX(?time, "^[0-9]+(s|sec|secs|second|seconds|m|min|mins|minute|minutes|h|hr|hrs|hour|hours|d|day|days|w|week|weeks|month|months|y|year|years)$") ||
+            ?time = "eternal"
         )
     }
 }

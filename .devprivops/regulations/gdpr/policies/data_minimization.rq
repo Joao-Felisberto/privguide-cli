@@ -4,7 +4,7 @@ SELECT ?df ?dest ?data
 WHERE {
     dfd:ROOT dfd:data_flows ?df .
     ?df dfd:to ?dest .
-    ?df dfd:data ?data
+    ?df dfd:data ?data .
 
     FILTER NOT EXISTS {
         {

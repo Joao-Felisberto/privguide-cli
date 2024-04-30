@@ -343,5 +343,174 @@
         "expectedResult": []
       }
     ]
+  },
+  {
+    "stateDir": "tests/gdpr_con",
+    "tests": [
+      {
+        "query": "regulations/asvs/consistency/no_undefined_caches.rq",
+        "expectedResult": []
+      },
+      {
+        "query": "regulations/asvs/policies/browser_data_deleted_on_exit.rq",
+        "expectedResult": []
+      },
+      {
+        "query": "regulations/asvs/policies/no_sensitive_info_in_browser.rq",
+        "expectedResult": []
+      },
+      {
+        "query": "regulations/dpia/consistency/destinataries_exist.rq",
+        "expectedResult": []
+      },
+      {
+        "query": "regulations/dpia/consistency/no_undefined_external_entities.rq",
+        "expectedResult": []
+      },
+      {
+        "query": "regulations/dpia/consistency/no_undefined_personal_data.rq",
+        "expectedResult": []
+      },
+      {
+        "query": "regulations/dpia/consistency/no_undefined_processing.rq",
+        "expectedResult": []
+      },
+      {
+        "query": "regulations/dpia/consistency/no_undefined_purpose.rq",
+        "expectedResult": []
+      },
+      {
+        "query": "regulations/dpia/consistency/no_undefined_risks.rq",
+        "expectedResult": []
+      },
+      {
+        "query": "regulations/dpia/consistency/valid_retention_period.rq",
+        "expectedResult": []
+      },
+      {
+        "query": "regulations/dpia/consistency/valid_update_date.rq",
+        "expectedResult": []
+      },
+      {
+        "query": "regulations/dpia/policies/dpia.rq",
+        "expectedResult": []
+      },
+      {
+        "query": "regulations/dpia/policies/lawful_processing.rq",
+        "expectedResult": []
+      },
+      {
+        "query": "regulations/dpia/policies/minimal_purposes.rq",
+        "expectedResult": []
+      },
+      {
+        "query": "regulations/dpia/policies/required_dpo.rq",
+        "expectedResult": []
+      },
+      {
+        "query": "regulations/gdpr/consistency/no_undefined_data_flows.rq",
+        "expectedResult": [
+          {
+            "dfId": "https://devprivops.com/dfd/C_new"
+          },
+          {
+            "dfId": "https://devprivops.com/dfd/R_new"
+          },
+          {
+            "dfId": "https://devprivops.com/dfd/U_new"
+          },
+          {
+            "dfId": "https://devprivops.com/dfd/D_new"
+          }
+        ]
+      },
+      {
+        "query": "regulations/gdpr/consistency/no_undefined_data_types.rq",
+        "expectedResult": [
+          {
+            "dtId": "https://devprivops.com/dfd/type_1"
+          },
+          {
+            "dtId": "https://devprivops.com/dfd/type_2"
+          },
+          {
+            "dtId": "https://devprivops.com/dfd/type_3"
+          },
+          {
+            "dtId": "https://devprivops.com/dfd/type_4"
+          },
+          {
+            "dtId": "https://devprivops.com/dfd/type_5"
+          }
+        ]
+      },
+      {
+        "query": "regulations/gdpr/consistency/no_undefined_entities.rq",
+        "expectedResult": [
+          {
+            "eId": "https://devprivops.com/dpia/another_one"
+          },
+          {
+            "eId": "https://devprivops.com/dpia/new_one"
+          }
+        ]
+      },
+      {
+        "query": "regulations/gdpr/consistency/time_format.rq",
+        "expectedResult": [
+          {
+            "subject": "https://devprivops.com/dfd/message",
+            "time": "invalid"
+          },
+          {
+            "subject": "https://devprivops.com/dfd/C_message",
+            "time": "invalid"
+          }
+        ]
+      },
+      {
+        "query": "regulations/gdpr/consistency/wrong_data_flow_endpoints.rq",
+        "expectedResult": [
+          {
+            "df": "https://devprivops.com/dfd/C_message",
+            "matchedPredicate": "from",
+            "serviceId": "https://devprivops.com/dfd/message"
+          },
+          {
+            "df": "https://devprivops.com/dfd/C_message",
+            "matchedPredicate": "to",
+            "serviceId": "https://devprivops.com/dfd/no_exists"
+          }
+        ]
+      },
+      {
+        "query": "regulations/gdpr/policies/data_in_EU.rq",
+        "expectedResult": []
+      },
+      {
+        "query": "regulations/gdpr/policies/data_minimization.rq",
+        "expectedResult": [
+          {
+            "data": "https://devprivops.com/dfd/message",
+            "dest": "https://devprivops.com/dfd/no_exists",
+            "df": "https://devprivops.com/dfd/C_message"
+          },
+          {
+            "data": "https://devprivops.com/dfd/type_4",
+            "dest": "https://devprivops.com/dfd/no_exists",
+            "df": "https://devprivops.com/dfd/C_message"
+          },
+          {
+            "data": "https://devprivops.com/dfd/type_4",
+            "dest": "https://devprivops.com/dfd/send_message",
+            "df": "https://devprivops.com/dfd/C_message"
+          }
+        ]
+      },
+      {
+        "query": "regulations/gdpr/policies/insufficient_rights_over_data.rq",
+        "expectedResult": []
+      }
+    ]
   }
 ]
