@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=../../schemas/dpia-schema.json
+
 last update: :last update # 02/03/2004
 responsible:
   - :Someone
@@ -18,7 +20,29 @@ personal data:
     abides by code of conduct: false # Art 40 GDPR
     purposes:
       - :message routing
-    transfers to third parties: null # contract, adequability decision, binding corporate rules, art 49
+    transfers to third parties: [] # contract, adequability decision, binding corporate rules, art 49
+  - id: dfd:AccountId
+    kind: :personal # :special | :legal_data
+    required by law: []
+    necessary to enter contract: []
+    destinataries: 
+      - :User # tag for the kind of people that wil recieve it
+    retention period: 2d # or policy # TODO SHOULD BE VALIDATED
+    abides by code of conduct: false # Art 40 GDPR
+    purposes: []
+      # - :message routing
+    transfers to third parties: [] # contract, adequability decision, binding corporate rules, art 49
+  - id: dfd:Account
+    kind: :personal # :special | :legal_data
+    required by law: []
+    necessary to enter contract: []
+    destinataries: 
+      - :User # tag for the kind of people that wil recieve it
+    retention period: 2d # or policy # TODO SHOULD BE VALIDATED
+    abides by code of conduct: false # Art 40 GDPR
+    purposes: []
+      # - :message routing
+    transfers to third parties: [] # contract, adequability decision, binding corporate rules, art 49
 risks:
   - id: Risk 1
     impact: 0

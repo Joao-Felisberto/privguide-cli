@@ -5,8 +5,10 @@ PREFIX dpia: <https://devprivops.com/dpia/>
 
 SELECT ?data 
 WHERE {
-    dpia:ROOT dpia:personal_data ?data .
+    dfd:ROOT dfd:data_types ?data .
+    ?data dfd:categories dpia:personal .
+
     FILTER NOT EXISTS {
-        dfd:ROOT dfd:data_types ?data .
+        dpia:ROOT dpia:personal_data ?data .
     }
 }

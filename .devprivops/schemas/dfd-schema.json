@@ -119,6 +119,12 @@
                         "type": "string"
                     }
                 },
+                "environment": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "certification": {
                     "type": "array",
                     "items": {
@@ -137,6 +143,7 @@
                 "data stored",
                 "id",
                 "location",
+                "environment",
                 "safeguards"
             ],
             "title": "DataStore"
@@ -230,6 +237,12 @@
                         "type": "string"
                     }
                 },
+                "environment": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "categories": {
                     "type": "array",
                     "items": {
@@ -282,6 +295,7 @@
                 "consumes",
                 "id",
                 "location",
+                "environment",
                 "produces",
                 "produces public information",
                 "safeguards",
@@ -314,6 +328,12 @@
                         "type": "string"
                     }
                 },
+                "environment": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "purposes": {
                     "type": "array",
                     "items": {
@@ -338,6 +358,7 @@
                 "consumes",
                 "id",
                 "location",
+                "environment",
                 "produces",
                 "purposes",
                 "safeguards"

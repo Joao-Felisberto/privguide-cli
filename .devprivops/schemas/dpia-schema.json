@@ -41,7 +41,9 @@
                 },
                 "personal data processing that requires DPIA": {
                     "type": "array",
-                    "items": {}
+                    "items": {
+                        "type": "string"
+					}
                 },
                 "processings": {
                     "type": "array",
@@ -91,11 +93,15 @@
                 },
                 "required by law": {
                     "type": "array",
-                    "items": {}
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "necessary to enter contract": {
                     "type": "array",
-                    "items": {}
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "destinataries": {
                     "type": "array",
@@ -116,7 +122,10 @@
                     }
                 },
                 "transfers to third parties": {
-                    "type": "null"
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             },
             "required": [
@@ -150,14 +159,18 @@
                 },
                 "required for contract": {
                     "type": "array",
-                    "items": {}
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "legally mandated": {
                     "type": "boolean"
                 },
                 "vital interest": {
                     "type": "array",
-                    "items": {}
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "public interest": {
                     "type": "boolean"
@@ -219,8 +232,8 @@
                         "type": "string"
                     }
                 },
-                "supervirory authority veredict": {
-                    "$ref": "#/definitions/SuperviroryAuthorityVeredict"
+                "supervisory authority veredict": {
+                    "$ref": "#/definitions/SupervisoryAuthorityVeredict"
                 }
             },
             "required": [
@@ -244,7 +257,7 @@
                 "risks",
                 "scores users",
                 "specific",
-                "supervirory authority veredict",
+                "supervisory authority veredict",
                 "systematic monitoring",
                 "transparent",
                 "vital interest"
@@ -276,7 +289,7 @@
             ],
             "title": "Purpose"
         },
-        "SuperviroryAuthorityVeredict": {
+        "SupervisoryAuthorityVeredict": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
@@ -294,7 +307,7 @@
                 "allowed",
                 "contact"
             ],
-            "title": "SuperviroryAuthorityVeredict"
+            "title": "SupervisoryAuthorityVeredict"
         },
         "Risk": {
             "type": "object",
@@ -311,7 +324,9 @@
                 },
                 "accepted mitigations": {
                     "type": "array",
-                    "items": {}
+                    "items": {
+                        "type": "string"
+                    }
                 }
             },
             "required": [

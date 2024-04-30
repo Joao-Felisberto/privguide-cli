@@ -1,17 +1,19 @@
 PREFIX dpia: <https://devprivops.com/dpia/>
+PREFIX dfd: <https://devprivops.com/dfd/>
 
 SELECT ?purpose
 WHERE {
     {
-        dpia:ROOT dpia:personal_data/dpia:purposes ?purpose .
+        dfd:ROOT dfd:processes/dfd:purposes ?purpose .
     } UNION {
         dpia:ROOT dpia:personal_data_processing_whitelist ?purpose .
     } UNION {
-        dpia:ROOT dpia:personal_data_processing_that_requires_DPIA ?purpose .
-    } 
+         dpia:ROOT dpia:personal_data_processing_that_requires_DPIA ?purpose .
+    }
 
     FILTER NOT EXISTS {
-        dpia:ROOT dpia:processings ?processing .
-        ?processing dpia:purposes ?purpose .
+        dpia:ROOT dpia:processings/dpia:purposes ?purpose .
+        # dpia:ROOT dpia:processings ?processing .
+        # ?processing dpia:purposes ?purpose .
     }
 }

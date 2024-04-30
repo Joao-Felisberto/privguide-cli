@@ -1,4 +1,5 @@
 PREFIX dfd: <https://devprivops.com/dfd/>
+PREFIX dpia: <https://devprivops.com/dpia/>
 
 SELECT ?dsId ?dtId
 WHERE {
@@ -6,7 +7,7 @@ WHERE {
     ?dsId dfd:data_stored ?dt .
 	
 	?dt dfd:type ?dtId .
-	?dt dfd:location "browser" .
+	?dsId dfd:environment "browser" .
     
-	?dtId dfd:categories dfd:sensitive .
+	?dtId dfd:categories dpia:sensitive .
 }

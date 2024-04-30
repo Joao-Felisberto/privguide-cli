@@ -1,4 +1,5 @@
 PREFIX dfd: <https://devprivops.com/dfd/>
+PREFIX dpia: <https://devprivops.com/dpia/>
 
 SELECT ?dsId ?dtId
 WHERE {
@@ -6,8 +7,8 @@ WHERE {
     ?dsId dfd:data_stored ?dataStored . 
     ?dataStored dfd:type ?dtId .
 
-    ?dsId dfd:location "browser" .
-    ?dtId dfd:category dfd:authenticated_only . # TODO: detect data obtained while authenticated
+    ?dsId dfd:environment "browser" .
+    ?dtId dfd:categories dpia:authenticated_only . # TODO: detect data obtained while authenticated
 
     FILTER NOT EXISTS {
         ?dataStored dfd:storage_period: "session" .

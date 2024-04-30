@@ -6,8 +6,14 @@ PREFIX dpia: <https://devprivops.com/dpia/>
 SELECT ?ext_ent
 WHERE {
     dpia:ROOT dpia:personal_data/dpia:destinataries ?ext_ent .
+
     FILTER NOT EXISTS {
-        dfd:ROOT dfd:external_entities ?ext_ent .
+        {
+            dfd:ROOT dfd:external_entities ?ext_ent .
+        } UNION {
+            dfd:ROOT dfd:external_entities ?ent .
+            ?ent dfd:categories ?ext_ent .
+        }
     }
 }
 

@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=../schemas/dpia-schema.json
+
 last update: :last update # 02/03/2004
 responsible:
   - :Someone

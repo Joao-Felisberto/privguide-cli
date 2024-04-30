@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"log/slog"
 	"reflect"
@@ -22,8 +23,24 @@ func runScenario(dbManager *database.DBManager, scenario database.TestScenario) 
 	dbManager.CleanDB()
 	slog.Info("Loading scenario", "scenario", scenario.StateDir)
 
+	// 1. Load representations
 	err := loadRepresentations(dbManager, scenario.StateDir)
 	if err != nil {
+		return err
+	}
+
+	// 2. Load and apply config
+	err = loadRep(dbManager, "config/config.yml", "")
+	if err != nil {
+		return err
+	}
+	_, err = dbManager.ApplyConfig()
+	if err != nil {
+		return err
+	}
+
+	// 3. Run all the reasoner rules
+	if err = reasoner(dbManager); err != nil {
 		return err
 	}
 
@@ -39,6 +56,18 @@ func runScenario(dbManager *database.DBManager, scenario database.TestScenario) 
 		}
 
 		if !reflect.DeepEqual(t.ExpectedResult, res) {
+			expected_json, err := json.MarshalIndent(t.ExpectedResult, "", "  ")
+			if err != nil {
+				return fmt.Errorf("could not serialize expected as json: %s", err)
+			}
+			actual_json, err := json.MarshalIndent(res, "", "  ")
+			if err != nil {
+				return fmt.Errorf("could not serialize actual as json: %s", err)
+			}
+
+			fmt.Printf("Expected: %s\n", expected_json)
+			fmt.Printf("Actual  : %s\n", actual_json)
+
 			return fmt.Errorf("result of '%s' does not match expectations: got '%v', expected '%v'", file, res, t.ExpectedResult)
 		}
 	}
@@ -73,8 +102,7 @@ func Test(cmd *cobra.Command, args []string) error {
 		dataset,
 	)
 
-	// 1. Load data
-
+	// 1. Load test metadata
 	testFile, err := fs.GetFile("tests/spec.json")
 	if err != nil {
 		return err
@@ -85,7 +113,24 @@ func Test(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	// 2. For each scenario, run the tests
+	/*
+		// 2. Load and apply config
+		err = loadRep(&dbManager, "config/config.yml", "")
+		if err != nil {
+			return err
+		}
+		_, err = dbManager.ApplyConfig()
+		if err != nil {
+			return err
+		}
+
+		// 3. Run all the reasoner rules
+		if err = reasoner(&dbManager); err != nil {
+			return err
+		}
+	*/
+
+	// 4. For each scenario, run the tests
 	for _, t := range tests {
 		err := runScenario(&dbManager, t)
 		if err != nil {
