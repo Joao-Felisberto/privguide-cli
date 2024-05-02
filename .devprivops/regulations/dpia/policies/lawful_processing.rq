@@ -7,26 +7,50 @@ WHERE {
     dpia:ROOT dpia:processings ?processing . 
 
     # Art 5 1 a | is this the right place to have this info?
-    FILTER NOT EXISTS {
-        ?processing dpia:lawful true . # Defined by Art 6 1
-        ?processing dpia:fair true .
-        ?processing dpia:transparent true .
+    {
+        BIND("lawful fair transparent" AS ?reason)
+        # ?processing dpia:lawful ?lawful .
+        # ?processing dpia:fair ?fair .
+        # ?processing dpia:transparent ?transparent .
+        FILTER NOT EXISTS {
+            ?processing dpia:lawful true . # Defined by Art 6 1
+            ?processing dpia:fair true .
+            ?processing dpia:transparent true .
+        }
     }
-
+    
     # Art 5 1 b
-    FILTER NOT EXISTS {
-        ?processing dpia:specific true .
-        ?processing dpia:explicit true .
-        ?processing dpia:legitimate true .
+    UNION { 
+        BIND("specific explicit legitimate" AS ?reason)
+        FILTER NOT EXISTS {
+            ?processing dpia:specific true .
+            ?processing dpia:explicit true .
+            ?processing dpia:legitimate true .
+        }
     }
 
     # Art 5 1 c
-    ?processing dpia:purposes ?p .
-    FILTER NOT EXISTS {
-        ?p dpia:adequate true .
-        ?p dpia:relevant true .
-        ?p dpia:limited true .
-    }
+#     UNION {
+#         BIND("adequate relevant limited" AS ?reason)
+#          
+#             ?processing dpia:purposes ?p .
+#             ?p dpia:adequate true .
+#             ?p dpia:relevant true .
+#             ?p dpia:limited true .
+# #         FILTER NOT EXISTS {
+# #             ?processing dpia:purposes ?p .
+# #             ?p dpia:adequate true .
+# #             ?p dpia:relevant true .
+# #             ?p dpia:limited true .
+# #         }
+# #         {
+# #              ?p dpia:adequate false .
+# #         } UNION {
+# #              ?p dpia:relevant false .
+# #         } UNION {
+# #              ?p dpia:limited false .
+# #         }
+#     }
 
     # Art 5 1 e ?????????????
 

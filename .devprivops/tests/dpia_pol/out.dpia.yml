@@ -3,12 +3,10 @@ DPO:
   name: :The
 - contact: manemail.com
   name: :Man
-last update: wrong date
+last update: :last update
 personal data:
 - abides by code of conduct: false
   destinataries:
-  - :dont exist
-  - :external system
   - :User
   id: dfd:message
   kind: :personal
@@ -16,7 +14,7 @@ personal data:
   purposes:
   - :message routing
   required by law: []
-  retention period: wrong
+  retention period: 2d
   transfers to third parties: []
 - abides by code of conduct: false
   destinataries:
@@ -38,44 +36,41 @@ personal data:
   required by law: []
   retention period: 2d
   transfers to third parties: []
-personal data processing that requires DPIA:
-- new purpose 3
-personal data processing whitelist:
-- new purpose 2
+personal data processing that requires DPIA: []
+personal data processing whitelist: []
 processings:
-- automated decisions: false
-  explicit: true
-  fair: true
+- automated decisions: true
+  explicit: false
+  fair: false
   id: dfd:send message
   is official authority: false
-  large scale processing: false
-  lawful: true
-  legal impact for the user: false
+  large scale processing: true
+  lawful: false
+  legal impact for the user: true
   legally mandated: false
-  legitimate: true
+  legitimate: false
   legitimate interest:
   - :User
   professional secrecy: false
   public interest: false
   purposes:
-  - adequate: true
+  - adequate: false
     id: :message routing
-    limited: true
-    relevant: true
+    limited: false
+    relevant: false
   required for contract: []
-  requires new technologies: false
+  requires new technologies: true
   risk to rights and freedoms of:
   - :User
   risks:
-  - new risk
-  scores users: false
-  specific: true
+  - :Risk 1
+  scores users: true
+  specific: false
   supervisory authority veredict:
     allowed: true
-    contact:
-    - :Supervisor
-  systematic monitoring: false
-  transparent: true
+    contact: []
+  systematic monitoring: true
+  transparent: false
   vital interest: []
 responsible:
 - :Someone
@@ -83,5 +78,5 @@ responsible:
 risks:
 - accepted mitigations: []
   id: Risk 1
-  impact: 1
-  likelyhood: 1
+  impact: 10
+  likelyhood: 10

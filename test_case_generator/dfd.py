@@ -1,6 +1,6 @@
 from typing import List
 
-from test_case_generator.util import Cloneable
+from util import Cloneable
 
 
 class ExternalEntity(Cloneable):

@@ -40,14 +40,14 @@ personal data processing that requires DPIA: []
 personal data processing whitelist:
 - :message routing
 processings:
-- automated decisions: true
+- automated decisions: false
   explicit: true
   fair: true
   id: dfd:send message
   is official authority: false
   large scale processing: false
   lawful: true
-  legal impact for the user: true
+  legal impact for the user: false
   legally mandated: false
   legitimate: true
   legitimate interest:
@@ -65,13 +65,13 @@ processings:
   - :User
   risks:
   - :Risk 1
-  scores users: true
+  scores users: false
   specific: true
   supervisory authority veredict:
     allowed: true
     contact:
     - :Supervisor
-  systematic monitoring: true
+  systematic monitoring: false
   transparent: true
   vital interest: []
 responsible:
@@ -80,5 +80,5 @@ responsible:
 risks:
 - accepted mitigations: []
   id: Risk 1
-  impact: 0
+  impact: 1
   likelyhood: 1

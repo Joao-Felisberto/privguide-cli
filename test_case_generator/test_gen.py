@@ -2,8 +2,8 @@ import json
 
 import yaml
 
-from test_case_generator.dfd import DataType, ExternalEntity, Process, DataStore, DataStored, DataFlow, DFD
-from test_case_generator.dpia import DPO, PersonalDatum, DPIA, Risk, Processing, Purpose, SupervisoryAuthorityVeredict
+from dfd import DataType, ExternalEntity, Process, DataStore, DataStored, DataFlow, DFD
+from dpia import DPO, PersonalDatum, DPIA, Risk, Processing, Purpose, SupervisoryAuthorityVeredict
 
 
 def to_yaml(data, fname):
@@ -169,7 +169,7 @@ if __name__ == '__main__':
 
     risk1 = Risk(
         "Risk 1",
-        0,
+        1,
         1,
         []
     )
@@ -192,10 +192,10 @@ if __name__ == '__main__':
         is_official_authority=False,
         legitimate_interest=[":User"],
         professional_secrecy=False,
-        scores_users=True,
-        automated_decisions=True,
-        legal_impact_for_the_user=True,
-        systematic_monitoring=True,
+        scores_users=False,
+        automated_decisions=False,
+        legal_impact_for_the_user=False,
+        systematic_monitoring=False,
         large_scale_processing=False,
         lawful=True,
         fair=True,
@@ -207,6 +207,7 @@ if __name__ == '__main__':
         risks=[f":{risk1.id_}"],
         supervisory_authority_veredict=SupervisoryAuthorityVeredict(
             [":Supervisor"],
+            # [],
             True
         )
     )
@@ -339,3 +340,48 @@ if __name__ == '__main__':
 
     to_yaml(dfd4, "../.devprivops/tests/gdpr_con/out.dfd.yml")
     to_yaml(dpia4, "../.devprivops/tests/gdpr_con/out.dpia.yml")
+
+    risk_5_1 = risk1.clone(
+        impact=10,
+        likelyhood=10,
+    )
+
+    purpose_5_1 = purpose1.clone(
+        adequate=False,
+        relevant=False,
+        limited=False,
+    )
+
+    processing_5_1 = processing1.clone(
+        requires_new_technologies=True,
+        scores_users=True,
+        automated_decisions=True,
+        legal_impact_for_the_user=True,
+        systematic_monitoring=True,
+        large_scale_processing=True,
+        supervisory_authority_veredict=SupervisoryAuthorityVeredict([], True),
+        lawful=False,
+        fair=False,
+        transparent=False,
+        specific=False,
+        explicit=False,
+        legitimate=False,
+        purposes=[purpose_5_1]
+    )
+
+    proc_5_1 = proc1.clone(
+        purposes=["dpia:new purpose", *proc1.purposes]
+    )
+
+    dfd5 = dfd.clone(
+        processes=[proc_5_1, *dfd.processes[1:]]
+    )
+    dpia5 = dpia.clone(
+        processings=[processing_5_1],
+        personal_data_processing_whitelist=[],
+        # personal_data_processing_that_requires_DPIA=[":message routing", *dpia.personal_data_processing_that_requires_DPIA]
+        risks=[risk_5_1],
+    )
+
+    to_yaml(dfd5, "../.devprivops/tests/dpia_pol/out.dfd.yml")
+    to_yaml(dpia5, "../.devprivops/tests/dpia_pol/out.dpia.yml")

@@ -1,0 +1,16 @@
+PREFIX dpia: <https://devprivops.com/dpia/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+# Based on Article 35 1
+
+SELECT *
+WHERE {
+    dpia:ROOT dpia:processings ?proc .
+    ?proc dpia:risks ?risk .
+
+    ?risk dpia:impact ?impact .
+    ?risk dpia:likelyhood ?likelihood .
+    BIND ((xsd:integer(?impact) * xsd:integer(?likelihood)) AS ?riskFactor) .
+    
+    FILTER (?riskFactor > 8) .
+}

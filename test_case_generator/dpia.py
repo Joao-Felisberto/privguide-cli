@@ -1,4 +1,4 @@
-from test_case_generator.util import Cloneable
+from util import Cloneable
 
 
 class Risk(Cloneable):

@@ -1,0 +1,13 @@
+PREFIX dpia: <https://devprivops.com/dpia/>
+
+# Based on Article 35 2
+
+SELECT ?proc
+WHERE {
+    dpia:ROOT dpia:processings ?proc .
+
+    # 2 Seek advisory from DPO
+    FILTER NOT EXISTS {
+        ?proc dpia:supervisory_authority_veredict/dpia:contact ?contact .
+    }
+}

@@ -69,9 +69,28 @@
   is consistency: false
   maximum violations: 0
   mapping message: ""
+
 - file: regulations/dpia/policies/dpia.rq
   title: DPIA
   description: Ensure the project passes the DPIA
+  is consistency: false
+  maximum violations: 0
+  mapping message: ""
+- file: regulations/dpia/policies/new_technologies.rq
+  title: New Technologies Require DPIA
+  description: Ensure all new technologies pass DPIA
+  is consistency: false
+  maximum violations: 0
+  mapping message: ""
+- file: regulations/dpia/policies/high_risk.rq
+  title: Processings With High Risk
+  description: Ensure all processes with high risk pass DPIA
+  is consistency: false
+  maximum violations: 0
+  mapping message: ""
+- file: regulations/dpia/policies/dpo.rq
+  title: DPO Veredict
+  description: Ensure all applicable processesings have been aproved by a DPO
   is consistency: false
   maximum violations: 0
   mapping message: ""
