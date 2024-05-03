@@ -2,9 +2,9 @@ PREFIX dfd: <https://devprivops.com/dfd/>
 
 # Checks whether a transfer takes data outside the EU
 # Change the value of `EUCountries` as needed
-SELECT ?dataFlow ?destId ?location
+SELECT ?destId ?location
 WHERE {
-    ?dataFlow dfd:to ?destId .
+    # ?dataFlow dfd:to ?destId .
     ?destId dfd:location ?location .
 
     FILTER NOT EXISTS {

@@ -1,5 +1,7 @@
 PREFIX dfd: <https://devprivops.com/dfd/>
 
+# Could be useless because insuficient_rights_over_data exists
+
 SELECT ?dfId
 WHERE {
     {

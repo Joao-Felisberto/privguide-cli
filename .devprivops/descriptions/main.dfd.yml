@@ -34,6 +34,7 @@ external entities:
     produces public information: false
     safeguards: []
     options: []
+    environment: []
   - id: dpia:AccountSystem 
     consumes:
       - :AccountId
@@ -41,6 +42,7 @@ external entities:
       - :Account
     location:
       - Portugal
+    environment: []
     categories: []
     age: null
     produces public information: false
@@ -54,6 +56,7 @@ processes:
       - :message
     location:
       - Portugal
+    environment: []
     purposes: 
       - dpia:message routing
     certification: []
@@ -69,6 +72,7 @@ data stores:
         delete: :D store message
     location:
       - Portugal
+    environment: []
     certification: []
     safeguards: []
 data flows:

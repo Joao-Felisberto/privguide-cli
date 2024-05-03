@@ -385,3 +385,36 @@ if __name__ == '__main__':
 
     to_yaml(dfd5, "../.devprivops/tests/dpia_pol/out.dfd.yml")
     to_yaml(dpia5, "../.devprivops/tests/dpia_pol/out.dpia.yml")
+
+    ee_6_1 = ee1.clone(
+        location=["Nowhere"],
+    )
+
+    proc_6_1 = proc1.clone(
+        location=["Farlands"],
+        create=[":message"],
+    )
+
+    df_6_1 = df1.clone(
+        data=[":new data", *df1.data]
+    )
+
+    data_6_1 = data1.clone(
+        create=":message",
+    )
+
+    ds_6_1 = ds1.clone(
+        location=["Don't exist"],
+        data_stored=[data_6_1],
+    )
+
+    dfd6 = dfd.clone(
+        external_entities=[ee_6_1, *dfd.external_entities[1:]],
+        data_stores=[ds_6_1, *dfd.data_stores[1:]],
+        processes=[proc_6_1, *dfd.processes[1:]],
+        data_flows=[df_6_1, *dfd.data_flows[1:]]
+    )
+    dpia6 = dpia.clone()
+
+    to_yaml(dfd6, "../.devprivops/tests/dfd_pol/out.dfd.yml")
+    to_yaml(dpia6, "../.devprivops/tests/dfd_pol/out.dpia.yml")

@@ -52,17 +52,17 @@
   is consistency: false
   maximum violations: 0
   mapping message: ""
-# - file: regulations/gdpr/unlawful_category_processing.rq
-#   title: Unlawful processing of certain categories of data
-#   description: The processing of certain categories of data under certain circumstances is unlawful
-#   maximum violations: 0
-#   mapping message: ""
-- file: regulations/gdpr/policies/insufficient_rights_over_data.rq
-  title: Insuficient rights over data
-  description: The user cannot read, update and delete all data collected about them
-  is consistency: false
-  maximum violations: 0
-  mapping message: ""
+#- file: regulations/gdpr/unlawful_category_processing.rq
+#  title: Unlawful processing of certain categories of data
+#  description: The processing of certain categories of data under certain circumstances is unlawful
+#  maximum violations: 0
+#  mapping message: ""
+#- file: regulations/gdpr/policies/insufficient_rights_over_data.rq
+#  title: Insuficient rights over data
+#  description: The user cannot read, update and delete all data collected about them
+#  is consistency: false
+#  maximum violations: 0
+#  mapping message: ""
 - file: regulations/gdpr/policies/data_minimization.rq
   title: Only the strictly required data shall enter a process
   description: The data flows to a process shall not provide more data than it needs

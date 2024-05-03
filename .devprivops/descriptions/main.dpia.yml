@@ -20,7 +20,27 @@ personal data:
     abides by code of conduct: false # Art 40 GDPR
     purposes:
       - :message routing
-    transfers to third parties: null # contract, adequability decision, binding corporate rules, art 49
+    transfers to third parties: [] # contract, adequability decision, binding corporate rules, art 49
+  - id: dfd:Account
+    kind: :personal
+    required by law: []
+    necessary to enter contract: []
+    destinataries: []
+    retention period: eternal
+    abides by code of conduct: true
+    purposes:
+      - :message routing
+    transfers to third parties: []
+  - id: dfd:AccountId
+    kind: :personal
+    required by law: []
+    necessary to enter contract: []
+    destinataries: []
+    retention period: eternal
+    abides by code of conduct: true
+    purposes:
+      - :message routing
+    transfers to third parties: []
 risks:
   - id: Risk 1
     impact: 0
@@ -42,10 +62,10 @@ processings:
     legitimate interest:
       - :User
     professional secrecy: false
-    scores users: true
-    automated decisions: true
-    legal impact for the user: true
-    systematic monitoring: true
+    scores users: false
+    automated decisions: false
+    legal impact for the user: false
+    systematic monitoring: false
     large scale processing: false
     lawful: true
     fair: true
@@ -60,7 +80,7 @@ processings:
         limited: true
     risks:
       - :Risk 1
-    supervirory authority veredict:
+    supervisory authority veredict:
       contact:
         - :Supervisor
       allowed: true
