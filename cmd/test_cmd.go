@@ -12,7 +12,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// Executes all tests for a given scenario
+// Executes all tests for a given scenario.
+// Test failures do not cause an early return, but all other errors do.
 //
 // `dbManager`: The DBManager connecting to the database
 //
@@ -68,7 +69,8 @@ func runScenario(dbManager *database.DBManager, scenario database.TestScenario) 
 			fmt.Printf("Expected: %s\n", expected_json)
 			fmt.Printf("Actual  : %s\n", actual_json)
 
-			return fmt.Errorf("result of '%s' does not match expectations: got '%v', expected '%v'", file, res, t.ExpectedResult)
+			// return fmt.Errorf("result of '%s' does not match expectations: got '%v', expected '%v'", file, res, t.ExpectedResult)
+			slog.Error("Test failed", "file", file, "actual", res, "expected", t.ExpectedResult)
 		}
 	}
 

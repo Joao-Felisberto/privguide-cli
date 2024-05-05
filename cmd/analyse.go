@@ -173,11 +173,13 @@ func validateReport(report *map[string]interface{}) []string {
 	regulations := (*report)["policies"].([]interface{})
 	violated := []string{}
 
-	m, err := json.MarshalIndent(regulations, "", "  ")
-	if err != nil {
-		return []string{}
-	}
-	fmt.Println(string(m))
+	/*
+		m, err := json.MarshalIndent(regulations, "", "  ")
+		if err != nil {
+			return []string{}
+		}
+		fmt.Println(string(m))
+	*/
 
 	for _, regulation := range regulations {
 		policies := (regulation.(map[string]interface{}))["results"]
