@@ -810,19 +810,19 @@
       {
         "query": "regulations/gdpr/policies/data_in_EU.rq",
         "expectedResult": [
-          {
-            "destId": "https://devprivops.com/dpia/User",
-            "location": "Nowhere"
-          },
-          {
-            "destId": "https://devprivops.com/dfd/send_message",
-            "location": "Farlands"
-          },
-          {
-            "destId": "https://devprivops.com/dfd/message_db",
-            "location": "Don't exist"
-          }
-        ]
+		  {
+			"destId": "https://devprivops.com/dfd/send_message",
+			"location": "Farlands"
+		  },
+		  {
+			"destId": "https://devprivops.com/dpia/User",
+			"location": "Nowhere"
+		  },
+		  {
+			"destId": "https://devprivops.com/dfd/message_db",
+			"location": "Don't exist"
+		  }
+		]
       },
       {
         "query": "regulations/gdpr/policies/data_minimization.rq",

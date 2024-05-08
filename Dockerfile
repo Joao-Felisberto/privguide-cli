@@ -11,7 +11,7 @@ RUN go build
 
 # Move queries and configs elsewhere
 RUN mkdir /etc/devprivops/
-RUN mv .devprivops/* /etc/devprivops/
+# RUN mv .devprivops/* /etc/devprivops/
 
 # Cleanup
 RUN mv devprivops /bin/devprivops
