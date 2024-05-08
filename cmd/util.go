@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"log/slog"
 	"regexp"
 	"strings"
 
@@ -82,6 +83,7 @@ func loadRep(dbManager *database.DBManager, repFile string, schemaFile string) e
 //
 // returns: error if reading or validating any file or connecting to the database or running a query fails
 func loadRepresentations(dbManager *database.DBManager, root string) error {
+	slog.Debug("Getting descriptions", "root", root)
 	entries, err := fs.GetDescriptions(root)
 	if err != nil {
 		return err

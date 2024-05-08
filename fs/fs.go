@@ -88,7 +88,7 @@ func getDescriptions(descriptionRoot string, localRoot string, globalRoot string
 	files := []string{}
 
 	entries, err := os.ReadDir(localPath)
-	if err != nil {
+	if err != nil && !errors.Is(err, os.ErrNotExist) {
 		return nil, err
 	}
 
@@ -132,7 +132,7 @@ func getRegulations(localRoot string, globalRoot string) ([]string, error) {
 	files := []string{}
 
 	localRegulations, err := getDirsInDir(localPath)
-	if err != nil {
+	if err != nil && !errors.Is(err, os.ErrNotExist) {
 		return nil, err
 	}
 

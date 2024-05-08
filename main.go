@@ -12,7 +12,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// const REPORT_ENDPOINT_FLAG_NAME = "report-endpoint"
+var logLevel = slog.LevelInfo
 
 // Builds the command and delegates execution to the appropriate function from the cmd package
 func main() {
@@ -31,7 +31,7 @@ func main() {
 		Short: fmt.Sprintf("Analyse the specified database endpoint for %s", util.AppName),
 		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd_ *cobra.Command, args []string) error {
-			util.SetupLogger()
+			util.SetupLogger(logLevel)
 			return cmd.Analyse(cmd_, args)
 		},
 	}
@@ -41,7 +41,7 @@ func main() {
 		Short: "Tests the queries against user-defined scenarios",
 		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd_ *cobra.Command, args []string) error {
-			util.SetupLogger()
+			util.SetupLogger(logLevel)
 			return cmd.Test(cmd_, args)
 		},
 	}
@@ -54,8 +54,8 @@ func main() {
 	analyseCmd.Flags().StringVar(&fs.GlobalDir, "global-dir", fmt.Sprintf("/etc/%s", util.AppName), "The path to the global configurations")
 	testCmd.Flags().StringVar(&fs.GlobalDir, "global-dir", fmt.Sprintf("/etc/%s", util.AppName), "The path to the global configurations")
 
-	analyseCmd.Flags().StringVar(&fs.LocalDir, "local-dir", fmt.Sprintf("./.%s", util.AppName), "The path to the global configurations")
-	testCmd.Flags().StringVar(&fs.LocalDir, "local-dir", fmt.Sprintf("./.%s", util.AppName), "The path to the global configurations")
+	analyseCmd.Flags().StringVar(&fs.LocalDir, "local-dir", fmt.Sprintf("./.%s", util.AppName), "The path to the local configurations")
+	testCmd.Flags().StringVar(&fs.LocalDir, "local-dir", fmt.Sprintf("./.%s", util.AppName), "The path to the local configurations")
 
 	rootCmd.AddCommand(analyseCmd)
 	rootCmd.AddCommand(testCmd)

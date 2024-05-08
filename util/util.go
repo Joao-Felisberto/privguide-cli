@@ -14,9 +14,15 @@ var Pipeline = false
 var AppName = "devprivops"
 var ReportEndpoint = ""
 
-func SetupLogger() {
+func SetupLogger(level slog.Leveler) {
 	if !Pipeline {
-		slog.SetDefault(slog.New(NewHumanFriendlyHandler(nil)))
+		slog.SetDefault(slog.New(NewHumanFriendlyHandler(&slog.HandlerOptions{
+			Level: level,
+		})))
+	} else {
+		slog.SetDefault(slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
+			Level: level,
+		})))
 	}
 }
 
