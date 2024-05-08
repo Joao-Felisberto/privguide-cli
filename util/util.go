@@ -9,6 +9,14 @@ import (
 	"strings"
 )
 
+var Pipeline = false
+
+func SetupLogger() {
+	if !Pipeline {
+		slog.SetDefault(slog.New(NewHumanFriendlyHandler(nil)))
+	}
+}
+
 // The generic iterator map function
 //
 // `arr`: the original array
