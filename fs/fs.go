@@ -22,8 +22,8 @@ import (
 	2. .appName/
 */
 
-// The name of the application
-const appName = "devprivops"
+var LocalDir = fmt.Sprintf("./.%s", util.AppName)
+var GlobalDir = fmt.Sprintf("/etc/%s", util.AppName)
 
 // Returns the full path of a file using the pre-determined paths to the local and global directories
 //
@@ -33,8 +33,8 @@ const appName = "devprivops"
 func GetFile(relativePath string) (string, error) {
 	return getFile(
 		relativePath,
-		fmt.Sprintf("./.%s", appName),
-		fmt.Sprintf("/etc/%s", appName),
+		LocalDir,
+		GlobalDir,
 	)
 }
 
@@ -67,8 +67,8 @@ func getFile(relativePath string, localRoot string, globalRoot string) (string, 
 func GetDescriptions(descriptionRoot string) ([]string, error) {
 	return getDescriptions(
 		descriptionRoot,
-		fmt.Sprintf("./.%s", appName),
-		fmt.Sprintf("/etc/%s", appName),
+		LocalDir,
+		GlobalDir,
 	)
 }
 
@@ -113,8 +113,8 @@ func getDescriptions(descriptionRoot string, localRoot string, globalRoot string
 // returns: the directory names of the system regulation directories
 func GetRegulations() ([]string, error) {
 	return getRegulations(
-		fmt.Sprintf("./.%s", appName),
-		fmt.Sprintf("/etc/%s", appName),
+		LocalDir,
+		GlobalDir,
 	)
 }
 

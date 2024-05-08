@@ -19,53 +19,56 @@ import (
 //
 // `scenario`: The scenario whose tests are to be executed
 //
-// returns: error if tehre was any error reading files or validating their schemas, connecting to the database or executing queries
-func runScenario(dbManager *database.DBManager, scenario database.TestScenario) error {
+// returns: true if no test failed, error if there was any error reading files or validating their schemas, connecting to the database or executing queries
+func runScenario(dbManager *database.DBManager, scenario database.TestScenario) (bool, error) {
 	dbManager.CleanDB()
 	slog.Info("Loading scenario", "scenario", scenario.StateDir)
 
 	// 1. Load representations
 	err := loadRepresentations(dbManager, scenario.StateDir)
 	if err != nil {
-		return err
+		return false, err
 	}
 
 	// 2. Load and apply config
 	err = loadRep(dbManager, "config/config.yml", "")
 	if err != nil {
-		return err
+		return false, err
 	}
 	_, err = dbManager.ApplyConfig()
 	if err != nil {
-		return err
+		return false, err
 	}
 
 	// 3. Run all the reasoner rules
 	if err = reasoner(dbManager); err != nil {
-		return err
+		return false, err
 	}
+
+	errors := false
 
 	for _, t := range scenario.Tests {
 		slog.Info("Running test", "test", t.Query)
 		file, err := fs.GetFile(t.Query)
 		if err != nil {
-			return fmt.Errorf("error reading test file '%s': %s", t.Query, err)
+			return false, fmt.Errorf("error reading test file '%s': %s", t.Query, err)
 		}
 		res, err := dbManager.ExecuteQueryFile(file)
 		if err != nil {
-			return fmt.Errorf("error running test '%s': %s", file, err)
+			return false, fmt.Errorf("error running test '%s': %s", file, err)
 		}
 
 		if !reflect.DeepEqual(t.ExpectedResult, res) {
 			expected_json, err := json.MarshalIndent(t.ExpectedResult, "", "  ")
 			if err != nil {
-				return fmt.Errorf("could not serialize expected as json: %s", err)
+				return false, fmt.Errorf("could not serialize expected as json: %s", err)
 			}
 			actual_json, err := json.MarshalIndent(res, "", "  ")
 			if err != nil {
-				return fmt.Errorf("could not serialize actual as json: %s", err)
+				return false, fmt.Errorf("could not serialize actual as json: %s", err)
 			}
 
+			errors = true
 			fmt.Printf("Expected: %s\n", expected_json)
 			fmt.Printf("Actual  : %s\n", actual_json)
 
@@ -74,8 +77,10 @@ func runScenario(dbManager *database.DBManager, scenario database.TestScenario) 
 		}
 	}
 
-	slog.Info("All tests passed!", "scenario", scenario.StateDir)
-	return nil
+	if !errors {
+		slog.Info("All tests passed!", "scenario", scenario.StateDir)
+	}
+	return errors, nil
 }
 
 // Main entry point to the test command.
@@ -133,12 +138,19 @@ func Test(cmd *cobra.Command, args []string) error {
 	*/
 
 	// 4. For each scenario, run the tests
+	errors := false
 	for _, t := range tests {
-		err := runScenario(&dbManager, t)
+		test_fails, err := runScenario(&dbManager, t)
 		if err != nil {
 			return fmt.Errorf("test failed for scenario '%s': %s", t.StateDir, err)
 		}
+		if test_fails {
+			errors = true
+		}
 	}
 
+	if errors {
+		return fmt.Errorf("some tests failed")
+	}
 	return nil
 }

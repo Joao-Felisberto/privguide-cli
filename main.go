@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/Joao-Felisberto/devprivops/cmd"
+	"github.com/Joao-Felisberto/devprivops/fs"
 	"github.com/Joao-Felisberto/devprivops/util"
 	"github.com/spf13/cobra"
 )
@@ -15,22 +16,19 @@ import (
 
 // Builds the command and delegates execution to the appropriate function from the cmd package
 func main() {
-	appName := "devprivops"
-	reportEndpoint := ""
-
 	// slog.SetDefault(slog.New(slog.NewTextHandler(os.Stdout, nil)))
 
 	var rootCmd = &cobra.Command{
-		Use:   appName,
-		Short: fmt.Sprintf("A CLI application to analyze %s", appName),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			return fmt.Errorf("please specify a subcommand. Use '%s --help' for usage details", appName)
+		Use:   util.AppName,
+		Short: fmt.Sprintf("A CLI application to analyze %s", util.AppName),
+		RunE: func(cmd_ *cobra.Command, args []string) error {
+			return fmt.Errorf("please specify a subcommand. Use '%s --help' for usage details", util.AppName)
 		},
 	}
 
 	var analyseCmd = &cobra.Command{
 		Use:   "analyse <username> <password> <database ip> <database port> <dataset>",
-		Short: fmt.Sprintf("Analyse the specified database endpoint for %s", appName),
+		Short: fmt.Sprintf("Analyse the specified database endpoint for %s", util.AppName),
 		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd_ *cobra.Command, args []string) error {
 			util.SetupLogger()
@@ -48,10 +46,16 @@ func main() {
 		},
 	}
 
-	analyseCmd.Flags().StringVar(&reportEndpoint, "report-endpoint", "", "Endpoint where to send the final report")
+	analyseCmd.Flags().StringVar(&util.ReportEndpoint, "report-endpoint", "", "Endpoint where to send the final report")
 
 	analyseCmd.Flags().BoolVar(&util.Pipeline, "pipeline", false, "whether to format the output for pipeline usage")
 	testCmd.Flags().BoolVar(&util.Pipeline, "pipeline", false, "whether to format the output for pipeline usage")
+
+	analyseCmd.Flags().StringVar(&fs.GlobalDir, "global-dir", fmt.Sprintf("/etc/%s", util.AppName), "The path to the global configurations")
+	testCmd.Flags().StringVar(&fs.GlobalDir, "global-dir", fmt.Sprintf("/etc/%s", util.AppName), "The path to the global configurations")
+
+	analyseCmd.Flags().StringVar(&fs.LocalDir, "local-dir", fmt.Sprintf("./.%s", util.AppName), "The path to the global configurations")
+	testCmd.Flags().StringVar(&fs.LocalDir, "local-dir", fmt.Sprintf("./.%s", util.AppName), "The path to the global configurations")
 
 	rootCmd.AddCommand(analyseCmd)
 	rootCmd.AddCommand(testCmd)

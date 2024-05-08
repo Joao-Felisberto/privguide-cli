@@ -11,6 +11,9 @@ import (
 
 var Pipeline = false
 
+var AppName = "devprivops"
+var ReportEndpoint = ""
+
 func SetupLogger() {
 	if !Pipeline {
 		slog.SetDefault(slog.New(NewHumanFriendlyHandler(nil)))
