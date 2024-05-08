@@ -86,7 +86,7 @@ func loadRepresentations(dbManager *database.DBManager, root string) error {
 	slog.Debug("Getting descriptions", "root", root)
 	entries, err := fs.GetDescriptions(root)
 	if err != nil {
-		return err
+		return fmt.Errorf("error fetching description: %s", err)
 	}
 
 	for _, e := range entries {

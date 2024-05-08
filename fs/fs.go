@@ -89,7 +89,7 @@ func getDescriptions(descriptionRoot string, localRoot string, globalRoot string
 
 	entries, err := os.ReadDir(localPath)
 	if err != nil && !errors.Is(err, os.ErrNotExist) {
-		return nil, err
+		return nil, fmt.Errorf("error reading local directory: %s", err)
 	}
 
 	for _, e := range entries {
