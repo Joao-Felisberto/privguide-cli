@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"os"
 	"path/filepath"
+	"reflect"
 	"slices"
 	"strings"
 )
@@ -14,6 +15,13 @@ var Pipeline = false
 var AppName = "devprivops"
 var ReportEndpoint = ""
 
+// Configures the logger according to user preferences
+//
+// When running in a pipeline, it may be more convenient to have date and time,
+// no color and more strucured output, while when running locally it may be better
+// to have colors and more concise output. The variable `Pipeline` controls this behavior.
+//
+// `level`: The log level
 func SetupLogger(level slog.Leveler) {
 	if !Pipeline {
 		slog.SetDefault(slog.New(NewHumanFriendlyHandler(&slog.HandlerOptions{
@@ -119,13 +127,13 @@ func Any[T any](arr []T, condition func(T) bool) bool {
 // `set2`: the second array
 //
 // returns: whether the sets are equal
-func CompareSets[T comparable](set1 []T, set2 []T) bool {
+func CompareSets[T any](set1 []T, set2 []T) bool {
 	if len(set1) != len(set2) {
 		return false
 	}
 
 	for _, e := range set1 {
-		if !slices.Contains(set2, e) {
+		if !slices.ContainsFunc(set2, func(e2 T) bool { return reflect.DeepEqual(e, e2) }) {
 			return false
 		}
 	}

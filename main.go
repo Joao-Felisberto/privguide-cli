@@ -12,7 +12,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var logLevel = slog.LevelInfo
+var verbose = false
+
+// var logLevel = slog.LevelDebug
 
 // Builds the command and delegates execution to the appropriate function from the cmd package
 func main() {
@@ -31,6 +33,10 @@ func main() {
 		Short: fmt.Sprintf("Analyse the specified database endpoint for %s", util.AppName),
 		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd_ *cobra.Command, args []string) error {
+			logLevel := slog.LevelInfo
+			if verbose {
+				logLevel = slog.LevelDebug
+			}
 			util.SetupLogger(logLevel)
 			return cmd.Analyse(cmd_, args)
 		},
@@ -41,6 +47,10 @@ func main() {
 		Short: "Tests the queries against user-defined scenarios",
 		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd_ *cobra.Command, args []string) error {
+			logLevel := slog.LevelInfo
+			if verbose {
+				logLevel = slog.LevelDebug
+			}
 			util.SetupLogger(logLevel)
 			return cmd.Test(cmd_, args)
 		},
@@ -56,6 +66,9 @@ func main() {
 
 	analyseCmd.Flags().StringVar(&fs.LocalDir, "local-dir", fmt.Sprintf("./.%s", util.AppName), "The path to the local configurations")
 	testCmd.Flags().StringVar(&fs.LocalDir, "local-dir", fmt.Sprintf("./.%s", util.AppName), "The path to the local configurations")
+
+	analyseCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "whether to display debug messages")
+	testCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "whether to display debug messages")
 
 	rootCmd.AddCommand(analyseCmd)
 	rootCmd.AddCommand(testCmd)

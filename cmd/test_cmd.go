@@ -4,13 +4,26 @@ import (
 	"encoding/json"
 	"fmt"
 	"log/slog"
-	"reflect"
 	"strconv"
 
 	"github.com/Joao-Felisberto/devprivops/database"
 	"github.com/Joao-Felisberto/devprivops/fs"
+	"github.com/Joao-Felisberto/devprivops/util"
 	"github.com/spf13/cobra"
 )
+
+/*
+type ComparableJSON map[string]interface{}
+
+func (self ComparableJSON) Compare(other comparable) int {
+	equal := reflect.DeepEqual(self, other)
+	if equal {
+		return 0
+	} else {
+		return -1
+	}
+}
+*/
 
 // Executes all tests for a given scenario.
 // Test failures do not cause an early return, but all other errors do.
@@ -58,7 +71,12 @@ func runScenario(dbManager *database.DBManager, scenario database.TestScenario) 
 			return false, fmt.Errorf("error running test '%s': %s", file, err)
 		}
 
-		if !reflect.DeepEqual(t.ExpectedResult, res) {
+		/*
+			a := util.Map(t.ExpectedResult, func(m map[string]interface{}) ComparableJSON { return m })
+			b := util.Map(res, func(m map[string]interface{}) ComparableJSON { return m })
+			if !util.CompareSets(b, a) {
+		*/
+		if !util.CompareSets(t.ExpectedResult, res) {
 			expected_json, err := json.MarshalIndent(t.ExpectedResult, "", "  ")
 			if err != nil {
 				return false, fmt.Errorf("could not serialize expected as json: %s", err)

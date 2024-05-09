@@ -147,6 +147,12 @@ func (db *DBManager) AddTriples(triples []schema.Triple, prefixes map[string]str
 	}
 	defer response.Body.Close()
 
+	resTxt, err := io.ReadAll(response.Body)
+	if err != nil {
+		return -1, fmt.Errorf("failed to read result of AddTriples: %s", err)
+	}
+
+	slog.Debug("AddTriples resopnse", "body", resTxt)
 	return response.StatusCode, nil
 }
 

@@ -13,7 +13,7 @@ func TestMap(t *testing.T) {
 	expected := []int{2, 4, 6, 8}
 	mapped := util.Map(nums, func(n int) int { return 2 * n })
 
-	for i, _ := range expected {
+	for i := range expected {
 		if expected[i] != mapped[i] {
 			t.Errorf("Arrays do not match: expected %d, got %d", expected[i], mapped[i])
 		}
@@ -25,7 +25,7 @@ func TestFilter(t *testing.T) {
 	expected := []int{2, 4}
 	mapped := util.Filter(nums, func(n int) bool { return n%2 == 0 })
 
-	for i, _ := range expected {
+	for i := range expected {
 		if expected[i] != mapped[i] {
 			t.Errorf("Arrays do not match: expected %d, got %d", expected[i], mapped[i])
 		}
