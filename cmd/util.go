@@ -93,10 +93,13 @@ func loadRepresentations(dbManager *database.DBManager, root string) error {
 		fPath := strings.Split(e, "/")
 		fname := fPath[len(fPath)-1]
 
-		tmp := strings.Split(fname, ".")
-		schemaIndicator := tmp[len(tmp)-2]
+		nameComponents := strings.Split(fname, ".")
+		schemaIndicator := nameComponents[len(nameComponents)-2]
 
-		schema := fmt.Sprintf("schemas/%s-schema.json", schemaIndicator)
+		schema := ""
+		if schemaIndicator != "config" {
+			schema = fmt.Sprintf("schemas/%s-schema.json", schemaIndicator)
+		}
 
 		if err := loadRep(dbManager, e, schema); err != nil {
 			return err

@@ -9,4 +9,5 @@
 - abreviation: cfg
   uri: https://devprivops.com/config
   files:
-    - .*config.yml
+    - .*config/.*.yml
+    - tests/.*/config.yml

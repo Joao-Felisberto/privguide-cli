@@ -6,4 +6,4 @@
 
 schemas/*.yml
 
-report.json
+report*.json

@@ -161,3 +161,37 @@ func getDirsInDir(path string) ([]string, error) {
 		func(de fs.DirEntry) string { return de.Name() },
 	), nil
 }
+
+func GetConfigs() ([]string, error) {
+	return getConfigs(
+		LocalDir,
+		GlobalDir,
+	)
+}
+
+func getConfigs(localRoot string, globalRoot string) ([]string, error) {
+	localPath := fmt.Sprintf("%s/config/", localRoot)
+	globalPath := fmt.Sprintf("%s/config/", globalRoot)
+
+	files := []string{}
+
+	entries, err := os.ReadDir(localPath)
+	if err != nil && !errors.Is(err, os.ErrNotExist) {
+		return nil, fmt.Errorf("error reading local directory: %s", err)
+	}
+
+	for _, e := range entries {
+		files = append(files, fmt.Sprintf("config/%s", e.Name()))
+	}
+
+	entries, err = os.ReadDir(globalPath)
+	if err != nil {
+		return files, nil
+	}
+
+	for _, e := range entries {
+		files = append(files, fmt.Sprintf("config/%s", e.Name()))
+	}
+
+	return files, nil
+}

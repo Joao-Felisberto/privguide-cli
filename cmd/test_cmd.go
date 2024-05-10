@@ -44,7 +44,7 @@ func runScenario(dbManager *database.DBManager, scenario database.TestScenario) 
 	}
 
 	// 2. Load and apply config
-	err = loadRep(dbManager, "config/config.yml", "")
+	err = loadRep(dbManager, fmt.Sprintf("%s/config.yml", scenario.StateDir), "")
 	if err != nil {
 		return false, err
 	}
