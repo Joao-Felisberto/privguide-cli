@@ -311,17 +311,169 @@ func getExtraData(dbManager *database.DBManager) (*[]map[string]interface{}, err
 // returns: an error if there are issues sending the report
 func sendReport(url string, report *map[string]interface{}) error {
 	// Read report.json file
-	reportData, err := os.ReadFile("report.json")
+	/*
+		reportData, err := os.ReadFile("report.json")
+		if err != nil {
+			return fmt.Errorf("error reading report.json: %s", err)
+		}
+	*/
+
+	reportData, err := json.Marshal(report)
 	if err != nil {
-		return fmt.Errorf("error reading report.json: %s", err)
+		return fmt.Errorf("error serializing report: %s", err)
 	}
 
 	// Send HTTP POST request
+	slog.Info("Sending report to visualizer", "url", url)
 	resp, err := http.Post(url, "application/json", bytes.NewBuffer(reportData))
 	if err != nil {
 		return fmt.Errorf("error sending HTTP request: %s", err)
 	}
 	defer resp.Body.Close()
+
+	var respBytes []byte
+	_, err = resp.Body.Read(respBytes)
+	if err != nil {
+		return fmt.Errorf("error reading response: %s", err)
+	}
+
+	respText, err := json.MarshalIndent(respBytes, "", " ")
+	if err != nil {
+		return fmt.Errorf("error unmarshaling response: %s", err)
+	}
+
+	slog.Info("Report sent", "response", respText)
+
+	return nil
+}
+
+func analysisCycle(dbManager *database.DBManager, reportEndpoint string, config string, report *map[string]interface{}) error {
+	// 1. Load DFD into DB
+	if err := loadRepresentations(dbManager, "descriptions"); err != nil {
+		return err
+	}
+
+	// 2. Load and apply config
+	if config != "" {
+		err := loadRep(dbManager, config, "")
+		if err != nil {
+			return err
+		}
+		_, err = dbManager.ApplyConfig()
+		if err != nil {
+			return err
+		}
+	}
+
+	// 2. Run all the reasoner rules
+	if err := reasoner(dbManager); err != nil {
+		return err
+	}
+
+	// 3. Verify policy compliance
+	(*report)["policies"] = []interface{}{}
+	regulations, err := fs.GetRegulations()
+	if err != nil {
+		return err
+	}
+	for _, regulation := range regulations {
+		// reg := report["policies"].([]interface{})
+		polReport, err := policies(dbManager, regulation)
+		if err != nil {
+			return err
+		}
+		(*report)["policies"] = append((*report)["policies"].([]interface{}), map[string]interface{}{
+			"name":    regulation,
+			"results": polReport,
+		})
+		// reg[regulation] = polReport
+	}
+
+	// 4. Run all attack trees
+	atkReport, err := attackTrees(dbManager)
+	if err != nil {
+		return err
+	}
+	(*report)["attack trees"] = atkReport
+
+	// 5. Clean database
+	// dbManager.CleanDB()
+
+	// 6. Print and store report
+	//	gitCommit := exec.Command("git", "rev-parse", "HEAD")
+	//	var commitOut bytes.Buffer
+	//	gitCommit.Stdout = &commitOut
+
+	gitBranch := exec.Command("git", "symbolic-ref", "--short", "HEAD")
+	var branchOut bytes.Buffer
+	gitBranch.Stdout = &branchOut
+
+	//	gitCommit.Run()
+	gitBranch.Run()
+
+	// time := fmt.Sprint(time.Now().Unix())
+	time := time.Now().Unix()
+
+	projDir, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+	projPath := strings.Split(projDir, "/")
+	projDir = projPath[len(projPath)-1]
+
+	(*report)["branch"] = strings.Trim(branchOut.String(), "\n")
+	// report["time"] = commitOut.String()
+	(*report)["time"] = time
+	(*report)["config"] = config
+	(*report)["project"] = projDir
+
+	// jsonReport, err := json.MarshalIndent(report, "", "  ")
+
+	// 7. Check whether the violations are acceptable
+	violations := validateReport(report)
+	if len(violations) != 0 {
+		slog.Error("There are policies with too many violations\n")
+		for _, v := range violations {
+			slog.Error(fmt.Sprintf("\t- %s\n", v))
+		}
+		// os.Exit(1)
+	}
+
+	// 8. Validate whether requirements are met
+	usReport, err := verifyRequirements(dbManager)
+	if err != nil {
+		slog.Error("Error validating requirements", "error", err)
+	}
+	(*report)["user stories"] = usReport
+
+	// 9. Get extra data
+	extraData, err := getExtraData(dbManager)
+	if err != nil {
+		slog.Error("Error fetching extra report data", "error", err)
+	}
+	(*report)["extra data"] = extraData
+
+	// 10. Send the report to the site
+	jsonReport, err := json.Marshal(report)
+	if err != nil {
+		slog.Error("error parsing report:", "error", err)
+	}
+
+	reportFile := "report.json"
+	if config != "" {
+		cfgPath := strings.Split(config, "/")
+		cfgNameParts := strings.Split(cfgPath[len(cfgPath)-1], ".")
+		reportFile = fmt.Sprintf("report_%s.json", cfgNameParts[0])
+	}
+	slog.Info("Writing report", "to", reportFile)
+	if err := os.WriteFile(reportFile, []byte(jsonReport), 0666); err != nil {
+		return err
+	}
+	if reportEndpoint != "" {
+		if err := sendReport(reportEndpoint, report); err != nil {
+			return err
+		}
+	}
 
 	return nil
 }
@@ -371,124 +523,23 @@ func Analyse(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	for _, config := range configs {
-		// 1. Load DFD into DB
-		if err = loadRepresentations(&dbManager, "descriptions"); err != nil {
-			return err
-		}
-
-		// 2. Load and apply config
-		err = loadRep(&dbManager, config, "")
+	if len(configs) == 0 {
+		err := analysisCycle(&dbManager, reportEndpoint, "", &report)
 		if err != nil {
 			return err
 		}
-		_, err = dbManager.ApplyConfig()
+		_, err = dbManager.CleanDB()
 		if err != nil {
 			return err
 		}
-
-		// 2. Run all the reasoner rules
-		if err = reasoner(&dbManager); err != nil {
-			return err
-		}
-
-		// 3. Verify policy compliance
-		report["policies"] = []interface{}{}
-		regulations, err := fs.GetRegulations()
-		if err != nil {
-			return err
-		}
-		for _, regulation := range regulations {
-			// reg := report["policies"].([]interface{})
-			polReport, err := policies(&dbManager, regulation)
+	} else {
+		for _, config := range configs {
+			err := analysisCycle(&dbManager, reportEndpoint, config, &report)
 			if err != nil {
 				return err
 			}
-			report["policies"] = append(report["policies"].([]interface{}), map[string]interface{}{
-				"name":    regulation,
-				"results": polReport,
-			})
-			// reg[regulation] = polReport
-		}
-
-		// 4. Run all attack trees
-		atkReport, err := attackTrees(&dbManager)
-		if err != nil {
-			return err
-		}
-		report["attack trees"] = atkReport
-
-		// 5. Clean database
-		// dbManager.CleanDB()
-
-		// 6. Print and store report
-		//	gitCommit := exec.Command("git", "rev-parse", "HEAD")
-		//	var commitOut bytes.Buffer
-		//	gitCommit.Stdout = &commitOut
-
-		gitBranch := exec.Command("git", "symbolic-ref", "--short", "HEAD")
-		var branchOut bytes.Buffer
-		gitBranch.Stdout = &branchOut
-
-		//	gitCommit.Run()
-		gitBranch.Run()
-
-		// time := fmt.Sprint(time.Now().Unix())
-		time := time.Now().Unix()
-
-		projDir, err := os.Getwd()
-		if err != nil {
-			return err
-		}
-		projPath := strings.Split(projDir, "/")
-		projDir = projPath[len(projPath)-1]
-
-		report["branch"] = strings.Trim(branchOut.String(), "\n")
-		// report["time"] = commitOut.String()
-		report["time"] = time
-		report["project"] = projDir
-
-		// jsonReport, err := json.MarshalIndent(report, "", "  ")
-
-		// 7. Check whether the violations are acceptable
-		violations := validateReport(&report)
-		if len(violations) != 0 {
-			slog.Error("There are policies with too many violations\n")
-			for _, v := range violations {
-				slog.Error(fmt.Sprintf("\t- %s\n", v))
-			}
-			// os.Exit(1)
-		}
-
-		// 8. Validate whether requirements are met
-		usReport, err := verifyRequirements(&dbManager)
-		if err != nil {
-			slog.Error("Error validating requirements", "error", err)
-		}
-		report["user stories"] = usReport
-
-		// 9. Get extra data
-		extraData, err := getExtraData(&dbManager)
-		if err != nil {
-			slog.Error("Error fetching extra report data", "error", err)
-		}
-		report["extra data"] = extraData
-
-		// 10. Send the report to the site
-		jsonReport, err := json.Marshal(report)
-		if err != nil {
-			slog.Error("error parsing report:", "error", err)
-		}
-
-		cfgPath := strings.Split(config, "/")
-		cfgNameParts := strings.Split(cfgPath[len(cfgPath)-1], ".")
-		reportFile := fmt.Sprintf("report_%s.json", cfgNameParts[0])
-		slog.Info("Writing report", "to", reportFile)
-		if err := os.WriteFile(reportFile, []byte(jsonReport), 0666); err != nil {
-			return err
-		}
-		if reportEndpoint != "" {
-			if err := sendReport(reportEndpoint, &report); err != nil {
+			_, err = dbManager.CleanDB()
+			if err != nil {
 				return err
 			}
 		}
