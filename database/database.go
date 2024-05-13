@@ -263,10 +263,10 @@ func (db *DBManager) executeAttackTreeNode(attackNode *attacktree.AttackNode) ([
 
 		if len(binds) == 0 {
 			slog.Info("NOT POSSIBLE", "node", attackNode.Description)
-			attackNode.SetExecutionStatus(attacktree.NOT_POSSIBLE)
+			attackNode.SetExecutionResults(attacktree.NOT_POSSIBLE, &binds)
 		} else {
 			slog.Info("POSSIBLE", "node", attackNode.Description)
-			attackNode.SetExecutionStatus(attacktree.POSSIBLE)
+			attackNode.SetExecutionResults(attacktree.POSSIBLE, &binds)
 		}
 
 		return binds, attackNode, qErr

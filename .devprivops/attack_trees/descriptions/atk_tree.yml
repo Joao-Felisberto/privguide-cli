@@ -5,7 +5,7 @@ children:
     query:  attack_trees/queries/file1.rq
     children:
       - description: C11
-        query: attack_trees/queries/file1.rq
+        query: attack_trees/queries/file3.rq
         children: []
   - description: C2
     query: attack_trees/queries/file2.rq

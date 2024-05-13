@@ -13,12 +13,20 @@ func TestSetExecutionStatus(t *testing.T) {
 		Query:           "",
 		Children:        []*attacktree.AttackNode{},
 		ExecutionStatus: attacktree.NOT_EXECUTED,
+		ExecutionResult: nil,
 	}
 
-	node.SetExecutionStatus(attacktree.POSSIBLE)
+	m := []map[string]interface{}{
+		{"a": 1, "b": 2},
+	}
+	node.SetExecutionResults(attacktree.POSSIBLE, &m)
 
 	if node.ExecutionStatus != attacktree.POSSIBLE {
 		t.Errorf("Actual execution status is not 'POSSIBLE' but '%#v'", node.ExecutionStatus)
+	}
+
+	if node.ExecutionResult != &m {
+		t.Errorf("Actual execution result is not '[a:1 b:2]' but '%#v'", node.ExecutionResult)
 	}
 }
 

@@ -23,10 +23,11 @@ const (
 // A node is composed of a query, which is its condition, the child nodes and some metadata.
 // A node is only evaluated if at least one of its pre-conditions (its children) is possible, or has no children.
 type AttackNode struct {
-	Description     string          `json:"description"`      // Brief textual description of the node's condition
-	Query           string          `json:"query"`            // Path to the query that encodes the condition
-	Children        []*AttackNode   `json:"children"`         // The node's pre-conditions
-	ExecutionStatus ExecutionStatus `json:"execution status"` // The current execution stats of the node, may change when the tree is executed
+	Description     string                    `json:"description"`      // Brief textual description of the node's condition
+	Query           string                    `json:"query"`            // Path to the query that encodes the condition
+	Children        []*AttackNode             `json:"children"`         // The node's pre-conditions
+	ExecutionStatus ExecutionStatus           `json:"execution status"` // The current execution stats of the node, may change when the tree is executed
+	ExecutionResult *[]map[string]interface{} `json:"execution result"` // The result of running the query, if it was run, else nil
 }
 
 // Represents the whole attack/harm tree.
@@ -40,12 +41,13 @@ type AttackTree struct {
 // Setter for the execution status.
 //
 // Should be called after node's condition execution to change the status accordingly
-func (node *AttackNode) SetExecutionStatus(status ExecutionStatus) {
+func (node *AttackNode) SetExecutionResults(status ExecutionStatus, results *[]map[string]interface{}) {
 	node.ExecutionStatus = status
+	node.ExecutionResult = results
 }
 
-// Construct a node from a map.
-// All nodes are initialized with status `NOT_EXECUTED`.
+// Construct a node from the json representation of the tree, prior to its execution.
+// All nodes are initialized with ExecutionStatus `NOT_EXECUTED` and ExecutionResult `nil`.
 //
 // The dict structure should follow this pattern:
 //
@@ -66,32 +68,6 @@ func (node *AttackNode) SetExecutionStatus(status ExecutionStatus) {
 //   - the node is passed in an incorrect data type
 func parseNode(data interface{}) (*AttackNode, error) {
 	switch node := data.(type) {
-	/*
-		case map[string]interface{}: // , map[interface{}]interface{}:
-			description, descOk := node["description"].(string)
-			query, queryOk := node["query"].(string)
-			childrenData, childrenOk := node["children"].([]interface{})
-
-			if !descOk || !queryOk || !childrenOk {
-				return nil, errors.New("missing required fields in node")
-			}
-
-			children := make([]*AttackNode, len(childrenData))
-			for i, childData := range childrenData {
-				childNode, err := parseNode(childData)
-				if err != nil {
-					return nil, fmt.Errorf("error parsing child node: %w", err)
-				}
-				children[i] = childNode
-			}
-
-			return &AttackNode{
-				Description:     description,
-				Query:           query,
-				Children:        children,
-				ExecutionStatus: NOT_EXECUTED,
-			}, nil
-	*/
 	case map[interface{}]interface{}:
 		description, descOk := node["description"].(string)
 		query, queryOk := node["query"].(string)
@@ -115,6 +91,7 @@ func parseNode(data interface{}) (*AttackNode, error) {
 			Query:           query,
 			Children:        children,
 			ExecutionStatus: NOT_EXECUTED,
+			ExecutionResult: nil,
 		}, nil
 	default:
 		return nil, fmt.Errorf("invalid node data type: %s", reflect.TypeOf(data))
