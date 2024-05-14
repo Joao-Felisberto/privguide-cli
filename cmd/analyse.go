@@ -21,6 +21,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var tooManyViolations = false
+
 // Run all reasoner rules
 //
 // # The reasoner rules live under the `reasoner` subdirectory under each configuration directory
@@ -168,10 +170,10 @@ func attackTrees(dbManager *database.DBManager) ([]*attacktree.AttackTree, error
 //
 // `report`: the final report
 //
-// returns: the list of unacceptable violations
-func validateReport(report *map[string]interface{}) []string {
+// returns: the list of unacceptable violations, unmet requirements and possible attacks/harms
+func validateReport(report *map[string]interface{}) ([]string, []string, []string) {
 	regulations := (*report)["policies"].([]interface{})
-	violated := []string{}
+	violatedPolicies := []string{}
 
 	/*
 		m, err := json.MarshalIndent(regulations, "", "  ")
@@ -184,17 +186,44 @@ func validateReport(report *map[string]interface{}) []string {
 	for _, regulation := range regulations {
 		policies := (regulation.(map[string]interface{}))["results"]
 		for _, policy := range policies.([]map[string]interface{}) {
-			// policy = policy.(map[string]interface{})
 			maxViolations := policy["maximum violations"].(int)
 			violations := len(policy["violations"].([]map[string]interface{}))
 
 			if violations > maxViolations {
-				violated = append(violated, policy["name"].(string))
+				violatedPolicies = append(violatedPolicies, policy["name"].(string))
 			}
 		}
 	}
 
-	return violated
+	userStories := (*report)["user stories"].(*[]map[string]interface{})
+	violatedRequirements := []string{}
+
+	for _, us := range *userStories {
+		isMisuseCase := us["is misuse case"].(bool)
+
+		requirements := us["requirements"].([]map[string]interface{})
+		for _, req := range requirements {
+			res := req["results"].([]map[string]interface{})
+
+			if (len(res) == 0) != isMisuseCase {
+				violatedRequirements = append(violatedRequirements, req["title"].(string))
+			}
+		}
+	}
+
+	attackTrees := (*report)["attack trees"].([]*attacktree.AttackTree)
+	possibleAttacks := []string{}
+
+	for _, tree := range attackTrees {
+		root := tree.Root
+		isPossible := root.ExecutionStatus == attacktree.POSSIBLE
+
+		if isPossible {
+			possibleAttacks = append(possibleAttacks, root.Description)
+		}
+	}
+
+	return violatedPolicies, violatedRequirements, possibleAttacks
 }
 
 // Runs the requirements queries to check whether or not the system supports the implementation of the requirements
@@ -239,6 +268,15 @@ func verifyRequirements(dbManager *database.DBManager) (*[]map[string]interface{
 			if res == nil {
 				res = []map[string]interface{}{}
 			}
+
+			if (len(res) == 0) != us.IsMisuseCase {
+				if us.IsMisuseCase {
+					slog.Error("Requirement of misuse case met", "requirement", r.Title)
+				} else {
+					slog.Error("Requirement not met", "requirement", r.Title)
+				}
+			}
+
 			// usReport := report[us.UseCase].(map[string]interface{})
 			usReport["requirements"] = append(usReport["requirements"].([]map[string]interface{}),
 				map[string]interface{}{
@@ -433,23 +471,38 @@ func analysisCycle(dbManager *database.DBManager, reportEndpoint string, config 
 
 	// jsonReport, err := json.MarshalIndent(report, "", "  ")
 
-	// 7. Check whether the violations are acceptable
-	violations := validateReport(report)
-	if len(violations) != 0 {
-		slog.Error("There are policies with too many violations\n")
-		for _, v := range violations {
-			slog.Error(fmt.Sprintf("\t- %s\n", v))
-		}
-		// os.Exit(1)
-	}
-
-	// 8. Validate whether requirements are met
+	// 7. Check whether requirements are met
 	usReport, err := verifyRequirements(dbManager)
 	if err != nil {
 		slog.Error("Error validating requirements", "error", err)
 	}
 	(*report)["user stories"] = usReport
 
+	// 8. Check whether the violatedPolicies are acceptable
+	violatedPolicies, violatedRequirements, possibleAttacks := validateReport(report)
+	if len(violatedPolicies) != 0 {
+		slog.Error("There are policies with too many violations")
+		for _, v := range violatedPolicies {
+			slog.Error(fmt.Sprintf("\t- %s", v))
+		}
+		tooManyViolations = true
+	}
+
+	if len(violatedRequirements) != 0 {
+		slog.Error("There are requirements with too many violations")
+		for _, v := range violatedRequirements {
+			slog.Error(fmt.Sprintf("\t- %s", v))
+		}
+		tooManyViolations = true
+	}
+
+	if len(possibleAttacks) != 0 {
+		slog.Error("There are possible attacks")
+		for _, v := range possibleAttacks {
+			slog.Error(fmt.Sprintf("\t- %s", v))
+		}
+		tooManyViolations = true
+	}
 	// 9. Get extra data
 	extraData, err := getExtraData(dbManager)
 	if err != nil {
@@ -549,5 +602,8 @@ func Analyse(cmd *cobra.Command, args []string) error {
 		}
 	}
 
+	if tooManyViolations {
+		return fmt.Errorf("too many policy or requirement violations")
+	}
 	return nil
 }
