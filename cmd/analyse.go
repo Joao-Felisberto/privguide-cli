@@ -421,10 +421,14 @@ func analysisCycle(dbManager *database.DBManager, reportEndpoint string, config 
 	projPath := strings.Split(projDir, "/")
 	projDir = projPath[len(projPath)-1]
 
+	cfgPath := strings.Split(config, "/")
+	cfgFile := cfgPath[len(cfgPath)-1]
+	cfgName := strings.Split(cfgFile, ".")[0]
+
 	(*report)["branch"] = strings.Trim(branchOut.String(), "\n")
 	// report["time"] = commitOut.String()
 	(*report)["time"] = time
-	(*report)["config"] = config
+	(*report)["config"] = cfgName
 	(*report)["project"] = projDir
 
 	// jsonReport, err := json.MarshalIndent(report, "", "  ")
