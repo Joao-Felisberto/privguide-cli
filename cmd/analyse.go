@@ -198,15 +198,17 @@ func validateReport(report *map[string]interface{}) ([]string, []string, []strin
 	userStories := (*report)["user stories"].(*[]map[string]interface{})
 	violatedRequirements := []string{}
 
-	for _, us := range *userStories {
-		isMisuseCase := us["is misuse case"].(bool)
+	if userStories != nil {
+		for _, us := range *userStories {
+			isMisuseCase := us["is misuse case"].(bool)
 
-		requirements := us["requirements"].([]map[string]interface{})
-		for _, req := range requirements {
-			res := req["results"].([]map[string]interface{})
+			requirements := us["requirements"].([]map[string]interface{})
+			for _, req := range requirements {
+				res := req["results"].([]map[string]interface{})
 
-			if (len(res) == 0) != isMisuseCase {
-				violatedRequirements = append(violatedRequirements, req["title"].(string))
+				if (len(res) == 0) != isMisuseCase {
+					violatedRequirements = append(violatedRequirements, req["title"].(string))
+				}
 			}
 		}
 	}

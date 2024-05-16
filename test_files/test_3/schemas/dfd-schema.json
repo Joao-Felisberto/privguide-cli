@@ -1,0 +1,111 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/DFD",
+    "definitions": {
+        "DFD": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "external entities": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ExternalEntity"
+                    }
+                },
+                "processes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ExternalEntity"
+                    }
+                },
+                "data stores": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/DataStore"
+                    }
+                },
+                "data flows": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/DataFlow"
+                    }
+                }
+            },
+            "required": [
+                "data flows",
+                "data stores",
+                "external entities",
+                "processes"
+            ],
+            "title": "DFD"
+        },
+        "DataFlow": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "from": {
+                    "type": "string"
+                },
+                "to": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "from",
+                "id",
+                "to"
+            ],
+            "title": "DataFlow"
+        },
+        "DataStore": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "data stored": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": [
+                "data stored",
+                "id"
+            ],
+            "title": "DataStore"
+        },
+        "ExternalEntity": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "consumes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "produces": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": [
+                "consumes",
+                "id",
+                "produces"
+            ],
+            "title": "ExternalEntity"
+        }
+    }
+}

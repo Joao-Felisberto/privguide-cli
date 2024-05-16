@@ -1,0 +1,54 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "type": "array",
+    "items": {
+        "$ref": "#/definitions/UseCase"
+    },
+    "definitions": {
+        "UseCase": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "use case": {
+                    "type": "string"
+                },
+                "is misuse case": {
+                    "type": "boolean"
+                },
+                "requirements": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Requirement"
+                    }
+                }
+            },
+            "required": [
+                "is misuse case",
+                "requirements",
+                "use case"
+            ],
+            "title": "UseCase"
+        },
+        "Requirement": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "title": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "query": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "description",
+                "query",
+                "title"
+            ],
+            "title": "Requirement"
+        }
+    }
+}

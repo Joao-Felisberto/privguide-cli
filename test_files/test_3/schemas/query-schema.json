@@ -1,0 +1,42 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "type": "array",
+    "items": {
+        "$ref": "#/definitions/QueryMetadata"
+    },
+    "definitions": {
+        "QueryMetadata": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "file": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "is consistency": {
+                    "type": "boolean"
+                },
+                "maximum violations": {
+                    "type": "number"
+                },
+                "mapping message": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "description",
+                "is consistency",
+                "file",
+                "mapping message",
+                "maximum violations",
+                "title"
+            ],
+            "title": "QueryMetadata"
+        }
+    }
+}
