@@ -1,0 +1,22 @@
+# yaml-language-server: $schema=../schemas/dfd-schema.json
+
+external entities:
+  - id: A
+    consumes:
+      - a
+    produces:
+      - a
+processes:
+  - id: Proc
+    consumes:
+      - a
+    produces:
+      - a
+data stores:
+  - id: Data
+    data stored:
+      - a
+data flows:
+  - id: Flow
+    from: A
+    to: Data

@@ -1,0 +1,6 @@
+- file: regulations/reg_1/reg.rq
+  title: Title
+  description: description
+  is consistency: true
+  maximum violations: 0
+  mapping message: Mapping message

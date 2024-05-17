@@ -2,8 +2,10 @@ package cmd
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log/slog"
+	"os"
 	"strconv"
 
 	"github.com/Joao-Felisberto/devprivops/database"
@@ -44,15 +46,22 @@ func runScenario(dbManager *database.DBManager, scenario database.TestScenario) 
 	}
 
 	// 2. Load and apply config
-	err = loadRep(dbManager, fmt.Sprintf("%s/config.yml", scenario.StateDir), "")
-	if err != nil {
-		return false, err
-	}
-	_, err = dbManager.ApplyConfig()
-	if err != nil {
-		return false, err
-	}
+	cfgPath := fmt.Sprintf("%s/config.yml", scenario.StateDir)
+	// if _, err := os.Stat(cfgPath); !errors.Is(err, os.ErrNotExist) {
+	// path/to/whatever does not exist
 
+	err = loadRep(dbManager, cfgPath, "")
+	configNotFound := errors.Is(err, os.ErrNotExist)
+	if err != nil && !configNotFound {
+		return false, err
+	}
+	if !configNotFound {
+		_, err = dbManager.ApplyConfig()
+		if err != nil {
+			return false, err
+		}
+	}
+	// }
 	// 3. Run all the reasoner rules
 	if err = reasoner(dbManager); err != nil {
 		return false, err

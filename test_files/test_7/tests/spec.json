@@ -1,0 +1,11 @@
+[
+    {
+        "stateDir": "tests/a",
+        "tests": [
+            {
+                "query": "regulations/reg_1/reg.rq",
+                "expectedResult": [{}]
+            }
+        ]
+    }
+]

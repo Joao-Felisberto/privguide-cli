@@ -1,0 +1,7 @@
+# PREFIX dfd: <https://devprivops.com/dfd/>
+
+SELECT *
+WHERE {
+    <http://no.no> ?p ?o .
+    # dfd:ROOT dfd:processes dfd:Proc .
+}

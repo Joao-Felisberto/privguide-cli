@@ -73,6 +73,7 @@ func parseNode(data interface{}) (*AttackNode, error) {
 		query, queryOk := node["query"].(string)
 		childrenData, childrenOk := node["children"].([]interface{})
 
+		// Can never occur, schema is validated prior
 		if !descOk || !queryOk || !childrenOk {
 			return nil, fmt.Errorf("missing required fields in node")
 		}

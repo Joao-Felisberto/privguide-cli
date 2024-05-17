@@ -1,12 +1,3 @@
 description: R
 query: attack_trees/queries/master.rq
-children:
-  - description: C1 
-    query:  attack_trees/queries/file1.rq
-    children:
-      - description: C11
-        query: attack_trees/queries/file3.rq
-        children: []
-  - description: C2
-    query: attack_trees/queries/file2.rq
-    children: []
+children: []

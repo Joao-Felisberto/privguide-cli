@@ -259,7 +259,7 @@ func (db *DBManager) executeAttackTreeNode(attackNode *attacktree.AttackNode) ([
 		if err != nil {
 			return nil, attackNode, err
 		}
-		binds, qErr := db.ExecuteQueryFile(qFile)
+		binds, err := db.ExecuteQueryFile(qFile)
 
 		if len(binds) == 0 {
 			slog.Info("NOT POSSIBLE", "node", attackNode.Description)
@@ -269,7 +269,7 @@ func (db *DBManager) executeAttackTreeNode(attackNode *attacktree.AttackNode) ([
 			attackNode.SetExecutionResults(attacktree.POSSIBLE, &binds)
 		}
 
-		return binds, attackNode, qErr
+		return binds, attackNode, err
 	}
 	slog.Info("UNREACHABLE", "node", attackNode.Description)
 	return nil, nil, nil

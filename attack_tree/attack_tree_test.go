@@ -85,3 +85,93 @@ children:
 		t.Errorf("Node 'C2' should not have children")
 	}
 }
+
+func TestNewAttackTreeFromInvalidYaml(t *testing.T) {
+	fileData := `
+description: R
+query: master.rq
+children:
+  - description: C1 
+    children: []
+`
+
+	if err := os.WriteFile("tmp.yml", []byte(fileData), 0666); err != nil {
+		t.Fatal(err)
+	}
+	defer os.Remove("tmp.yml")
+
+	_, err := attacktree.NewAttackTreeFromYaml("tmp.yml", "") // No schema so invalid yaml can be passed
+	if err.Error() != "error parsing child node: missing required fields in node" {
+		t.Fatal(err)
+	}
+}
+
+func TestNewAttackTreeFromYamlArray(t *testing.T) {
+	fileData := `
+- description: R
+  query: master.rq
+  children:
+    - description: C1 
+      children: []
+`
+
+	if err := os.WriteFile("tmp.yml", []byte(fileData), 0666); err != nil {
+		t.Fatal(err)
+	}
+	defer os.Remove("tmp.yml")
+
+	_, err := attacktree.NewAttackTreeFromYaml("tmp.yml", "") // No schema so invalid yaml can be passed
+	if err.Error() != "invalid node data type: []interface {}" {
+		t.Fatal(err)
+	}
+}
+
+func TestNewAttackTreeFromYamlInvalidSchema(t *testing.T) {
+	fileData := `
+description: R
+query: master.rq
+children:
+  - description: C1 
+    query: file1.rq
+    children: []
+  - description: C2
+    query: file2.rq
+    children: []
+`
+
+	invalidSchema := `
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/InvalidObject",
+    "definitions": {
+        "InvalidObject": {
+            "type": "object",
+            "properties": {
+                "a": {
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "a"
+            ],
+            "title": "InvalidObject"
+        }
+    }
+}	
+`
+
+	if err := os.WriteFile("tmp.yml", []byte(fileData), 0666); err != nil {
+		t.Fatal(err)
+	}
+	defer os.Remove("tmp.yml")
+
+	if err := os.WriteFile("tmp.json", []byte(invalidSchema), 0666); err != nil {
+		t.Fatal(err)
+	}
+	defer os.Remove("tmp.json")
+
+	_, err := attacktree.NewAttackTreeFromYaml("tmp.yml", "./tmp.json")
+	if err.Error() != "the file 'tmp.yml' does not abide by the schema: [(root): a is required]" {
+		t.Fatal(err)
+	}
+}
