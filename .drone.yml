@@ -8,7 +8,8 @@ steps:
   commands:
   - /opt/fuseki/fuseki-server --mem --port=3030 /tmp &
   - sleep 3s
-  - go test ./...
+  - go test ./... -cover
+  - sh integration_tests.sh
 - name: package
   image: plugins/docker
   settings:
