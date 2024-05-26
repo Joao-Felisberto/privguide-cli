@@ -11,26 +11,26 @@ type Query struct {
 }
 
 // Constructs a new query
+// `file`: The file where the query resides
+// `title`: The query's title
+// `description: The query's purpose description
+// `isConsistency`: Whether the query concerns the consistency of the descriptions or not
+// `maxViolations`: The maximum number of violations allowed
+// `mappingMessage`: The message instructing how to map the results of the query to solutions
 func NewQuery(
 	file string,
 	title string,
 	description string,
 	isConsistency bool,
 	maxViolations int,
-	// resultsHeading string,
-	// emptyHeader string,
-	// resultLine string,
 	mappingMessage string,
 ) Query {
 	return Query{
-		File:          file,
-		Title:         title,
-		Description:   description,
-		IsConsistency: isConsistency,
-		MaxViolations: maxViolations,
-		// 		ResultsHeading: resultsHeading,
-		// 		EmptyHeading:   emptyHeader,
-		// 		ResultLine:     resultLine,
+		File:           file,
+		Title:          title,
+		Description:    description,
+		IsConsistency:  isConsistency,
+		MaxViolations:  maxViolations,
 		MappingMessage: mappingMessage,
 	}
 }

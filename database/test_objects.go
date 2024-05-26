@@ -8,7 +8,7 @@ import (
 
 // Represents a scenario on which to run tests
 type TestScenario struct {
-	StateDir string `json:"stateDir"` // The directory where the state is stored
+	StateDir string `json:"stateDir"` // The directory where the state descriptions are stored
 	Tests    []Test `json:"tests"`    // The list of tests to run
 }
 

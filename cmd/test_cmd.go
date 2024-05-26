@@ -14,19 +14,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-/*
-type ComparableJSON map[string]interface{}
-
-func (self ComparableJSON) Compare(other comparable) int {
-	equal := reflect.DeepEqual(self, other)
-	if equal {
-		return 0
-	} else {
-		return -1
-	}
-}
-*/
-
 // Executes all tests for a given scenario.
 // Test failures do not cause an early return, but all other errors do.
 //
@@ -146,23 +133,6 @@ func Test(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
-	/*
-		// 2. Load and apply config
-		err = loadRep(&dbManager, "config/config.yml", "")
-		if err != nil {
-			return err
-		}
-		_, err = dbManager.ApplyConfig()
-		if err != nil {
-			return err
-		}
-
-		// 3. Run all the reasoner rules
-		if err = reasoner(&dbManager); err != nil {
-			return err
-		}
-	*/
 
 	// 4. For each scenario, run the tests
 	errors := false

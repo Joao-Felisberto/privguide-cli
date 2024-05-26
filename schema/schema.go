@@ -1,4 +1,4 @@
-// Utilities to read YAML and validate it against a provided JSON schema
+// Utilities to read YAML and validate it against a JSON schema
 package schema
 
 import (
@@ -51,10 +51,8 @@ func NewTriple(s, p, o string, uriBase string, uriMap *map[string]string) Triple
 
 			uri := (*uriMap)[prefix]
 
-			// slog.Info("New Subject!", "s", s, "uri", uri, "id", id)
 			new = strings.ReplaceAll(id, " ", "_")
 			new = fmt.Sprintf(`<%s/%s>`, uri, new)
-			// slog.Info("NEW", "uri", new)
 			s = new
 		} else {
 			s = fmt.Sprintf(`<%s>`, s)
@@ -145,6 +143,7 @@ func convertToJSON(data interface{}) interface{} {
 // `schemaFile`: The path to the json schema the yaml file should follow. If "", there is no schema validation
 //
 // returns: the YAML data or an error if the file or schema could not be read or the schema could not be validated
+// or the YAML file does not abide by the schema.
 func ReadYAML(yamlFile string, schemaFile string) (interface{}, error) {
 	yamlData, err := os.ReadFile(yamlFile)
 	if err != nil {
@@ -224,16 +223,25 @@ func generateAnonID(uriBase string) string {
 }
 
 // Converts a YAML file into RDF triples
-func YAMLtoRDF(key string, rawData interface{}, rootURI string, uriBase string, uriMap *map[string]string) []Triple {
+//
+// `key`: The YAML property, to be turned into the triple's predicate
+//
+// `rawData`: The object to be recursively parsed into triples whose ID will become the triple's object
+//
+// `subject`: The subject of the triples generated in this recursion step
+//
+// `uriBase`: The base URI for the triple
+//
+// `uriMap`: The map of abreviations to fully expanded URI bases
+//
+// returns: A list of triples obtained using the YAML to triples algorythm
+func YAMLtoRDF(key string, rawData interface{}, subject string, uriBase string, uriMap *map[string]string) []Triple {
 	triples := []Triple{}
 	switch data := rawData.(type) {
 	case map[interface{}]interface{}:
 		for key, rawValue := range data {
-			// subject := tmp(uriBase, key, uriMap)
 			switch value := rawValue.(type) {
 			case map[interface{}]interface{}:
-				// id := generateAnonID()
-
 				id := fmt.Sprintf("%s/%v", uriBase, value["id"])
 				if id == fmt.Sprintf("%s/<nil>", uriBase) {
 					id = generateAnonID(uriBase)
@@ -241,55 +249,24 @@ func YAMLtoRDF(key string, rawData interface{}, rootURI string, uriBase string, 
 					delete(value, "id")
 				}
 
-				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("%s/%v", uriBase, key), id, uriBase, uriMap))
+				triples = append(triples, NewTriple(subject, fmt.Sprintf("%s/%v", uriBase, key), id, uriBase, uriMap))
 				triples = append(triples, YAMLtoRDF(fmt.Sprintf("%v", key), value, id, uriBase, uriMap)...)
 			case []interface{}:
-				triples = append(triples, YAMLtoRDF(fmt.Sprintf("%v", key), value, rootURI, uriBase, uriMap)...)
+				triples = append(triples, YAMLtoRDF(fmt.Sprintf("%v", key), value, subject, uriBase, uriMap)...)
 			case int:
 				tn := strconv.Itoa(value)
-				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("%s/%v", uriBase, key), tn, uriBase, uriMap))
+				triples = append(triples, NewTriple(subject, fmt.Sprintf("%s/%v", uriBase, key), tn, uriBase, uriMap))
 			case bool:
 				tn := strconv.FormatBool(value)
-				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("%s/%v", uriBase, key), tn, uriBase, uriMap))
+				triples = append(triples, NewTriple(subject, fmt.Sprintf("%s/%v", uriBase, key), tn, uriBase, uriMap))
 			case nil:
 				continue
 			default: // string
-				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("%s/%v", uriBase, key), value.(string), uriBase, uriMap))
+				triples = append(triples, NewTriple(subject, fmt.Sprintf("%s/%v", uriBase, key), value.(string), uriBase, uriMap))
 			}
 		}
-		/*
-			case map[string]interface{}:
-				for key, rawValue := range data {
-					// subject := tmp(uriBase, key, uriMap)
-					switch value := rawValue.(type) {
-					case map[interface{}]interface{}:
-						// id := generateAnonID()
-
-						id := fmt.Sprintf("%s/%v", uriBase, value["id"])
-						if id == fmt.Sprintf("%s/<nil>", uriBase) {
-							id = generateAnonID(uriBase)
-						} else {
-							delete(value, "id")
-						}
-						// fmt.Printf("ID: %s\n", id)
-
-						triples = append(triples, NewTriple(rootURI, fmt.Sprintf("%s/%v", uriBase, key), id, uriBase, uriMap))
-						triples = append(triples, YAMLtoRDF(fmt.Sprintf("%v", key), value, id, uriBase, uriMap)...)
-					case []interface{}:
-						triples = append(triples, YAMLtoRDF(fmt.Sprintf("%v", key), value, rootURI, uriBase, uriMap)...)
-					case int:
-						tn := strconv.Itoa(value)
-						triples = append(triples, NewTriple(rootURI, fmt.Sprintf("%s/%v", uriBase, key), tn, uriBase, uriMap))
-					default: // string
-						triples = append(triples, NewTriple(rootURI, fmt.Sprintf("%s/%v", uriBase, key), value.(string), uriBase, uriMap))
-					}
-				}
-		*/
 	case []interface{}:
-		// subject := tmp(uriBase, key, uriMap)
 		for _, rawElement := range data {
-			// id := generateAnonID()
-
 			switch e := rawElement.(type) {
 			case []interface{}:
 				// TODO: support array of arrays
@@ -302,13 +279,13 @@ func YAMLtoRDF(key string, rawData interface{}, rootURI string, uriBase string, 
 					delete(e, "id")
 				}
 
-				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("%s/%s", uriBase, key), id, uriBase, uriMap))
+				triples = append(triples, NewTriple(subject, fmt.Sprintf("%s/%s", uriBase, key), id, uriBase, uriMap))
 				triples = append(triples, YAMLtoRDF(id, e, id, uriBase, uriMap)...)
 			case int:
 				eInt := strconv.Itoa(e)
-				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("%s/%v", uriBase, key), eInt, uriBase, uriMap))
+				triples = append(triples, NewTriple(subject, fmt.Sprintf("%s/%v", uriBase, key), eInt, uriBase, uriMap))
 			default: // string
-				triples = append(triples, NewTriple(rootURI, fmt.Sprintf("%s/%v", uriBase, key), e.(string), uriBase, uriMap))
+				triples = append(triples, NewTriple(subject, fmt.Sprintf("%s/%v", uriBase, key), e.(string), uriBase, uriMap))
 			}
 		}
 	default:

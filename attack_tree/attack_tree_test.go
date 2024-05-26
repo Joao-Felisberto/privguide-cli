@@ -1,3 +1,4 @@
+// Tests for the attack_tree package
 package attacktree_test
 
 import (
@@ -7,6 +8,7 @@ import (
 	attacktree "github.com/Joao-Felisberto/devprivops/attack_tree"
 )
 
+// Tests for the (*attacktree.AttackNode)SetExecutionStatus method
 func TestSetExecutionStatus(t *testing.T) {
 	node := attacktree.AttackNode{
 		Description:     "",
@@ -30,6 +32,7 @@ func TestSetExecutionStatus(t *testing.T) {
 	}
 }
 
+// Test whether attack trees can be adequately created from well formed YAML descriptions.
 func TestNewAttackTreeFromYaml(t *testing.T) {
 	fileData := `
 description: R
@@ -86,6 +89,8 @@ children:
 	}
 }
 
+// Test whether the errors caused by creating attack trees from invalid descriptions are adequate.
+// This test bypasses schema validation, which is tested in its own module and integration tests.
 func TestNewAttackTreeFromInvalidYaml(t *testing.T) {
 	fileData := `
 description: R
@@ -106,6 +111,8 @@ children:
 	}
 }
 
+// Test whether the errors caused by creating attack trees from a description file with an array at the top level.
+// This test bypasses schema validation, which is tested in its own module and integration tests.
 func TestNewAttackTreeFromYamlArray(t *testing.T) {
 	fileData := `
 - description: R
@@ -126,6 +133,7 @@ func TestNewAttackTreeFromYamlArray(t *testing.T) {
 	}
 }
 
+// Test whether the schema validation works by passing a wrong schema
 func TestNewAttackTreeFromYamlInvalidSchema(t *testing.T) {
 	fileData := `
 description: R

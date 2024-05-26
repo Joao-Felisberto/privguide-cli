@@ -24,9 +24,9 @@ const (
 // A node is only evaluated if at least one of its pre-conditions (its children) is possible, or has no children.
 type AttackNode struct {
 	Description     string                    `json:"description"`      // Brief textual description of the node's condition
-	Query           string                    `json:"query"`            // Path to the query that encodes the condition
+	Query           string                    `json:"query"`            // Path to the query that encodes the condition, relative to the local or global directory
 	Children        []*AttackNode             `json:"children"`         // The node's pre-conditions
-	ExecutionStatus ExecutionStatus           `json:"execution status"` // The current execution stats of the node, may change when the tree is executed
+	ExecutionStatus ExecutionStatus           `json:"execution status"` // The current execution status of the node, may change when the tree is executed
 	ExecutionResult *[]map[string]interface{} `json:"execution result"` // The result of running the query, if it was run, else nil
 }
 
@@ -38,9 +38,14 @@ type AttackTree struct {
 	Root AttackNode `json:"root"` // The root node of the attack tree
 }
 
-// Setter for the execution status.
+// Setter for the execution status and results.
 //
-// Should be called after node's condition execution to change the status accordingly
+// Should be called after the execution of the node's condition
+// to change the status accordingly and set the results
+//
+// `status`: The final status after execution
+//
+// `results`: The execution results
 func (node *AttackNode) SetExecutionResults(status ExecutionStatus, results *[]map[string]interface{}) {
 	node.ExecutionStatus = status
 	node.ExecutionResult = results
@@ -62,7 +67,6 @@ func (node *AttackNode) SetExecutionResults(status ExecutionStatus, results *[]m
 // `data`: the node represented by a go map
 //
 // returns: the parsed AttackNode, or an error when:
-//
 //   - there was an error parsing the child node
 //   - required fields are missing from the dict
 //   - the node is passed in an incorrect data type

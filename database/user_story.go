@@ -16,9 +16,9 @@ type Requirement struct {
 
 // Reads the user stories from a map.
 //
-// `yaml`: The map with the requirement data
+// `yaml`: The requirement data
 //
-// returns: the list of user stories or an error when the map parsed
+// returns: the list of user stories or an error if there is any when the map parsed
 func USFromYAML(yaml []interface{}) ([]*UserStory, error) {
 	userStories := []*UserStory{}
 	for _, usRaw := range yaml {

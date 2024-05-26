@@ -12,9 +12,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var verbose = false
-
-// var logLevel = slog.LevelDebug
+var verbose = false // Whether the log should log more information or not
 
 // Builds the command and delegates execution to the appropriate function from the cmd package
 func main() {

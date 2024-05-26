@@ -9,6 +9,7 @@ import (
 	"sync"
 )
 
+// Color code map for readability
 const (
 	RESET = "\033[0m"
 
@@ -30,16 +31,23 @@ const (
 	WHITE        = 97
 )
 
-func colorize(colorCode int, v string) string {
-	return fmt.Sprintf("\033[%sm%s%s", strconv.Itoa(colorCode), v, RESET)
+// Adds a single color to the provided string
+//
+// `colorCode`: The color code for the color to use
+//
+// `text`: The text to color
+func colorize(colorCode int, text string) string {
+	return fmt.Sprintf("\033[%sm%s%s", strconv.Itoa(colorCode), text, RESET)
 }
 
+// A Handler wrapper that creates more human readable log messages than the default slog loggers
 type HumanFriendlyHandler struct {
-	handler    slog.Handler
-	byteBuffer *bytes.Buffer
-	m          *sync.Mutex
+	handler    slog.Handler  // The fallback handler to use in each property value
+	byteBuffer *bytes.Buffer // A byte buffer to aid in decoding the strings to log
+	m          *sync.Mutex   // A mutex to ensure the logger is thread safe
 }
 
+// Removes the default fields the slog logger logs
 func suppressLogDefaults(
 	next func([]string, slog.Attr) slog.Attr,
 ) func([]string, slog.Attr) slog.Attr {
@@ -56,18 +64,12 @@ func suppressLogDefaults(
 	}
 }
 
+// Creates a new handler
+//
+// `opts`: The handler options
+//
+// returns: The new handler
 func NewHumanFriendlyHandler(opts *slog.HandlerOptions) slog.Handler {
-	/*
-		if opts == nil {
-			opts = &slog.HandlerOptions{}
-		}
-		return slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
-			Level:       opts.Level,
-			AddSource:   opts.AddSource,
-			ReplaceAttr: suppressLogDefaults(opts.ReplaceAttr),
-		})
-	*/
-
 	if opts == nil {
 		opts = &slog.HandlerOptions{}
 	}
@@ -83,18 +85,26 @@ func NewHumanFriendlyHandler(opts *slog.HandlerOptions) slog.Handler {
 	}
 }
 
+// Invoke the fallback handler's Enabled method
 func (h *HumanFriendlyHandler) Enabled(ctx context.Context, lvl slog.Level) bool {
 	return h.handler.Enabled(ctx, lvl)
 }
 
+// Invoke the fallback handler's WithAttrs method
 func (h *HumanFriendlyHandler) WithAttrs(attrs []slog.Attr) slog.Handler {
 	return h.handler.WithAttrs(attrs)
 }
 
+// Invoke the fallback handler's WithGroup method
 func (h *HumanFriendlyHandler) WithGroup(name string) slog.Handler {
 	return h.handler.WithGroup(name)
 }
 
+// Overrides the fallback handler's Handle function to provide more human readable messages
+//
+// `ctx`: The handler context
+//
+// `record`: The raw information to log
 func (h *HumanFriendlyHandler) Handle(ctx context.Context, record slog.Record) error {
 	level := record.Level.String() + ": "
 

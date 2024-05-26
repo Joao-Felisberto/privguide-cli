@@ -1,3 +1,4 @@
+// Package for tests to the triple store interface
 package database_test
 
 import (
@@ -13,36 +14,42 @@ import (
 )
 
 const (
-	USER = "user"
-	PASS = "password"
-	HOST = "localhost"
-	PORT = 3030
-	DB   = "tmp"
+	USER = "user"      // The test user
+	PASS = "password"  // The test password
+	HOST = "localhost" // The test triple store IP
+	PORT = 3030        // The test triple store port
+	DB   = "tmp"       // The triple store data store
 )
 
+// Type to describe a single result from the triple store
 type BindingVar struct {
-	Type     string `json:"type"`
-	DataType string `json:"datatype"`
-	Value    string `json:"value"`
+	Type     string `json:"type"`     // The JSON type of the variable
+	DataType string `json:"datatype"` // The triple store type of the variable
+	Value    string `json:"value"`    // The value of the variable
 }
 
+// Type that represents the variable list from the query results
 type HeadVars struct {
-	Vars []string `json:"vars"`
+	Vars []string `json:"vars"` // The variable list
 }
 
+// The contents returned by the query
 type ResultBindings struct {
-	Bindings []CountBinding `json:"bindings"`
+	Bindings []CountBinding `json:"bindings"` // The collection of results  returned by the query
 }
 
+// The number of bindings returned
 type CountBinding struct {
-	Cnt BindingVar `json:"cnt"`
+	Cnt BindingVar `json:"cnt"` // Number of bindings returned
 }
 
+// The results of the query
 type CountResult struct {
-	Head    HeadVars       `json:"head"`
-	Results ResultBindings `json:"results"`
+	Head    HeadVars       `json:"head"`    // The metadata about the results
+	Results ResultBindings `json:"results"` // The results by the query
 }
 
+// Test for the CleanDB method
 func TestCleanDB(t *testing.T) {
 	db := database.NewDBManager(USER, PASS, HOST, PORT, DB)
 	db.CleanDB()
@@ -135,6 +142,7 @@ func TestCleanDB(t *testing.T) {
 	}
 }
 
+// Test for the AddTriples function
 func TestAddTriples(t *testing.T) {
 	db := database.NewDBManager(USER, PASS, HOST, PORT, DB)
 	db.CleanDB()
@@ -156,6 +164,7 @@ func TestAddTriples(t *testing.T) {
 	db.CleanDB()
 }
 
+// Test for the ExecuteReasonerRule function
 func TestExecuteReasonerRule(t *testing.T) {
 	db := database.NewDBManager(USER, PASS, HOST, PORT, DB)
 
@@ -175,6 +184,7 @@ func TestExecuteReasonerRule(t *testing.T) {
 	}
 }
 
+// Test for the ExecuteQueryFile function
 func TestExecuteQueryFile(t *testing.T) {
 	db := database.NewDBManager(USER, PASS, HOST, PORT, DB)
 
@@ -205,6 +215,7 @@ func TestExecuteQueryFile(t *testing.T) {
 	}
 }
 
+// TEst for the ExecuteAttackTree function
 func TestExecuteAttackTree(t *testing.T) {
 	db := database.NewDBManager(USER, PASS, HOST, PORT, DB)
 	db.CleanDB()

@@ -1,3 +1,4 @@
+// Tests for the schema package
 package schema_test
 
 import (
@@ -12,6 +13,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+// Tests if a new triple can be created passing either common URIs or literals
 func TestNewTriple(t *testing.T) {
 	triple := schema.NewTriple(
 		"http://example.com/ex1",
@@ -50,6 +52,7 @@ func TestNewTriple(t *testing.T) {
 	}
 }
 
+// Tests whether a new triple can be created with ids in the form `[file default URI]:<id>`
 func TestNewTripleFileId(t *testing.T) {
 	triple := schema.NewTriple(
 		"http://example.com/ex1",
@@ -87,6 +90,8 @@ func TestNewTripleFileId(t *testing.T) {
 		t.Errorf("Triple object does not match: expected '<http://example.com/b>', got '%s'", triple.Object)
 	}
 }
+
+// Tests whether a new triple can be created with ids in the form `[file uri/]abreviation:<id>`
 func TestNewTripleRemoteId(t *testing.T) {
 	triple := schema.NewTriple(
 		"http://example.com/ot:a",
@@ -125,6 +130,7 @@ func TestNewTripleRemoteId(t *testing.T) {
 	}
 }
 
+// Test for the `convertToJSON` function
 func TestConvertToJSON(t *testing.T) {
 	orig := map[interface{}]interface{}{
 		"Obj1": map[string]int{
@@ -159,6 +165,7 @@ func TestConvertToJSON(t *testing.T) {
 	}
 }
 
+// Test conversion of YAML without arrays to RDF
 func TestYAMLtoRDF(t *testing.T) {
 	// Example YAML input with multiple addresses
 	yamlInput := `
@@ -199,24 +206,16 @@ a:
 	if lt, le := len(triples), len(expected); lt != le {
 		t.Errorf("Number of triples generated does not match: expected %d, got %d", le, lt)
 	}
-	/*
-		for _, e := range triples {
-			t.Logf("%s", e)
-		}
-	*/
+
 	for _, v := range triples {
 		if !slices.Contains(expected, v) {
 			t.Errorf("'%s' not expected.", v)
-			/*
-				for i, e := range expected {
-					t.Logf("%s: %s\t%s", reflect.TypeOf(e.Object), e, triples[i])
-				}
-			*/
 			break
 		}
 	}
 }
 
+// Test conversion of YAML arrays to RDF
 func TestYAMLArrayToRDF(t *testing.T) {
 	// Example YAML input with multiple addresses
 	yamlInput := `
@@ -276,6 +275,7 @@ other:
 	}
 }
 
+// Test for the ReadYAML function
 func TestReadYAML(t *testing.T) {
 	schemaName := ".test_read_yaml/schema1.json"
 	err := util.CreateFileWithData(schemaName, `

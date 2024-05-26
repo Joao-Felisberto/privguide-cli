@@ -10,16 +10,21 @@ import (
 	"strings"
 )
 
+// Whether the tool is running on a CI/CD pipeline or the developer's machine.
+// Controls the logger behavior,
+// if the tool is running on a pipeline produce colorless and more verbose messages for better lookup
+// else, produce colorful and more succint messages for better human readability.
 var Pipeline = false
 
-var AppName = "devprivops"
-var ReportEndpoint = ""
+var AppName = "devprivops" // The application name, to be used in the default local and global directories
+var ReportEndpoint = ""    // The endpoint to send the report to, if "", do not send a report
 
 // Configures the logger according to user preferences
 //
 // When running in a pipeline, it may be more convenient to have date and time,
 // no color and more strucured output, while when running locally it may be better
-// to have colors and more concise output. The variable `Pipeline` controls this behavior.
+// to have colors and more concise output. The variable `Pipeline` controls this behavior,
+// which is then applied by this function, so, `Pipeline` shall be set prior to calling this function.
 //
 // `level`: The log level
 func SetupLogger(level slog.Leveler) {

@@ -1,3 +1,7 @@
+// Tests for the fs package
+// The tests are made for the internal functions that are independent of the local and global directories,
+// not the exported ones, since those are easier to test.
+// They have been exported in the `export_test.go` file.
 package fs_test
 
 import (
@@ -10,11 +14,14 @@ import (
 	"github.com/Joao-Felisberto/devprivops/util"
 )
 
-const localRoot = ".devprivops"
-const globalRoot = "g_devprivops"
-const descriptionRoot = "descriptions"
-const regulationRoot = "regulations"
+const (
+	localRoot       = ".devprivops"  // local directory for the tests
+	globalRoot      = "g_devprivops" // global directory for the tests
+	descriptionRoot = "descriptions" // descriptions directory within each root
+	regulationRoot  = "regulations"  // regulations directory within each root
+)
 
+// Tests for the getFile function
 func TestGetFile(t *testing.T) {
 	err := os.Mkdir(globalRoot, 0766)
 	if err != nil {
@@ -68,6 +75,7 @@ func TestGetFile(t *testing.T) {
 	}
 }
 
+// Test for the getDescriptions function.
 func TestGetDescriptions(t *testing.T) {
 	// Somehow this test seems not to cover some lines of the original function that are sure tested here, please revise
 	err := os.Mkdir(globalRoot, 0766)
@@ -159,6 +167,7 @@ func TestGetDescriptions(t *testing.T) {
 	}
 }
 
+// Tests for the getRegulations function
 func TestGetRegulations(t *testing.T) {
 	err := os.Mkdir(globalRoot, 0766)
 	if err != nil {

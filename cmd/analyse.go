@@ -55,7 +55,10 @@ func reasoner(dbManager *database.DBManager) error {
 
 // Runs all policies of a regulation
 //
+// # The returned report will contain the violations to each policy, or empty lists if they have none
+//
 // `dbManager`: The DBManager connecting to the database
+//
 // `regulation`: The path to the regulation (relative to the regulations path)
 //
 // returns: the execution report if everything succeeds, or an error when the policy could not be read from the file, does not abide by the schema, or has execution errors
@@ -126,6 +129,8 @@ func policies(dbManager *database.DBManager, regulation string) ([]map[string]in
 }
 
 // Execute all the attack/harm trees
+//
+// The returned report will have all the trees' states
 //
 // `dbManager`: The DBManager connecting to the database
 //
@@ -229,6 +234,8 @@ func validateReport(report *map[string]interface{}) ([]string, []string, []strin
 }
 
 // Runs the requirements queries to check whether or not the system supports the implementation of the requirements
+//
+// Logs unmet requirements and met misuse cases.
 //
 // `dbManager`: The DBManager connecting to the database
 //
@@ -387,6 +394,15 @@ func sendReport(url string, report *map[string]interface{}) error {
 	return nil
 }
 
+// Runs the analysis for a particular config
+//
+// `dbManager`: The connection with the triple store
+//
+// `reportEndpoint`: The endpoint of the report visualizer, or "" if none is available
+//
+// `config`: The path from the local or global directory root to the configuration file to use
+//
+// `report`: The reference to the report structure that will be updated in this execution
 func analysisCycle(dbManager *database.DBManager, reportEndpoint string, config string, report *map[string]interface{}) error {
 	// 1. Load DFD into DB
 	if err := loadRepresentations(dbManager, "descriptions"); err != nil {

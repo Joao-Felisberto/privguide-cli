@@ -1,3 +1,4 @@
+// Tests for the utils package
 package util_test
 
 import (
@@ -8,6 +9,7 @@ import (
 	"github.com/Joao-Felisberto/devprivops/util"
 )
 
+// Test for the Map function
 func TestMap(t *testing.T) {
 	nums := []int{1, 2, 3, 4}
 	expected := []int{2, 4, 6, 8}
@@ -20,6 +22,7 @@ func TestMap(t *testing.T) {
 	}
 }
 
+// Test for the Filter function
 func TestFilter(t *testing.T) {
 	nums := []int{1, 2, 3, 4}
 	expected := []int{2, 4}
@@ -32,6 +35,7 @@ func TestFilter(t *testing.T) {
 	}
 }
 
+// Test for the MapCast function
 func TestMapCast(t *testing.T) {
 	m := map[interface{}]interface{}{
 		"a": 1,
@@ -45,6 +49,7 @@ func TestMapCast(t *testing.T) {
 	}
 }
 
+// Test for the MapToMap function
 func TestMapToMap(t *testing.T) {
 	stringIntPairs := []struct {
 		s string
@@ -66,6 +71,7 @@ func TestMapToMap(t *testing.T) {
 	}
 }
 
+// Test for the Any function
 func TestAny(t *testing.T) {
 	nums := []int{2, 4, 6, 8}
 	found := util.Any(nums, func(n int) bool { return n%2 == 0 })
@@ -81,6 +87,7 @@ func TestAny(t *testing.T) {
 	}
 }
 
+// Test for the CompareSets function
 func TestCompareSets(t *testing.T) {
 	set1 := []int{1, 2, 3}
 	set2 := []int{1, 2, 3}
@@ -111,6 +118,7 @@ func TestCompareSets(t *testing.T) {
 	}
 }
 
+// Test for the CreateFileWithData function
 func TestCreateFileWithData(t *testing.T) {
 	for _, f := range []string{"file.txt", "./some/file.txt", "./some/dir/and/file.txt"} {
 		err := util.CreateFileWithData(f, "data")
