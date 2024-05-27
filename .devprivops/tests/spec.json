@@ -447,16 +447,16 @@
         "query": "regulations/gdpr/consistency/no_undefined_data_flows.rq",
         "expectedResult": [
           {
-            "dfId": "https://devprivops.com/dfd/C_new"
+            "dataFlow": "https://devprivops.com/dfd/C_new"
           },
           {
-            "dfId": "https://devprivops.com/dfd/R_new"
+            "dataFlow": "https://devprivops.com/dfd/R_new"
           },
           {
-            "dfId": "https://devprivops.com/dfd/U_new"
+            "dataFlow": "https://devprivops.com/dfd/U_new"
           },
           {
-            "dfId": "https://devprivops.com/dfd/D_new"
+            "dataFlow": "https://devprivops.com/dfd/D_new"
           }
         ]
       },
@@ -464,19 +464,19 @@
         "query": "regulations/gdpr/consistency/no_undefined_data_types.rq",
         "expectedResult": [
           {
-            "dtId": "https://devprivops.com/dfd/type_1"
+            "dataType": "https://devprivops.com/dfd/type_1"
           },
           {
-            "dtId": "https://devprivops.com/dfd/type_2"
+            "dataType": "https://devprivops.com/dfd/type_2"
           },
           {
-            "dtId": "https://devprivops.com/dfd/type_3"
+            "dataType": "https://devprivops.com/dfd/type_3"
           },
           {
-            "dtId": "https://devprivops.com/dfd/type_4"
+            "dataType": "https://devprivops.com/dfd/type_4"
           },
           {
-            "dtId": "https://devprivops.com/dfd/type_5"
+            "dataType": "https://devprivops.com/dfd/type_5"
           }
         ]
       },
@@ -484,10 +484,10 @@
         "query": "regulations/gdpr/consistency/no_undefined_entities.rq",
         "expectedResult": [
           {
-            "eId": "https://devprivops.com/dpia/another_one"
+            "entity": "https://devprivops.com/dpia/another_one"
           },
           {
-            "eId": "https://devprivops.com/dpia/new_one"
+            "entity": "https://devprivops.com/dpia/new_one"
           }
         ]
       },
@@ -508,12 +508,12 @@
         "query": "regulations/gdpr/consistency/wrong_data_flow_endpoints.rq",
         "expectedResult": [
           {
-            "df": "https://devprivops.com/dfd/C_message",
+            "dataFlow": "https://devprivops.com/dfd/C_message",
             "matchedPredicate": "from",
             "serviceId": "https://devprivops.com/dfd/message"
           },
           {
-            "df": "https://devprivops.com/dfd/C_message",
+            "dataFlow": "https://devprivops.com/dfd/C_message",
             "matchedPredicate": "to",
             "serviceId": "https://devprivops.com/dfd/no_exists"
           }
@@ -529,17 +529,17 @@
           {
             "data": "https://devprivops.com/dfd/message",
             "dest": "https://devprivops.com/dfd/no_exists",
-            "df": "https://devprivops.com/dfd/C_message"
+            "dataFlow": "https://devprivops.com/dfd/C_message"
           },
           {
             "data": "https://devprivops.com/dfd/type_4",
             "dest": "https://devprivops.com/dfd/no_exists",
-            "df": "https://devprivops.com/dfd/C_message"
+            "dataFlow": "https://devprivops.com/dfd/C_message"
           },
           {
             "data": "https://devprivops.com/dfd/type_4",
             "dest": "https://devprivops.com/dfd/send_message",
-            "df": "https://devprivops.com/dfd/C_message"
+            "dataFlow": "https://devprivops.com/dfd/C_message"
           }
         ]
       }
@@ -783,7 +783,7 @@
         "query": "regulations/gdpr/consistency/no_undefined_data_flows.rq",
         "expectedResult": [
           {
-            "dfId": "https://devprivops.com/dfd/message"
+            "dataFlow": "https://devprivops.com/dfd/message"
           }
         ]
       },
@@ -791,7 +791,7 @@
         "query": "regulations/gdpr/consistency/no_undefined_data_types.rq",
         "expectedResult": [
           {
-            "dtId": "https://devprivops.com/dfd/new_data"
+            "dataType": "https://devprivops.com/dfd/new_data"
           }
         ]
       },
@@ -830,7 +830,7 @@
           {
             "data": "https://devprivops.com/dfd/new_data",
             "dest": "https://devprivops.com/dfd/send_message",
-            "df": "https://devprivops.com/dfd/C_message"
+            "dataFlow": "https://devprivops.com/dfd/C_message"
           }
         ]
       }

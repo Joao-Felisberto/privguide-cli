@@ -8,3 +8,4 @@ schemas/*.yml
 covdatafiles
 
 report*.json
+!*schema.json
