@@ -1,10 +1,10 @@
 PREFIX dfd: <https://devprivops.com/dfd/>
 
-SELECT ?df ?dest ?data
+SELECT ?dataFlow ?dest ?data
 WHERE {
-    dfd:ROOT dfd:data_flows ?df .
-    ?df dfd:to ?dest .
-    ?df dfd:data ?data .
+    dfd:ROOT dfd:data_flows ?dataFlow .
+    ?dataFlow dfd:to ?dest .
+    ?dataFlow dfd:data ?data .
 
     FILTER NOT EXISTS {
         {

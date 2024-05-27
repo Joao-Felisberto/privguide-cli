@@ -9,9 +9,7 @@ WHERE {
     # Art 5 1 a | is this the right place to have this info?
     {
         BIND("lawful fair transparent" AS ?reason)
-        # ?processing dpia:lawful ?lawful .
-        # ?processing dpia:fair ?fair .
-        # ?processing dpia:transparent ?transparent .
+
         FILTER NOT EXISTS {
             ?processing dpia:lawful true . # Defined by Art 6 1
             ?processing dpia:fair true .
@@ -28,31 +26,4 @@ WHERE {
             ?processing dpia:legitimate true .
         }
     }
-
-    # Art 5 1 c
-#     UNION {
-#         BIND("adequate relevant limited" AS ?reason)
-#          
-#             ?processing dpia:purposes ?p .
-#             ?p dpia:adequate true .
-#             ?p dpia:relevant true .
-#             ?p dpia:limited true .
-# #         FILTER NOT EXISTS {
-# #             ?processing dpia:purposes ?p .
-# #             ?p dpia:adequate true .
-# #             ?p dpia:relevant true .
-# #             ?p dpia:limited true .
-# #         }
-# #         {
-# #              ?p dpia:adequate false .
-# #         } UNION {
-# #              ?p dpia:relevant false .
-# #         } UNION {
-# #              ?p dpia:limited false .
-# #         }
-#     }
-
-    # Art 5 1 e ?????????????
-
-    # Art 5 1 f ? to the responsability of security regulations?
 }

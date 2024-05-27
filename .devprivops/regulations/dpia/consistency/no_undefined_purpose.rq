@@ -13,7 +13,5 @@ WHERE {
 
     FILTER NOT EXISTS {
         dpia:ROOT dpia:processings/dpia:purposes ?purpose .
-        # dpia:ROOT dpia:processings ?processing .
-        # ?processing dpia:purposes ?purpose .
     }
 }

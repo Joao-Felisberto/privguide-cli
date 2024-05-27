@@ -9,7 +9,7 @@
   description: Ensure all data types that flow in the system are declared
   is consistency: true
   maximum violations: 0
-  mapping message: ""
+  mapping message: For each dataType, ensure a declaration for it exists in the 'data types' property
 # - file: regulations/gdpr/consistency/unique_ids.rq
 #   title: Unique IDs
 #   description: Different entities cannot have the same identifier
@@ -21,25 +21,25 @@
   description: All external entities that partake in data transactions must be defined
   is consistency: true
   maximum violations: 0
-  mapping message: ""
+  mapping message: Ensure all entities are declared in the 'external entities' property or the 'categories' property of one 
 - file: regulations/gdpr/consistency/no_undefined_data_flows.rq
   title: All data flows must be identified
   description: The flows of data reaching data stores must all exist
   is consistency: true
   maximum violations: 0
-  mapping message: ""
+  mapping message: Ensure for all dataFlows there exists a declaration in the 'data flows' property
 - file: regulations/gdpr/consistency/time_format.rq
   title: Wrong time formatting
   description: All durations and periods must be properly formatted
   maximum violations: 0
   is consistency: true
-  mapping message: ""
+  mapping message: All time units must be 'eternal' or abide by the REGEX  "^[0-9]+(s|sec|secs|second|seconds|m|min|mins|minute|minutes|h|hr|hrs|hour|hours|d|day|days|w|week|weeks|month|months|y|year|years)$"
 - file: regulations/gdpr/consistency/wrong_data_flow_endpoints.rq
   title: Wrong data flow endpoints
   description: Data flow sources and destinations must be external entities, processes or stores
   is consistency: true
   maximum violations: 0
-  mapping message: ""
+  mapping message: For each 'dataFlow', both the 'to' and 'from' properties shall be references to valid external entities, processes or data stores.
 
 
 # GDPR
@@ -51,7 +51,7 @@
   description: Ensure that no data collected in the EU is sent overseas
   is consistency: false
   maximum violations: 0
-  mapping message: ""
+  mapping message: Ensure the 'localtion' values are EU countries
 #- file: regulations/gdpr/unlawful_category_processing.rq
 #  title: Unlawful processing of certain categories of data
 #  description: The processing of certain categories of data under certain circumstances is unlawful
@@ -68,7 +68,7 @@
   description: The data flows to a process shall not provide more data than it needs
   is consistency: false
   maximum violations: 0
-  mapping message: ""
+  mapping message: Remove the listed 'data' from the data flow's 'data' field
 
 # TODO:
 #   - Article 6 Lawfulness of processing

@@ -1,12 +1,12 @@
 PREFIX dfd: <https://devprivops.com/dfd/>
 
-SELECT ?df ?matchedPredicate ?serviceId
+SELECT ?dataFlow ?matchedPredicate ?serviceId
 WHERE {
   	{
-    	?df dfd:from ?serviceId .
+    	?dataFlow dfd:from ?serviceId .
         BIND("from" AS ?matchedPredicate)
   	} UNION {
-        ?df dfd:to ?serviceId .
+        ?dataFlow dfd:to ?serviceId .
         BIND("to" AS ?matchedPredicate)
     }
 

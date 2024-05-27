@@ -1,19 +1,19 @@
 PREFIX dfd: <https://devprivops.com/dfd/>
 PREFIX dpia: <https://devprivops.com/dpia/>
 
-SELECT ?eId
+SELECT ?entity
 WHERE {
     {
-        ?_ dpia:vital_interest ?eId .
+        ?_ dpia:vital_interest ?entity .
     } UNION {
-        ?_ dpia:legitimate_interest ?eId .
+        ?_ dpia:legitimate_interest ?entity .
     } 
 
     FILTER NOT EXISTS {
         {
-            dfd:ROOT dfd:external_entities ?eId .
+            dfd:ROOT dfd:external_entities ?entity .
         } UNION {
-            dfd:ROOT dfd:external_entities/dfd:categories ?eId .
+            dfd:ROOT dfd:external_entities/dfd:categories ?entity .
         }
     }
 }
