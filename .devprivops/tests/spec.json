@@ -71,10 +71,6 @@
         "expectedResult": []
       },
       {
-        "query": "regulations/dpia/policies/required_dpo.rq",
-        "expectedResult": []
-      },
-      {
         "query": "regulations/gdpr/consistency/no_undefined_data_flows.rq",
         "expectedResult": []
       },
@@ -183,10 +179,6 @@
       },
       {
         "query": "regulations/dpia/policies/minimal_purposes.rq",
-        "expectedResult": []
-      },
-      {
-        "query": "regulations/dpia/policies/required_dpo.rq",
         "expectedResult": []
       },
       {
@@ -335,10 +327,6 @@
         ]
       },
       {
-        "query": "regulations/dpia/policies/required_dpo.rq",
-        "expectedResult": []
-      },
-      {
         "query": "regulations/gdpr/consistency/no_undefined_data_flows.rq",
         "expectedResult": []
       },
@@ -437,10 +425,6 @@
       },
       {
         "query": "regulations/dpia/policies/minimal_purposes.rq",
-        "expectedResult": []
-      },
-      {
-        "query": "regulations/dpia/policies/required_dpo.rq",
         "expectedResult": []
       },
       {
@@ -620,7 +604,20 @@
         "query": "regulations/dpia/policies/dpo.rq",
         "expectedResult": [
           {
-            "proc": "https://devprivops.com/dfd/send_message"
+            "proc": "https://devprivops.com/dfd/send_message",
+            "reason": "requires new technologies"
+          },
+          {
+            "proc": "https://devprivops.com/dfd/send_message",
+            "reason": "systematic monitoring"
+          },
+          {
+            "proc": "https://devprivops.com/dfd/send_message",
+            "reason": "automated decisions with legal impact for the user"
+          },
+          {
+            "proc": "https://devprivops.com/dfd/send_message",
+            "reason": "large scale processing"
           }
         ]
       },
@@ -669,10 +666,6 @@
             "purpose": "https://devprivops.com/dpia/new_purpose"
           }
         ]
-      },
-      {
-        "query": "regulations/dpia/policies/required_dpo.rq",
-        "expectedResult": []
       },
       {
         "query": "regulations/gdpr/consistency/no_undefined_data_flows.rq",
@@ -776,10 +769,6 @@
         "expectedResult": []
       },
       {
-        "query": "regulations/dpia/policies/required_dpo.rq",
-        "expectedResult": []
-      },
-      {
         "query": "regulations/gdpr/consistency/no_undefined_data_flows.rq",
         "expectedResult": [
           {
@@ -810,19 +799,19 @@
       {
         "query": "regulations/gdpr/policies/data_in_EU.rq",
         "expectedResult": [
-		  {
-			"destId": "https://devprivops.com/dfd/send_message",
-			"location": "Farlands"
-		  },
-		  {
-			"destId": "https://devprivops.com/dpia/User",
-			"location": "Nowhere"
-		  },
-		  {
-			"destId": "https://devprivops.com/dfd/message_db",
-			"location": "Don't exist"
-		  }
-		]
+          {
+            "destId": "https://devprivops.com/dfd/send_message",
+            "location": "Farlands"
+          },
+          {
+            "destId": "https://devprivops.com/dpia/User",
+            "location": "Nowhere"
+          },
+          {
+            "destId": "https://devprivops.com/dfd/message_db",
+            "location": "Don't exist"
+          }
+        ]
       },
       {
         "query": "regulations/gdpr/policies/data_minimization.rq",
