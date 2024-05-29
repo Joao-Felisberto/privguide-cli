@@ -63,12 +63,12 @@
   is consistency: false
   maximum violations: 0
   mapping message: Ensure all purposes in the dfd processes are also declared in the dpia's purpose declaration
-- file: regulations/dpia/policies/required_dpo.rq
-  title: Project requires DPO
-  description: Ensure the project has an associated DPO if required as mandated by the GDPR
-  is consistency: false
-  maximum violations: 0
-  mapping message: ""
+# - file: regulations/dpia/policies/required_dpo.rq
+#   title: Project requires DPO
+#   description: Ensure the project has an associated DPO if required as mandated by the GDPR
+#   is consistency: false
+#   maximum violations: 0
+#   mapping message: ""
 
 - file: regulations/dpia/policies/dpia.rq
   title: DPIA

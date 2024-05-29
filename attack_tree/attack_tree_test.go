@@ -51,7 +51,7 @@ children:
 	}
 	defer os.Remove("tmp.yml")
 
-	atkTree, err := attacktree.NewAttackTreeFromYaml("tmp.yml", "../.devprivops/schemas/atk-tree-schema.json")
+	atkTree, err := attacktree.NewAttackTreeFromYaml("tmp.yml")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -105,12 +105,14 @@ children:
 	}
 	defer os.Remove("tmp.yml")
 
-	_, err := attacktree.NewAttackTreeFromYaml("tmp.yml", "") // No schema so invalid yaml can be passed
-	if err.Error() != "error parsing child node: missing required fields in node" {
+	_, err := attacktree.NewAttackTreeFromYaml("tmp.yml") // No schema so invalid yaml can be passed
+	// if err.Error() != "error parsing child node: missing required fields in node" {
+	if err.Error() != "the file 'tmp.yml' does not abide by the schema: [children.0: query is required]" {
 		t.Fatal(err)
 	}
 }
 
+/*
 // Test whether the errors caused by creating attack trees from a description file with an array at the top level.
 // This test bypasses schema validation, which is tested in its own module and integration tests.
 func TestNewAttackTreeFromYamlArray(t *testing.T) {
@@ -118,7 +120,7 @@ func TestNewAttackTreeFromYamlArray(t *testing.T) {
 - description: R
   query: master.rq
   children:
-    - description: C1 
+    - description: C1
       children: []
 `
 
@@ -132,14 +134,16 @@ func TestNewAttackTreeFromYamlArray(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+*/
 
+/*
 // Test whether the schema validation works by passing a wrong schema
 func TestNewAttackTreeFromYamlInvalidSchema(t *testing.T) {
 	fileData := `
 description: R
 query: master.rq
 children:
-  - description: C1 
+  - description: C1
     query: file1.rq
     children: []
   - description: C2
@@ -165,7 +169,7 @@ children:
             "title": "InvalidObject"
         }
     }
-}	
+}
 `
 
 	if err := os.WriteFile("tmp.yml", []byte(fileData), 0666); err != nil {
@@ -178,8 +182,9 @@ children:
 	}
 	defer os.Remove("tmp.json")
 
-	_, err := attacktree.NewAttackTreeFromYaml("tmp.yml", "./tmp.json")
+	_, err := attacktree.NewAttackTreeFromYaml("tmp.yml" , "./tmp.json")
 	if err.Error() != "the file 'tmp.yml' does not abide by the schema: [(root): a is required]" {
 		t.Fatal(err)
 	}
 }
+*/

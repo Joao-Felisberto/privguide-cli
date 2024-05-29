@@ -68,11 +68,17 @@ func policies(dbManager *database.DBManager, regulation string) ([]map[string]in
 	if err != nil {
 		return nil, err
 	}
-	polSchema, err := fs.GetFile("schemas/query-schema.json")
-	if err != nil {
-		return nil, err
-	}
-	yamlQueries, err := schema.ReadYAML(polFile, polSchema)
+	/*
+		polSchema, err := fs.GetFile("schemas/query-schema.json")
+		if err != nil {
+			return nil, err
+		}
+		yamlQueries, err := schema.ReadYAML(polFile, polSchema)
+		if err != nil {
+			return nil, err
+		}
+	*/
+	yamlQueries, err := schema.ReadYAMLWithStringSchema(polFile, &schema.QUERY_SCHEMA)
 	if err != nil {
 		return nil, err
 	}
@@ -145,17 +151,20 @@ func attackTrees(dbManager *database.DBManager) ([]*attacktree.AttackTree, error
 	if err != nil {
 		return nil, err
 	}
-	atkSchema, err := fs.GetFile("schemas/atk-tree-schema.json")
-	if err != nil {
-		return nil, err
-	}
+	/*
+		atkSchema, err := fs.GetFile("schemas/atk-tree-schema.json")
+		if err != nil {
+			return nil, err
+		}
+	*/
 	report := []*attacktree.AttackTree{}
 	for _, file := range files {
 		fPath, err := fs.GetFile(fmt.Sprintf("attack_trees/descriptions/%s", file.Name()))
 		if err != nil {
 			return nil, err
 		}
-		tree, err := attacktree.NewAttackTreeFromYaml(fPath, atkSchema)
+		// tree, err := attacktree.NewAttackTreeFromYaml(fPath, atkSchema)
+		tree, err := attacktree.NewAttackTreeFromYaml(fPath)
 		if err != nil {
 			return nil, err
 		}
@@ -245,14 +254,21 @@ func verifyRequirements(dbManager *database.DBManager) (*[]map[string]interface{
 	if err != nil {
 		return nil, err
 	}
-	requirementsSchema, err := fs.GetFile("schemas/requirement-schema.json")
+	/*
+		requirementsSchema, err := fs.GetFile("schemas/requirement-schema.json")
+		if err != nil {
+			return nil, err
+		}
+		requirementsRaw, err := schema.ReadYAML(requirementsFile, requirementsSchema)
+		if err != nil {
+			return nil, err
+		}
+	*/
+	requirementsRaw, err := schema.ReadYAMLWithStringSchema(requirementsFile, &schema.REQUIREMENT_SCHEMA)
 	if err != nil {
 		return nil, err
 	}
-	requirementsRaw, err := schema.ReadYAML(requirementsFile, requirementsSchema)
-	if err != nil {
-		return nil, err
-	}
+
 	userStories, err := database.USFromYAML(requirementsRaw.([]interface{}))
 	if err != nil {
 		return nil, err
@@ -313,11 +329,17 @@ func getExtraData(dbManager *database.DBManager) (*[]map[string]interface{}, err
 	if err != nil {
 		return nil, err
 	}
-	extraDataSchema, err := fs.GetFile("schemas/report_data-schema.json")
-	if err != nil {
-		return nil, err
-	}
-	extraDataRaw, err := schema.ReadYAML(extraDataFile, extraDataSchema)
+	/*
+		extraDataSchema, err := fs.GetFile("schemas/report_data-schema.json")
+		if err != nil {
+			return nil, err
+		}
+		extraDataRaw, err := schema.ReadYAML(extraDataFile, extraDataSchema)
+		if err != nil {
+			return nil, err
+		}
+	*/
+	extraDataRaw, err := schema.ReadYAMLWithStringSchema(extraDataFile, &schema.REPORT_DATA_SCHEMA)
 	if err != nil {
 		return nil, err
 	}

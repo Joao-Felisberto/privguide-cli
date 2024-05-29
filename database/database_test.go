@@ -290,7 +290,7 @@ children:
 	}
 	defer os.Remove(".devprivops/test/atk_tree.yml")
 
-	atkTree, err := attacktree.NewAttackTreeFromYaml(".devprivops/test/atk_tree.yml", "")
+	atkTree, err := attacktree.NewAttackTreeFromYaml(".devprivops/test/atk_tree.yml" /*, ""*/)
 	if err != nil {
 		t.Fatal(err)
 	}

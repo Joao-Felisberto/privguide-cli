@@ -112,8 +112,9 @@ func parseNode(data interface{}) (*AttackNode, error) {
 // returns: The parsed ATtackTree, or an error if
 //   - The `schema.ReadYAML` call fails
 //   - The node could not be parsed
-func NewAttackTreeFromYaml(yamlFile string, atkTreeSchema string) (*AttackTree, error) {
-	yamlTree, err := schema.ReadYAML(yamlFile, atkTreeSchema)
+func NewAttackTreeFromYaml(yamlFile string /*, atkTreeSchema string*/) (*AttackTree, error) {
+	// yamlTree, err := schema.ReadYAML(yamlFile, atkTreeSchema)
+	yamlTree, err := schema.ReadYAMLWithStringSchema(yamlFile, &schema.ATK_TREE_SCHEMA)
 	if err != nil {
 		return nil, err
 	}

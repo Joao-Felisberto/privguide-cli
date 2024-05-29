@@ -2,6 +2,7 @@
 package schema
 
 import (
+	_ "embed"
 	"fmt"
 	"log/slog"
 	"os"
@@ -12,6 +13,18 @@ import (
 	"github.com/xeipuuv/gojsonschema"
 	"gopkg.in/yaml.v2"
 )
+
+//go:embed schemas/atk-tree-schema.json
+var ATK_TREE_SCHEMA string
+
+//go:embed schemas/query-schema.json
+var QUERY_SCHEMA string
+
+//go:embed schemas/report_data-schema.json
+var REPORT_DATA_SCHEMA string
+
+//go:embed schemas/requirement-schema.json
+var REQUIREMENT_SCHEMA string
 
 // Regex for identifying ids in the application format and separating the URI root from the identifier
 var prefixRe = regexp.MustCompile(`^([a-zA-Z]+):(.*)`)
@@ -157,7 +170,33 @@ func ReadYAML(yamlFile string, schemaFile string) (interface{}, error) {
 	}
 
 	if schemaFile != "" {
-		res, err := ValidateYAMLAgainstSchema(yamlFile, schemaFile)
+		res, err := ValidateYAMLAgainstSchemaFile(yamlFile, schemaFile)
+		if err != nil {
+			return nil, fmt.Errorf("error validating schema: %s", err)
+		}
+
+		if !res.Valid() {
+			return nil, fmt.Errorf("the file '%s' does not abide by the schema: %s", yamlFile, res.Errors())
+		}
+	}
+
+	return rawData, nil
+}
+
+func ReadYAMLWithStringSchema(yamlFile string, schema *string) (interface{}, error) {
+	yamlData, err := os.ReadFile(yamlFile)
+	if err != nil {
+		return nil, fmt.Errorf("error reading file: %s", err)
+	}
+
+	// Unmarshal YAML data
+	var rawData interface{}
+	if err := yaml.Unmarshal(yamlData, &rawData); err != nil {
+		return nil, fmt.Errorf("error reading YAML file: %s", err)
+	}
+
+	if *schema != "" {
+		res, err := ValidateYAMLAgainstSchemaString(yamlFile, schema)
 		if err != nil {
 			return nil, fmt.Errorf("error validating schema: %s", err)
 		}
@@ -177,9 +216,50 @@ func ReadYAML(yamlFile string, schemaFile string) (interface{}, error) {
 // `schemaFile`: The path to the json schema the yaml file should follow. If "", there is no schema validation
 //
 // returns: the schema validation results or an error if the file or schema could not be read or the schema could not be validated
-func ValidateYAMLAgainstSchema(yamlFile string, schemaFile string) (*gojsonschema.Result, error) {
+func ValidateYAMLAgainstSchemaFile(yamlFile string, schemaFile string) (*gojsonschema.Result, error) {
 	// Load JSON schema
 	schemaLoader := gojsonschema.NewReferenceLoader("file://" + schemaFile)
+	schema, err := gojsonschema.NewSchema(schemaLoader)
+	if err != nil {
+		return nil, fmt.Errorf("failed to load JSON schema: %s", err)
+	}
+
+	// Load YAML data
+	yamlData, err := os.ReadFile(yamlFile)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read YAML file: %s", err)
+	}
+
+	// Parse YAML data
+	var yamlObj interface{}
+	err = yaml.Unmarshal(yamlData, &yamlObj)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse YAML data: %s", err)
+	}
+
+	// Convert YAML data to JSON-like structure
+	jsonData := convertToJSON(yamlObj)
+
+	// Validate JSON-like data against JSON schema
+	jsonLoader := gojsonschema.NewGoLoader(jsonData)
+	result, err := schema.Validate(jsonLoader)
+	if err != nil {
+		return nil, fmt.Errorf("YAML file does not abide by the schema: %s", err)
+	}
+
+	return result, nil
+}
+
+// Reads a YAML file and validates it against a schema
+//
+// `yamlFile`: The path to the yaml file to read
+//
+// `schemaFile`: The path to the json schema the yaml file should follow. If "", there is no schema validation
+//
+// returns: the schema validation results or an error if the file or schema could not be read or the schema could not be validated
+func ValidateYAMLAgainstSchemaString(yamlFile string, schemaString *string) (*gojsonschema.Result, error) {
+	// Load JSON schema
+	schemaLoader := gojsonschema.NewStringLoader(*schemaString)
 	schema, err := gojsonschema.NewSchema(schemaLoader)
 	if err != nil {
 		return nil, fmt.Errorf("failed to load JSON schema: %s", err)
