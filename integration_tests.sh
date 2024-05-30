@@ -23,6 +23,20 @@ SERVER_PID=$!
 
 go build -cover $BUILDARGS .
 
+./devprivops schema attack-tree > res.json
+cmp res.json schema/schemas/atk-tree-schema.json
+
+./devprivops schema query > res.json
+cmp res.json schema/schemas/query-schema.json
+
+./devprivops schema report > res.json
+cmp res.json schema/schemas/report_data-schema.json
+
+./devprivops schema requirement > res.json
+cmp res.json schema/schemas/requirement-schema.json
+
+rm res.json
+
 ./devprivops analyse user pass 127.0.0.1 3030 tmp --report-endpoint http://localhost:8000
 echo "================== TEST DONE!"
 ./devprivops test user pass 127.0.0.1 3030 tmp 

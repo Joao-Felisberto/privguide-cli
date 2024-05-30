@@ -8,6 +8,7 @@ import (
 
 	"github.com/Joao-Felisberto/devprivops/cmd"
 	"github.com/Joao-Felisberto/devprivops/fs"
+	"github.com/Joao-Felisberto/devprivops/schema"
 	"github.com/Joao-Felisberto/devprivops/util"
 	"github.com/spf13/cobra"
 )
@@ -41,7 +42,7 @@ func main() {
 	}
 
 	var testCmd = &cobra.Command{
-		Use:   "test",
+		Use:   "test <username> <password> <database ip> <database port> <dataset>",
 		Short: "Tests the queries against user-defined scenarios",
 		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd_ *cobra.Command, args []string) error {
@@ -51,6 +52,33 @@ func main() {
 			}
 			util.SetupLogger(logLevel)
 			return cmd.Test(cmd_, args)
+		},
+	}
+
+	var schemaCmd = &cobra.Command{
+		Use:   "schema <attack-tree|query|report|requirement>",
+		Short: "Prints the internal json schema",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd_ *cobra.Command, args []string) error {
+			logLevel := slog.LevelInfo
+			if verbose {
+				logLevel = slog.LevelDebug
+			}
+			util.SetupLogger(logLevel)
+			schemaName := args[0]
+			switch schemaName {
+			case "attack-tree":
+				fmt.Print(schema.ATK_TREE_SCHEMA)
+			case "query":
+				fmt.Print(schema.QUERY_SCHEMA)
+			case "report":
+				fmt.Print(schema.REPORT_DATA_SCHEMA)
+			case "requirement":
+				fmt.Print(schema.REQUIREMENT_SCHEMA)
+			default:
+				return fmt.Errorf("schema '%s' not found, valid possibilities: [attack-tree, query, report, requirement]", schemaName)
+			}
+			return nil
 		},
 	}
 
@@ -70,6 +98,7 @@ func main() {
 
 	rootCmd.AddCommand(analyseCmd)
 	rootCmd.AddCommand(testCmd)
+	rootCmd.AddCommand(schemaCmd)
 
 	if err := rootCmd.Execute(); err != nil {
 		slog.Error(err.Error())
