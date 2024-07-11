@@ -1,4 +1,4 @@
-//go:build !profile
+//go:build profile
 
 // Program entry point
 package main
@@ -8,6 +8,9 @@ import (
 	"log/slog"
 	"os"
 
+	"runtime"
+	"runtime/pprof"
+
 	"github.com/Joao-Felisberto/devprivops/cmd"
 	"github.com/Joao-Felisberto/devprivops/fs"
 	"github.com/Joao-Felisberto/devprivops/schema"
@@ -16,10 +19,23 @@ import (
 )
 
 var verbose = false // Whether the log should log more information or not
+var profile = ""
 
 // Builds the command and delegates execution to the appropriate function from the cmd package
 func main() {
-	// slog.SetDefault(slog.New(slog.NewTextHandler(os.Stdout, nil)))
+	/*
+		cpuProfileFile, err := os.Create("cpu")
+		if err != nil {
+			fmt.Println(err)
+		}
+		memoryProfileFile, err := os.Create("mem")
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		pprof.StartCPUProfile(cpuProfileFile)
+		defer pprof.StopCPUProfile()
+	*/
 
 	var rootCmd = &cobra.Command{
 		Use:   util.AppName,
@@ -34,12 +50,34 @@ func main() {
 		Short: fmt.Sprintf("Analyse the specified database endpoint for %s", util.AppName),
 		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd_ *cobra.Command, args []string) error {
+			memoryProfileFile, err := os.Create("mem.prof")
+			if profile == "cpu" {
+				cpuProfileFile, err := os.Create("cpu.prof")
+				if err != nil {
+					return err
+				}
+				pprof.StartCPUProfile(cpuProfileFile)
+			} else if profile == "mem" {
+				// memoryProfileFile, err := os.Create("mem.prof")
+				if err != nil {
+					return err
+				}
+			}
+
 			logLevel := slog.LevelInfo
 			if verbose {
 				logLevel = slog.LevelDebug
 			}
 			util.SetupLogger(logLevel)
-			return cmd.Analyse(cmd_, args)
+			res := cmd.Analyse(cmd_, args)
+
+			if profile == "cpu" {
+				pprof.StopCPUProfile()
+			} else if profile == "mem" {
+				pprof.WriteHeapProfile(memoryProfileFile)
+			}
+
+			return res
 		},
 	}
 
@@ -48,12 +86,39 @@ func main() {
 		Short: "Tests the queries against user-defined scenarios",
 		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd_ *cobra.Command, args []string) error {
+			// memoryProfileFile, err := os.Create("mem.prof")
+			if profile == "cpu" {
+				runtime.SetCPUProfileRate(400)
+				cpuProfileFile, err := os.Create("cpu.prof")
+				if err != nil {
+					return err
+				}
+				pprof.StartCPUProfile(cpuProfileFile)
+			} /*else if profile == "mem" {
+				memoryProfileFile, err := os.Create("mem.prof")
+				if err != nil {
+					return err
+				}
+			}*/
+
 			logLevel := slog.LevelInfo
 			if verbose {
 				logLevel = slog.LevelDebug
 			}
 			util.SetupLogger(logLevel)
-			return cmd.Test(cmd_, args)
+			res := cmd.Test(cmd_, args)
+
+			if profile == "cpu" {
+				pprof.StopCPUProfile()
+			} else if profile == "mem" {
+				memoryProfileFile, err := os.Create("mem.prof")
+				if err != nil {
+					return err
+				}
+				pprof.WriteHeapProfile(memoryProfileFile)
+			}
+
+			return res
 		},
 	}
 
@@ -97,6 +162,9 @@ func main() {
 
 	analyseCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "whether to display debug messages")
 	testCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "whether to display debug messages")
+
+	analyseCmd.Flags().StringVar(&profile, "profile", "", "What to profile")
+	testCmd.Flags().StringVar(&profile, "profile", "", "What to profile")
 
 	rootCmd.AddCommand(analyseCmd)
 	rootCmd.AddCommand(testCmd)

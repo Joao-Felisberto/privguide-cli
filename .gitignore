@@ -1,5 +1,6 @@
 .vscode/
 .idea/
+**/.venv
 
 **/*.old
 **/*.tmp
@@ -9,3 +10,7 @@ covdatafiles
 
 report*.json
 !*schema.json
+times*txt
+**/mem*json
+**/cpu*json
+profiles
