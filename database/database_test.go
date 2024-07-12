@@ -273,15 +273,23 @@ func TestExecuteAttackTree(t *testing.T) {
 	atkTreeFile := `
 description: R
 query: test/root/f1.rq
+clearence level: 0
+groups: []
 children:
   - description: C1
     query: test/root/f2.rq
+    clearence level: 0
+    groups: []
     children: []
   - description: C2
     query: test/root/f3.rq
+    clearence level: 0
+    groups: []
     children:
       - description: C21
         query: test/root/f4.rq
+        clearence level: 0
+        groups: []
         children: []
 `
 

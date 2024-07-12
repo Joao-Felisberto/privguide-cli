@@ -6,6 +6,8 @@
   is consistency: true
   maximum violations: 0
   mapping message: ""
+  clearence level: 0
+  groups: []
 
 # ASVS
 
@@ -15,9 +17,13 @@
   is consistency: false
   maximum violations: 0
   mapping message: ""
+  clearence level: 0
+  groups: []
 - file: regulations/asvs/policies/no_sensitive_info_in_browser.rq
   title: No sensitive information in the browser
   description: Ensure the browser does not hold sensitive information, so that client-side attacks cannot exfiltrate it
   is consistency: false
   maximum violations: 0
   mapping message: ""
+  clearence level: 0
+  groups: []

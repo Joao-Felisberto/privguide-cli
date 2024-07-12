@@ -37,12 +37,18 @@ func TestNewAttackTreeFromYaml(t *testing.T) {
 	fileData := `
 description: R
 query: master.rq
+clearence level: 0
+groups: []
 children:
   - description: C1 
     query: file1.rq
+    clearence level: 0
+    groups: []
     children: []
   - description: C2
     query: file2.rq
+    clearence level: 0
+    groups: []
     children: []
 `
 
@@ -95,8 +101,12 @@ func TestNewAttackTreeFromInvalidYaml(t *testing.T) {
 	fileData := `
 description: R
 query: master.rq
+clearence level: 0
+groups: []
 children:
   - description: C1 
+    clearence level: 0
+    groups: []
     children: []
 `
 

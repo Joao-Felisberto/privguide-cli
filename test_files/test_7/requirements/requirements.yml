@@ -2,7 +2,11 @@
 
 - use case: As a persona I want to do stuff so that my life is better
   is misuse case: false
+  clearence level: 0
+  groups: []
   requirements:
     - title: Requirement 1
       description: Some more details on the requirement
       query: requirements/req.rq
+      clearence level: 0
+      groups: []

@@ -17,12 +17,23 @@
                     "items": {
                         "$ref": "#/definitions/Welcome5"
                     }
-                }
+                },
+                "clearence level": {
+                    "type": "number"
+                },
+                "groups": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    } 
+                } 
             },
             "required": [
                 "children",
                 "description",
-                "query"
+                "query",
+                "clearence level",
+                "groups"
             ],
             "title": "Welcome5"
         }

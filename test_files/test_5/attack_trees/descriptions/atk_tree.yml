@@ -1,12 +1,20 @@
 description: R
 query: attack_trees/queries/master.rq
+clearence level: 0
+groups: []
 children:
   - description: C1 
     query:  attack_trees/queries/file1.rq
+    clearence level: 0
+    groups: []
     children:
       - description: C11
         query: attack_trees/queries/file3.rq
+        clearence level: 0
+        groups: []
         children: []
   - description: C2
     query: attack_trees/queries/file2.rq
+    clearence level: 0
+    groups: []
     children: []

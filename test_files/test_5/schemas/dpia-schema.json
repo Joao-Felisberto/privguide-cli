@@ -1,0 +1,341 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/Welcome9",
+    "definitions": {
+        "Welcome9": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "last update": {
+                    "type": "string"
+                },
+                "responsible": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "DPO": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Dpo"
+                    }
+                },
+                "personal data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/PersonalDatum"
+                    }
+                },
+                "risks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Risk"
+                    }
+                },
+                "personal data processing whitelist": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "personal data processing that requires DPIA": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+					}
+                },
+                "processings": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Processing"
+                    }
+                }
+            },
+            "required": [
+                "DPO",
+                "last update",
+                "personal data",
+                "personal data processing that requires DPIA",
+                "personal data processing whitelist",
+                "processings",
+                "responsible",
+                "risks"
+            ],
+            "title": "Welcome9"
+        },
+        "Dpo": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "contact": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "contact",
+                "name"
+            ],
+            "title": "Dpo"
+        },
+        "PersonalDatum": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "kind": {
+                    "type": "string"
+                },
+                "required by law": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "necessary to enter contract": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "destinataries": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "retention period": {
+                    "type": "string"
+                },
+                "abides by code of conduct": {
+                    "type": "boolean"
+                },
+                "purposes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "transfers to third parties": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": [
+                "abides by code of conduct",
+                "destinataries",
+                "id",
+                "kind",
+                "necessary to enter contract",
+                "purposes",
+                "required by law",
+                "retention period",
+                "transfers to third parties"
+            ],
+            "title": "PersonalDatum"
+        },
+        "Processing": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "requires new technologies": {
+                    "type": "boolean"
+                },
+                "risk to rights and freedoms of": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "required for contract": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "legally mandated": {
+                    "type": "boolean"
+                },
+                "vital interest": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "public interest": {
+                    "type": "boolean"
+                },
+                "is official authority": {
+                    "type": "boolean"
+                },
+                "legitimate interest": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "professional secrecy": {
+                    "type": "boolean"
+                },
+                "scores users": {
+                    "type": "boolean"
+                },
+                "automated decisions": {
+                    "type": "boolean"
+                },
+                "legal impact for the user": {
+                    "type": "boolean"
+                },
+                "systematic monitoring": {
+                    "type": "boolean"
+                },
+                "large scale processing": {
+                    "type": "boolean"
+                },
+                "lawful": {
+                    "type": "boolean"
+                },
+                "fair": {
+                    "type": "boolean"
+                },
+                "transparent": {
+                    "type": "boolean"
+                },
+                "specific": {
+                    "type": "boolean"
+                },
+                "explicit": {
+                    "type": "boolean"
+                },
+                "legitimate": {
+                    "type": "boolean"
+                },
+                "purposes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Purpose"
+                    }
+                },
+                "risks": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "supervisory authority veredict": {
+                    "$ref": "#/definitions/SupervisoryAuthorityVeredict"
+                }
+            },
+            "required": [
+                "automated decisions",
+                "explicit",
+                "fair",
+                "id",
+                "is official authority",
+                "large scale processing",
+                "lawful",
+                "legal impact for the user",
+                "legally mandated",
+                "legitimate",
+                "legitimate interest",
+                "professional secrecy",
+                "public interest",
+                "purposes",
+                "required for contract",
+                "requires new technologies",
+                "risk to rights and freedoms of",
+                "risks",
+                "scores users",
+                "specific",
+                "supervisory authority veredict",
+                "systematic monitoring",
+                "transparent",
+                "vital interest"
+            ],
+            "title": "Processing"
+        },
+        "Purpose": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "adequate": {
+                    "type": "boolean"
+                },
+                "relevant": {
+                    "type": "boolean"
+                },
+                "limited": {
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "adequate",
+                "id",
+                "limited",
+                "relevant"
+            ],
+            "title": "Purpose"
+        },
+        "SupervisoryAuthorityVeredict": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "contact": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "allowed": {
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "allowed",
+                "contact"
+            ],
+            "title": "SupervisoryAuthorityVeredict"
+        },
+        "Risk": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "impact": {
+                    "type": "integer"
+                },
+                "likelyhood": {
+                    "type": "integer"
+                },
+                "accepted mitigations": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": [
+                "accepted mitigations",
+                "id",
+                "impact",
+                "likelyhood"
+            ],
+            "title": "Risk"
+        }
+    }
+}

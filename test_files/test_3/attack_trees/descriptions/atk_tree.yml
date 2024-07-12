@@ -1,3 +1,5 @@
 description: R
 query: attack_trees/queries/master.rq
+clearence level: 0
+groups: []
 children: []
