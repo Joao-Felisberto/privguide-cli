@@ -3,6 +3,11 @@ type: docker
 name: default
 
 steps:
+- name: code-analysis
+  image: aosapps/drone-sonar-plugin
+  settings:
+      sonar_host: http://rpi:9001
+      sonar_token: sqp_c91d344d2ce4252fa9db4301c94b94084cead69d
 - name: test
   image: localhost:5000/golang-fuseki:latest
   commands:
@@ -10,11 +15,6 @@ steps:
   - sleep 3s
   - go test ./... -cover
   - sh integration_tests.sh
-- name: code-analysis
-  image: aosapps/drone-sonar-plugin
-  settings:
-      sonar_host: http://rpi:9001
-      sonar_token: sqp_c91d344d2ce4252fa9db4301c94b94084cead69d
 - name: package
   image: plugins/docker
   settings:
