@@ -14,9 +14,7 @@ steps:
   image: aosapps/drone-sonar-plugin
   settings:
       sonar_host: http://rpi:9001
-        # from_secret: sonar_host
       sonar_token: sqp_c91d344d2ce4252fa9db4301c94b94084cead69d
-        # from_secret: sonar_token
 - name: package
   image: plugins/docker
   settings:
