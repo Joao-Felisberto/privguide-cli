@@ -91,3 +91,9 @@ This tool allows for:
 - Analysis of system compliance with privacy regulations
 - Distribution of regulations
 - Tests for regulations
+
+# License
+
+The project is licensed under ...
+
+The file `.devprivops/schemas/gh-action-schema.json` was taken from the [SchemaStore repository](https://github.com/SchemaStore/schemastore/blob/f728a2d857a938979f09b0a7f014fbe0bc1898ee/src/schemas/json/github-action.json), with some slight alterations, distributed under the [Apache 2.0 license](https://www.apache.org/licenses/LICENSE-2.0).

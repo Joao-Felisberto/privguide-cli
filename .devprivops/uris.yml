@@ -6,6 +6,10 @@
   uri: https://devprivops.com/dpia
   files:
     - .*\.dpia\.yml
+- abreviation: gh
+  uri: https://devprivops.com/github-actions
+  files:
+    - .*\.gh-action\.yml
 - abreviation: cfg
   uri: https://devprivops.com/config
   files:
