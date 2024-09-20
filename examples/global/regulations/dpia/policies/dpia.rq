@@ -1,0 +1,51 @@
+PREFIX dpia: <https://devprivops.com/dpia/>
+# PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+# Based on Article 35 3, 4, 5
+
+SELECT *
+WHERE {
+    dpia:ROOT dpia:processings ?proc .
+    ?proc dpia:risks ?risk .
+    
+    # 3 required if
+    #   a) systematic monitoring, automated processing, profiling, produces legal effects
+    {
+        BIND("35 3 a" AS ?violation)
+        FILTER NOT EXISTS {
+            # ?proc dpia:systematic_monitoring false . # evaluated at c)
+            ?proc dpia:automated_decisions false .
+            ?proc dpia:scores_users false . # REVIEW WHETHER THIS IS THE RIGHT PREDICATE
+            ?proc dpia:legal_impact_for_the_user false .
+        }
+    }
+
+    #   b) processing in large scale of special categories or criminal convictions
+    UNION {
+        BIND("35 3 b" AS ?violation)
+        ?proc dpia:large_scale_processing true .
+        # TODO add categories
+    }
+
+    #   c) systematic monitoring
+    UNION {
+        BIND("35 3 c" AS ?violation)
+        FILTER NOT EXISTS {
+            ?proc dpia:systematic_monitoring false .
+        }
+    }
+
+    # 4 The supervisory authority says what kinds of processings require DPIA
+    UNION {
+        BIND("35 4 in a blacklist" AS ?violation)
+        dpia:ROOT dpia:personal_data_processing_that_requires_DPIA ?proc .
+    }
+ 
+    # 5 The supervisory authority says what kinds of processings DO NOT require DPIA
+    UNION {
+        BIND("35 5 not in a whitelist" AS ?violation)
+        FILTER NOT EXISTS {
+            dpia:ROOT dpia:personal_data_processing_whitelist ?proc .
+        }
+    }
+}

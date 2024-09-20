@@ -1,0 +1,12 @@
+PREFIX gh: <https://devprivops.com/github-actions/>
+
+SELECT ?name 
+WHERE {
+    gh:ROOT gh:name ?name .
+    
+    FILTER NOT EXISTS {
+        gh:ROOT gh:jobs ?job .
+        ?job ?j_name ?j_id .
+        ?j_id gh:steps/gh:uses "sonarsource/sonarqube-scan-action@2.3.0" .
+    }
+}

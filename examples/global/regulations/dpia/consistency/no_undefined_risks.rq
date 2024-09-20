@@ -1,0 +1,11 @@
+PREFIX dpia: <https://devprivops.com/dpia/>
+
+SELECT ?risk
+WHERE {
+    dpia:ROOT dpia:processings/dpia:risks ?risk .
+
+    FILTER NOT EXISTS {
+        dpia:ROOT dpia:risks ?risk .
+    }
+}
+

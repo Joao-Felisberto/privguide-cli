@@ -1,0 +1,29 @@
+PREFIX dpia: <https://devprivops.com/dpia/>
+
+# Based on Article 5,6
+
+SELECT *
+WHERE {
+    dpia:ROOT dpia:processings ?processing . 
+
+    # Art 5 1 a | is this the right place to have this info?
+    {
+        BIND("lawful fair transparent" AS ?reason)
+
+        FILTER NOT EXISTS {
+            ?processing dpia:lawful true . # Defined by Art 6 1
+            ?processing dpia:fair true .
+            ?processing dpia:transparent true .
+        }
+    }
+    
+    # Art 5 1 b
+    UNION { 
+        BIND("specific explicit legitimate" AS ?reason)
+        FILTER NOT EXISTS {
+            ?processing dpia:specific true .
+            ?processing dpia:explicit true .
+            ?processing dpia:legitimate true .
+        }
+    }
+}

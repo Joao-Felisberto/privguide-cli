@@ -1,0 +1,17 @@
+- abreviation: dfd
+  uri: https://devprivops.com/dfd
+  files:
+    - .*\.dfd\.yml
+- abreviation: dpia
+  uri: https://devprivops.com/dpia
+  files:
+    - .*\.dpia\.yml
+- abreviation: gh
+  uri: https://devprivops.com/github-actions
+  files:
+    - .*\.gh-action\.yml
+- abreviation: cfg
+  uri: https://devprivops.com/config
+  files:
+    - .*config/.*.yml
+    - tests/.*/config.yml

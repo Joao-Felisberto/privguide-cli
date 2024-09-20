@@ -1,0 +1,19 @@
+PREFIX dfd: <https://devprivops.com/dfd/>
+
+SELECT ?dataType
+WHERE {
+    {
+        ?_ dfd:consumes ?dataType
+    } UNION {
+        ?_ dfd:produces ?dataType
+    } UNION {
+        ?_ dfd:type ?dataType
+    } UNION {
+        ?_ dfd:data ?dataType
+    } UNION {
+        ?_ dfd:aggregates ?dataType
+    }
+    FILTER NOT EXISTS {
+        dfd:ROOT dfd:data_types ?dataType
+    }
+}

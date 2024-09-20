@@ -1,0 +1,36 @@
+PREFIX dpia: <https://devprivops.com/dpia/>
+
+# Based on Article 35 2
+
+# new technologies or high risk
+# automated processing
+# systematic monitoring
+# automated decisions with legal effects
+# large scale processing (of protected categories (Art 9 1))
+
+# assesment includes (Art 35 7)
+
+SELECT ?proc ?reason
+WHERE {
+    dpia:ROOT dpia:processings ?proc .
+
+    {
+        ?proc dpia:requires_new_technologies true .
+        BIND("requires new technologies" AS ?reason) .
+    } UNION {
+        ?proc dpia:systematic_monitoring true .
+        BIND("systematic monitoring" AS ?reason) .
+    } UNION {
+        ?proc dpia:automated_decisions true .
+        ?proc dpia:legal_impact_for_the_user true .
+        BIND("automated decisions with legal impact for the user" AS ?reason) .
+    } UNION {
+        ?proc dpia:large_scale_processing true .
+        BIND("large scale processing" AS ?reason) .
+    }
+
+    # 2 Seek advisory from DPO
+    FILTER NOT EXISTS {
+        ?proc dpia:supervisory_authority_veredict/dpia:contact ?contact .
+    }
+}

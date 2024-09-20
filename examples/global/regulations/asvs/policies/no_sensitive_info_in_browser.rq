@@ -1,0 +1,13 @@
+PREFIX dfd: <https://devprivops.com/dfd/>
+PREFIX dpia: <https://devprivops.com/dpia/>
+
+SELECT ?dsId ?dtId
+WHERE {
+    dfd:ROOT dfd:data_stores ?dsId .
+    ?dsId dfd:data_stored ?dt .
+	
+	?dt dfd:type ?dtId .
+	?dsId dfd:environment "browser" .
+    
+	?dtId dfd:categories dpia:sensitive .
+}

@@ -1,0 +1,95 @@
+# Consistency
+#
+# - define locations in the dfd?
+# - define categories in the dfd?
+# - add a "no unused data types" policy?
+
+- file: regulations/gdpr/consistency/no_undefined_data_types.rq
+  title: No undefined data types
+  description: Ensure all data types that flow in the system are declared
+  is consistency: true
+  maximum violations: 0
+  mapping message: For each dataType, ensure a declaration for it exists in the 'data types' property
+  clearence level: 0
+  groups: ["all"]
+# - file: regulations/gdpr/consistency/unique_ids.rq
+#   title: Unique IDs
+#   description: Different entities cannot have the same identifier
+#   is consistency: true
+#   maximum violations: 0
+#   mapping message: ""
+- file: regulations/gdpr/consistency/no_undefined_entities.rq
+  title: All external entities must be described
+  description: All external entities that partake in data transactions must be defined
+  is consistency: true
+  maximum violations: 0
+  mapping message: Ensure all entities are declared in the 'external entities' property or the 'categories' property of one 
+  clearence level: 0
+  groups: ["all"]
+- file: regulations/gdpr/consistency/no_undefined_data_flows.rq
+  title: All data flows must be identified
+  description: The flows of data reaching data stores must all exist
+  is consistency: true
+  maximum violations: 0
+  mapping message: Ensure for all dataFlows there exists a declaration in the 'data flows' property
+  clearence level: 0
+  groups: ["all"]
+- file: regulations/gdpr/consistency/time_format.rq
+  title: Wrong time formatting
+  description: All durations and periods must be properly formatted
+  maximum violations: 0
+  is consistency: true
+  mapping message: All time units must be 'eternal' or abide by the REGEX  "^[0-9]+(s|sec|secs|second|seconds|m|min|mins|minute|minutes|h|hr|hrs|hour|hours|d|day|days|w|week|weeks|month|months|y|year|years)$"
+  clearence level: 0
+  groups: ["all"]
+- file: regulations/gdpr/consistency/wrong_data_flow_endpoints.rq
+  title: Wrong data flow endpoints
+  description: Data flow sources and destinations must be external entities, processes or stores
+  is consistency: true
+  maximum violations: 0
+  mapping message: For each 'dataFlow', both the 'to' and 'from' properties shall be references to valid external entities, processes or data stores.
+  clearence level: 0
+  groups: ["all"]
+
+
+# GDPR
+# - assume all data entering a process is used in it?
+# - what to do with data type validity?
+
+- file: regulations/gdpr/policies/data_in_EU.rq
+  title: User data shall not leave the EU
+  description: Ensure that no data collected in the EU is sent overseas
+  is consistency: false
+  maximum violations: 0
+  mapping message: Ensure the 'localtion' values are EU countries
+  clearence level: 0
+  groups: ["all"]
+#- file: regulations/gdpr/unlawful_category_processing.rq
+#  title: Unlawful processing of certain categories of data
+#  description: The processing of certain categories of data under certain circumstances is unlawful
+#  maximum violations: 0
+#  mapping message: ""
+#- file: regulations/gdpr/policies/insufficient_rights_over_data.rq
+#  title: Insuficient rights over data
+#  description: The user cannot read, update and delete all data collected about them
+#  is consistency: false
+#  maximum violations: 0
+#  mapping message: ""
+- file: regulations/gdpr/policies/data_minimization.rq
+  title: Only the strictly required data shall enter a process
+  description: The data flows to a process shall not provide more data than it needs
+  is consistency: false
+  maximum violations: 0
+  mapping message: Remove the listed 'data' from the data flow's 'data' field
+  clearence level: 0
+  groups: ["all"]
+
+# TODO:
+#   - Article 6 Lawfulness of processing
+#   - Article 7 Conditions for consent
+#   - Propagate erasure requests
+#   - NIST recommended cyphers
+#   - Section 3 (p55): DPIA
+#   - Chapter 5: are these lists provided? Do companies have to evaluate this or do they know?
+# NOTES:
+#   - consent is per purpose: should encode into DPIA and verify collection and validation in DFD?

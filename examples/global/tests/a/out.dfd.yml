@@ -1,0 +1,157 @@
+data flows:
+- amount of data per period: 1
+  certification: []
+  data:
+  - :message
+  encryption: signal
+  from: dpia:User
+  id: C message
+  periodicity: 1m
+  safeguards: []
+  to: :send message
+- amount of data per period: 1
+  certification: []
+  data:
+  - :message
+  encryption: signal
+  from: dpia:User
+  id: R message
+  periodicity: 1m
+  safeguards: []
+  to: :send message
+- amount of data per period: 1
+  certification: []
+  data:
+  - :message
+  encryption: signal
+  from: dpia:User
+  id: U message
+  periodicity: 1m
+  safeguards: []
+  to: :send message
+- amount of data per period: 1
+  certification: []
+  data:
+  - :message
+  encryption: signal
+  from: dpia:User
+  id: D message
+  periodicity: 1m
+  safeguards: []
+  to: :send message
+- amount of data per period: 1
+  certification: []
+  data:
+  - :message
+  encryption: signal
+  from: :send message
+  id: C store message
+  periodicity: 1m
+  safeguards: []
+  to: :message db
+- amount of data per period: 1
+  certification: []
+  data:
+  - :message
+  encryption: signal
+  from: :send message
+  id: R store message
+  periodicity: 1m
+  safeguards: []
+  to: :message db
+- amount of data per period: 1
+  certification: []
+  data:
+  - :message
+  encryption: signal
+  from: :send message
+  id: U store message
+  periodicity: 1m
+  safeguards: []
+  to: :message db
+- amount of data per period: 1
+  certification: []
+  data:
+  - :message
+  encryption: signal
+  from: :send message
+  id: D store message
+  periodicity: 1m
+  safeguards: []
+  to: :message db
+data stores:
+- certification: []
+  data stored:
+  - create: :C store message
+    delete: :D store message
+    read: :R store message
+    storage period: eternal
+    type: :message
+    update: :U store message
+  environment: []
+  id: message db
+  location:
+  - Portugal
+  safeguards: []
+data types:
+- aggregates: []
+  categories:
+  - dpia:confidential
+  - dpia:personal
+  id: message
+  validity: eternal
+- aggregates:
+  - :AccountId
+  categories:
+  - dpia:personal
+  id: AccountId
+  validity: eternal
+- aggregates:
+  - :AccountId
+  categories:
+  - dpia:confidential
+  - dpia:personal
+  id: Account
+  validity: eternal
+external entities:
+- age: '>16'
+  categories:
+  - dpia:human
+  consumes:
+  - :message
+  environment: []
+  id: dpia:User
+  location:
+  - Portugal
+  options: []
+  produces:
+  - :message
+  produces public information: false
+  safeguards: []
+- age: null
+  categories:
+  - dpia:external system
+  consumes:
+  - :message
+  environment: []
+  id: dpia:User
+  location:
+  - Portugal
+  options: []
+  produces:
+  - :message
+  produces public information: false
+  safeguards: []
+processes:
+- certification: []
+  consumes:
+  - :message
+  environment: []
+  id: send message
+  location:
+  - Portugal
+  produces:
+  - :message
+  purposes:
+  - dpia:message routing
+  safeguards: []

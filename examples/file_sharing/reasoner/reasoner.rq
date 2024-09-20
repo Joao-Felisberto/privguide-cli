@@ -1,0 +1,7 @@
+PREFIX ex: <https://example.com/>
+
+INSERT {
+    ?s ex:reasoned ?o 
+} WHERE {
+    ?s ex:id ?o
+}

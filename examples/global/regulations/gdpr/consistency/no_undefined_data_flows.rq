@@ -1,0 +1,20 @@
+PREFIX dfd: <https://devprivops.com/dfd/>
+
+# Could be useless because insuficient_rights_over_data exists
+
+SELECT ?dataFlow
+WHERE {
+    {
+        ?_ dfd:create ?dataFlow
+    } UNION {
+        ?_ dfd:read ?dataFlow
+    } UNION {
+        ?_ dfd:update ?dataFlow
+    } UNION {
+        ?_ dfd:delete ?dataFlow
+    }
+    FILTER NOT EXISTS {
+        dfd:ROOT dfd:data_flows ?dataFlow 
+    }
+}
+

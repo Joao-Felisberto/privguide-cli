@@ -1,0 +1,13 @@
+PREFIX dfd: <https://devprivops.com/dfd/>
+PREFIX dpia: <https://devprivops.com/dpia/>
+
+# NOTE: requires a DFD
+
+SELECT ?purpose
+WHERE {
+    dfd:ROOT dfd:processes/dfd:purposes ?purpose .
+
+    FILTER NOT EXISTS {
+        dpia:ROOT dpia:processings/dpia:purposes ?purpose .
+    } 
+}
