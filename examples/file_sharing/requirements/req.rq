@@ -1,6 +1,0 @@
-PREFIX dpia: <https://devprivops.com/dpia/>
-
-SELECT * WHERE {
-    dpia:ROOT dpia:last_update ?o .
-}
-

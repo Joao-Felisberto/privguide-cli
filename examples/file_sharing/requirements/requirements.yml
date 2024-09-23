@@ -1,10 +1,12 @@
-- use case: As a persona I want to do stuff so that my life is better
+# yaml-language-server: $schema=../../../schema/schemas/requirement-schema.json
+
+- use case: As an AuthenticatedUser I want to share Documents with other AuthenticatedUsers so that they can download them
   is misuse case: false
   clearence level: 0
   groups: ["all"]
   requirements:
-    - title: Requirement 1
-      description: Some more details on the requirement
-      query: requirements/req.rq
+    - title: AuthenticatedUsers must be able to see Documents and PrivDocuments shared with them
+      description: An authenticated user, when given a document link, must be able to authenticate and get the document.
+      query: requirements/auth_user_get_doc.rq
       clearence level: 0
       groups: ["all"]

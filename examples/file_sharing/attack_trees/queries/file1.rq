@@ -1,2 +1,0 @@
-PREFIX ex: <https://example.com/>
-SELECT * WHERE {ex:NO ?p ?o .}
