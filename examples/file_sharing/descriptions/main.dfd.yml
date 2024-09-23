@@ -63,6 +63,8 @@ external entities:
   - id: dpia:AccountSystem 
     consumes:
       - :AccountId
+      - :username
+      - :password
     produces: 
       - :Account
     location:
@@ -143,6 +145,28 @@ data stores:
     certification: []
     safeguards: []
 data flows:
+  - id: create Account
+    from: dpia:AuthenticatedUser
+    to: dpia:AccountSystem
+    data:
+      - :username
+      - :password
+    encryption: HTTPS
+    periodicity: 30m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: delete Account
+    from: dpia:AuthenticatedUser
+    to: dpia:AccountSystem
+    data:
+      - :username
+      - :password
+    encryption: HTTPS
+    periodicity: 30m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
   - id: C Document
     from: dpia:AuthenticatedUser
     to: :send Document

@@ -11,8 +11,7 @@ data types:
       - dpia:confidential
       - dpia:personal
   - id: AccountId
-    aggregates: 
-      - :AccountId
+    aggregates: []
     validity: eternal
     categories:
       - dpia:personal
@@ -41,6 +40,8 @@ external entities:
   - id: dpia:AccountSystem 
     consumes:
       - :AccountId
+      - :username
+      - :password
     produces: 
       - :Account
     location:
@@ -79,6 +80,28 @@ data stores:
     certification: []
     safeguards: []
 data flows:
+  - id: create Account
+    from: dpia:User
+    to: dpia:AccountSystem
+    data:
+      - :username
+      - :password
+    encryption: HTTPS
+    periodicity: 30m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: delete Account
+    from: dpia:User
+    to: dpia:AccountSystem
+    data:
+      - :username
+      - :password
+    encryption: HTTPS
+    periodicity: 30m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
   - id: C message
     from: dpia:User
     to: :send message

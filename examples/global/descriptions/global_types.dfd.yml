@@ -13,6 +13,18 @@ data types:
     aggregates: []
     validity: eternal
     categories: []
+  - id: username
+    aggregates:
+      - :text
+    validity: eternal
+    categories: []
+  - id: password
+    aggregates:
+      - :text
+    validity: eternal
+    categories: 
+      # - dpia:personal
+      - dpia:confidential
 data flows: []
 data stores: []
 external entities: []
