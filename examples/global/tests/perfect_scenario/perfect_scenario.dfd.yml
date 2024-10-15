@@ -1,0 +1,167 @@
+# yaml-language-server: $schema=../../schemas/dfd-schema.json
+
+data types:
+  - id: message
+    aggregates: []
+    validity: eternal
+    categories:
+      - dpia:confidential
+      - dpia:personal
+  - id: AccountId
+    aggregates: []
+    validity: eternal
+    categories:
+      - dpia:personal
+  - id: Account
+    aggregates: 
+      - :AccountId
+    validity: eternal
+    categories:
+      - dpia:confidential
+      - dpia:personal
+external entities:
+  - id: dpia:User 
+    consumes:
+      - :message
+    produces: 
+      - :message
+    location:
+      - Portugal
+    categories:
+      - dpia:human
+    age: ">16"
+    produces public information: false
+    safeguards: []
+    options: []
+    environment: []
+  - id: dpia:AccountSystem 
+    consumes:
+      - :AccountId
+    produces: 
+      - :Account
+    location:
+      - Portugal
+    categories: []
+    age: null
+    produces public information: false
+    safeguards: :as safeguards
+    options: :as options
+    environment: []
+processes:
+  - id: send message
+    consumes:
+      - :message
+    produces:
+      - :message
+    location:
+      - Portugal
+    purposes: 
+      - dpia:message routing
+    certification: []
+    safeguards: []
+    environment: []
+data stores:
+  - id: message db
+    data stored:
+      - type: :message
+        storage period: eternal
+        create: :C store message
+        read:   :R store message
+        update: :U store message
+        delete: :D store message
+    location:
+      - Portugal
+    certification: []
+    safeguards: []
+    environment: []
+data flows:
+  - id: C message
+    from: dpia:User
+    to: :send message
+    data:
+      - :message
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: C store message
+    from: :send message
+    to: :message db
+    data:
+      - :message
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: R message
+    from: dpia:User
+    to: :send message
+    data:
+      - :message
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: R store message
+    from: :send message
+    to: :message db
+    data:
+      - :message
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: U message
+    from: dpia:User
+    to: :send message
+    data:
+      - :message
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: U store message
+    from: :send message
+    to: :message db
+    data:
+      - :message
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: D message
+    from: dpia:User
+    to: :send message
+    data:
+      - :message
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: D store message
+    from: :send message
+    to: :message db
+    data:
+      - :message
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: Deliver message
+    from: :send message
+    to: dpia:User
+    data:
+      - :message
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+    certification: []
+    safeguards: []

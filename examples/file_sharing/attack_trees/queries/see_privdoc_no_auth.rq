@@ -1,0 +1,7 @@
+PREFIX dfd: <https://devprivops.com/dfd/>
+PREFIX dpia: <https://devprivops.com/dpia/>
+
+SELECT * WHERE {
+    dpia:UnauthenticatedUser dfd:consumes dfd:PrivDocument .
+    BIND("FOUND" as ?success)
+}

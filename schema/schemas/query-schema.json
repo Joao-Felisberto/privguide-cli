@@ -26,6 +26,15 @@
                 },
                 "mapping message": {
                     "type": "string"
+                },
+                "clearence level": {
+                    "type": "number"
+                },
+                "groups": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    } 
                 }
             },
             "required": [
@@ -34,7 +43,9 @@
                 "file",
                 "mapping message",
                 "maximum violations",
-                "title"
+                "title",
+                "clearence level",
+                "groups"
             ],
             "title": "QueryMetadata"
         }

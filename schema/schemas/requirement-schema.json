@@ -20,12 +20,23 @@
                     "items": {
                         "$ref": "#/definitions/Requirement"
                     }
-                }
+                },
+                "clearence level": {
+                    "type": "number"
+                },
+                "groups": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    } 
+                } 
             },
             "required": [
                 "is misuse case",
                 "requirements",
-                "use case"
+                "use case",
+                "clearence level",
+                "groups"
             ],
             "title": "UseCase"
         },
@@ -41,12 +52,23 @@
                 },
                 "query": {
                     "type": "string"
-                }
+                },
+                "clearence level": {
+                    "type": "number"
+                },
+                "groups": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    } 
+                } 
             },
             "required": [
                 "description",
                 "query",
-                "title"
+                "title",
+                "clearence level",
+                "groups"
             ],
             "title": "Requirement"
         }

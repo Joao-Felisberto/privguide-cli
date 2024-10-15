@@ -1,0 +1,7 @@
+config:
+  - id: dfd:as safeguards
+    value:
+      - encryption
+  - id: dfd:as options
+    value:
+      - some option

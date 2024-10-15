@@ -1,0 +1,16 @@
+PREFIX dfd: <https://devprivops.com/dfd/>
+
+SELECT ?dataFlow ?dest ?data
+WHERE {
+    dfd:ROOT dfd:data_flows ?dataFlow .
+    ?dataFlow dfd:to ?dest .
+    ?dataFlow dfd:data ?data .
+
+    FILTER NOT EXISTS {
+        {
+            ?dest dfd:consumes ?data .
+        } UNION {
+            ?dest dfd:data_stored/dfd:type ?data .
+        }
+    }
+}

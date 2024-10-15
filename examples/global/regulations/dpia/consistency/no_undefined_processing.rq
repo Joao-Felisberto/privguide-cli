@@ -1,0 +1,13 @@
+PREFIX dfd: <https://devprivops.com/dfd/>
+PREFIX dpia: <https://devprivops.com/dpia/>
+
+# NOTE: requires DFD
+
+SELECT ?proc
+WHERE {
+    dfd:ROOT dfd:processes ?proc .
+
+    FILTER NOT EXISTS {
+        dpia:ROOT dpia:processings ?proc .
+    }
+}

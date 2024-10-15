@@ -23,14 +23,25 @@
                 },
                 "data row line": {
                     "type": "string"
-                }
+                },
+                "clearence level": {
+                    "type": "number"
+                },
+                "groups": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    } 
+                } 
             },
             "required": [
                 "data row line",
                 "description",
                 "heading",
                 "query",
-                "location"
+                "location",
+                "clearence level",
+                "groups"
             ],
             "title": "Welcome4Element"
         }

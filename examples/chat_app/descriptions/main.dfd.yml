@@ -1,0 +1,194 @@
+# yaml-language-server: $schema=../../global/schemas/dfd-schema.json
+
+data types:
+  - id: message
+    aggregates: 
+      - :AccountId
+      - :datetime
+      - :text
+    validity: eternal
+    categories:
+      - dpia:confidential
+      - dpia:personal
+  - id: AccountId
+    aggregates: []
+    validity: eternal
+    categories:
+      - dpia:personal
+  - id: Account
+    aggregates: 
+      - :AccountId
+    validity: eternal
+    categories:
+      - dpia:confidential
+      - dpia:personal
+external entities:
+  - id: dpia:User 
+    consumes:
+      - :message
+    produces: 
+      - :message
+    location:
+      - Portugal
+    categories:
+      - dpia:human
+    age: ">16"
+    produces public information: false
+    safeguards: []
+    options: []
+    environment: []
+  - id: dpia:AccountSystem 
+    consumes:
+      - :AccountId
+      - :username
+      - :password
+    produces: 
+      - :Account
+    location:
+      - Portugal
+    environment: []
+    categories: []
+    age: null
+    produces public information: false
+    safeguards: :as safeguards
+    options: :as options
+processes:
+  - id: send message
+    consumes:
+      - :message
+    produces:
+      - :message
+    location:
+      - Portugal
+    environment: []
+    purposes: 
+      - dpia:message routing
+    certification: []
+    safeguards: []
+data stores:
+  - id: message db
+    data stored:
+      - type: :message
+        storage period: eternal
+        create: :C store message
+        read:   :R store message
+        update: :U store message
+        delete: :D store message
+    location:
+      - Portugal
+    environment: []
+    certification: []
+    safeguards: []
+data flows:
+  - id: create Account
+    from: dpia:User
+    to: dpia:AccountSystem
+    data:
+      - :username
+      - :password
+    encryption: HTTPS
+    periodicity: 30m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: delete Account
+    from: dpia:User
+    to: dpia:AccountSystem
+    data:
+      - :username
+      - :password
+    encryption: HTTPS
+    periodicity: 30m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: C message
+    from: dpia:User
+    to: :send message
+    data:
+      - :message
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: C store message
+    from: :send message
+    to: :message db
+    data:
+      - :message
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: R message
+    from: dpia:User
+    to: :send message
+    data:
+      - :message
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: R store message
+    from: :send message
+    to: :message db
+    data:
+      - :message
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: U message
+    from: dpia:User
+    to: :send message
+    data:
+      - :message
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: U store message
+    from: :send message
+    to: :message db
+    data:
+      - :message
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: D message
+    from: dpia:User
+    to: :send message
+    data:
+      - :message
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: D store message
+    from: :send message
+    to: :message db
+    data:
+      - :message
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: Deliver message
+    from: :send message
+    to: dpia:User
+    data:
+      - :message
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+    certification: []
+    safeguards: []

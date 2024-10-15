@@ -1,0 +1,14 @@
+PREFIX dfd: <https://devprivops.com/dfd/>
+PREFIX dpia: <https://devprivops.com/dpia/>
+
+# NOTE: requires DFD
+
+SELECT ?data 
+WHERE {
+    dfd:ROOT dfd:data_types ?data .
+    ?data dfd:categories dpia:personal .
+
+    FILTER NOT EXISTS {
+        dpia:ROOT dpia:personal_data ?data .
+    }
+}

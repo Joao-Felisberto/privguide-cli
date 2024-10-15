@@ -1,0 +1,11 @@
+PREFIX dpia: <https://devprivops.com/dpia/>
+
+# Based on Article 35 1
+
+SELECT ?proc
+WHERE {
+    dpia:ROOT dpia:processings ?proc .
+
+    # 1 New technologies or high risk
+    ?proc dpia:requires_new_technologies true .
+}

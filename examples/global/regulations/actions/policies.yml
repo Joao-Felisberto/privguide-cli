@@ -1,0 +1,8 @@
+- file: regulations/actions/policies/sonar.rq
+  title: Components must be verified by SonarQube 
+  description: Ensure all system components have to pass SonarQube checks in their CI/CD pipelines
+  is consistency: false
+  maximum violations: 0
+  mapping message: ""
+  clearence level: 1
+  groups: ["all"]

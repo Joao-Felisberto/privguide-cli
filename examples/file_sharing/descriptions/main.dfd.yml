@@ -1,0 +1,349 @@
+# yaml-language-server: $schema=../../global/schemas/dfd-schema.json
+
+data types:
+  - id: Document
+    aggregates: 
+      - :AccountId
+      - :datetime
+      - :file
+    validity: eternal
+    categories: []
+  - id: PrivDocument
+    aggregates: 
+      - :AccountId
+      - :datetime
+      - :file
+    validity: eternal
+    categories:
+      - dpia:confidential
+      - dpia:personal
+  - id: AccountId
+    aggregates: 
+      - :AccountId
+    validity: eternal
+    categories:
+      - dpia:personal
+  - id: Account
+    aggregates: 
+      - :AccountId
+    validity: eternal
+    categories:
+      - dpia:confidential
+      - dpia:personal
+external entities:
+  - id: dpia:AuthenticatedUser 
+    consumes:
+      - :Document
+      - :PrivDocument
+    produces: 
+      - :Document
+      - :PrivDocument
+    location:
+      - Portugal
+    categories:
+      - dpia:human
+    age: ">16"
+    produces public information: true
+    safeguards: []
+    options: []
+    environment: []
+  - id: dpia:UnauthenticatedUser 
+    consumes:
+      - :Document
+    produces: []
+    location:
+      - Portugal
+    categories:
+      - dpia:human
+    age: ">16"
+    produces public information: false
+    safeguards: []
+    options: []
+    environment: []
+  - id: dpia:AccountSystem 
+    consumes:
+      - :AccountId
+      - :username
+      - :password
+    produces: 
+      - :Account
+    location:
+      - Portugal
+    environment: []
+    categories: []
+    age: null
+    produces public information: false
+    safeguards: :as safeguards
+    options: :as options
+processes:
+  - id: send Document
+    consumes:
+      - :Document
+    produces:
+      - :Document
+    location:
+      - Portugal
+    environment: []
+    purposes: 
+      - dpia:Document routing
+    certification: []
+    safeguards: []
+  - id: recieve Document
+    consumes:
+      - :Document
+    produces:
+      - :Document
+    location:
+      - Portugal
+    environment: []
+    purposes: 
+      - dpia:Document routing
+    certification: []
+    safeguards: []
+  - id: send PrivDocument
+    consumes:
+      - :PrivDocument
+    produces:
+      - :PrivDocument
+    location:
+      - Portugal
+    environment: []
+    purposes: 
+      - dpia:Document routing
+    certification: []
+    safeguards: []
+  - id: recieve PrivDocument
+    consumes:
+      - :Document
+    produces:
+      - :Document
+    location:
+      - Portugal
+    environment: []
+    purposes: 
+      - dpia:Document routing
+    certification: []
+    safeguards: []
+data stores:
+  - id: Document db
+    data stored:
+      - type: :Document
+        storage period: eternal
+        create: :C store Document
+        read:   :R store Document
+        update: :U store Document
+        delete: :D store Document
+      - type: :PrivDocument
+        storage period: eternal
+        create: :C store PrivDocument
+        read:   :R store PrivDocument
+        update: :U store PrivDocument
+        delete: :D store PrivDocument
+    location:
+      - Portugal
+    environment: []
+    certification: []
+    safeguards: []
+data flows:
+  - id: create Account
+    from: dpia:AuthenticatedUser
+    to: dpia:AccountSystem
+    data:
+      - :username
+      - :password
+    encryption: HTTPS
+    periodicity: 30m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: delete Account
+    from: dpia:AuthenticatedUser
+    to: dpia:AccountSystem
+    data:
+      - :username
+      - :password
+    encryption: HTTPS
+    periodicity: 30m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: C Document
+    from: dpia:AuthenticatedUser
+    to: :send Document
+    data:
+      - :Document
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: C store Document
+    from: :send Document
+    to: :Document db
+    data:
+      - :Document
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: R Document
+    from: dpia:AuthenticatedUser
+    to: :send Document
+    data:
+      - :Document
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: R store Document
+    from: :send Document
+    to: :Document db
+    data:
+      - :Document
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: U Document
+    from: dpia:AuthenticatedUser
+    to: :send Document
+    data:
+      - :Document
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: U store Document
+    from: :send Document
+    to: :Document db
+    data:
+      - :Document
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: D Document
+    from: dpia:AuthenticatedUser
+    to: :send Document
+    data:
+      - :Document
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: D store Document
+    from: :send Document
+    to: :Document db
+    data:
+      - :Document
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: Deliver Document
+    from: :send Document
+    to: dpia:AuthenticatedUser
+    data:
+      - :Document
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: C PrivDocument
+    from: dpia:AuthenticatedUser
+    to: :send PrivDocument
+    data:
+      - :PrivDocument
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: C store PrivDocument
+    from: :send PrivDocument
+    to: :Document db
+    data:
+      - :PrivDocument
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: R PrivDocument
+    from: dpia:AuthenticatedUser
+    to: :send PrivDocument
+    data:
+      - :PrivDocument
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: R store PrivDocument
+    from: :send PrivDocument
+    to: :Document db
+    data:
+      - :PrivDocument
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: U PrivDocument
+    from: dpia:AuthenticatedUser
+    to: :send PrivDocument
+    data:
+      - :PrivDocument
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: U store PrivDocument
+    from: :send PrivDocument
+    to: :Document db
+    data:
+      - :PrivDocument
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: D PrivDocument
+    from: dpia:AuthenticatedUser
+    to: :send PrivDocument
+    data:
+      - :PrivDocument
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: D store PrivDocument
+    from: :send PrivDocument
+    to: :Document db
+    data:
+      - :PrivDocument
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: Deliver PrivDocument
+    from: :send PrivDocument
+    to: dpia:AuthenticatedUser
+    data:
+      - :PrivDocument
+    encryption: signal
+    periodicity: 1m
+    amount of data per period: 1
+    certification: []
+    safeguards: []

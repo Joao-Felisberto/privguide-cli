@@ -1,0 +1,10 @@
+PREFIX dfd: <https://devprivops.com/dfd/>
+
+SELECT ?cacheId
+WHERE {
+    ?_ dfd:caches ?cacheId
+    FILTER NOT EXISTS {
+        dfd:ROOT dfd:data_stores ?cacheId
+    }
+}
+

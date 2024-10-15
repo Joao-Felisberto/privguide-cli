@@ -1,3 +1,5 @@
+//go:build !profile
+
 // Program entry point
 package main
 

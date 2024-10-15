@@ -1,0 +1,397 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/DataFlowDiagram",
+    "definitions": {
+        "DataFlowDiagram": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "data types": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/DataType"
+                    }
+                },
+                "external entities": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ExternalEntity"
+                    }
+                },
+                "processes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Process"
+                    }
+                },
+                "data stores": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/DataStore"
+                    }
+                },
+                "data flows": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/DataFlow"
+                    }
+                }
+            },
+            "required": [
+                "data flows",
+                "data stores",
+                "data types",
+                "external entities",
+                "processes"
+            ],
+            "title": "DataFlowDiagram"
+        },
+        "DataFlow": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "from": {
+                    "type": "string"
+                },
+                "to": {
+                    "type": "string"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "encryption": {
+                    "type": "string"
+                },
+                "periodicity": {
+                    "type": "string"
+                },
+                "amount of data per period": {
+                    "type": "integer"
+                },
+                "certification": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "safeguards": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": [
+                "amount of data per period",
+                "certification",
+                "data",
+                "encryption",
+                "from",
+                "id",
+                "periodicity",
+                "safeguards",
+                "to"
+            ],
+            "title": "DataFlow"
+        },
+        "DataStore": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "data stored": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/DataStored"
+                    }
+                },
+                "location": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "environment": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "certification": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "safeguards": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": [
+                "certification",
+                "data stored",
+                "id",
+                "location",
+                "environment",
+                "safeguards"
+            ],
+            "title": "DataStore"
+        },
+        "DataStored": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "type": {
+                    "type": "string"
+                },
+                "storage period": {
+                    "type": "string"
+                },
+                "create": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
+                "read": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
+                "update": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
+                "delete": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                }
+            },
+            "required": [
+                "create",
+                "delete",
+                "read",
+                "storage period",
+                "type",
+                "update"
+            ],
+            "title": "DataStored"
+        },
+        "DataType": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "aggregates": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "validity": {
+                    "type": "string"
+                },
+                "categories": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": [
+                "aggregates",
+                "categories",
+                "id",
+                "validity"
+            ],
+            "title": "DataType"
+        },
+        "ExternalEntity": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "consumes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "produces": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "location": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "environment": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "categories": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "age": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
+                "produces public information": {
+                    "type": "boolean"
+                },
+                "safeguards": {
+                    "anyOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {
+                    "anyOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ]
+                }
+            },
+            "required": [
+                "age",
+                "categories",
+                "consumes",
+                "id",
+                "location",
+                "environment",
+                "produces",
+                "produces public information",
+                "safeguards",
+                "options"
+            ],
+            "title": "ExternalEntity"
+        },
+        "Process": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "consumes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "produces": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "location": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "environment": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "purposes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "certification": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "safeguards": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": [
+                "certification",
+                "consumes",
+                "id",
+                "location",
+                "environment",
+                "produces",
+                "purposes",
+                "safeguards"
+            ],
+            "title": "Process"
+        }
+    }
+}

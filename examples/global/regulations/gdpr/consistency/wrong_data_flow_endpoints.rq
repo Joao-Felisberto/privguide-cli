@@ -1,0 +1,20 @@
+PREFIX dfd: <https://devprivops.com/dfd/>
+
+SELECT ?dataFlow ?matchedPredicate ?serviceId
+WHERE {
+  	{
+    	?dataFlow dfd:from ?serviceId .
+        BIND("from" AS ?matchedPredicate)
+  	} UNION {
+        ?dataFlow dfd:to ?serviceId .
+        BIND("to" AS ?matchedPredicate)
+    }
+
+  	#MINUS {
+    #    dfd:ROOT dfd:external_entities|dfd:processes|dfd:data_stores ?serviceId .
+    #}
+
+  	FILTER NOT EXISTS {
+        dfd:ROOT dfd:external_entities|dfd:processes|dfd:data_stores ?serviceId .
+    }
+}

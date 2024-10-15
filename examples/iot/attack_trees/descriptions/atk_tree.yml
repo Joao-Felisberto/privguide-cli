@@ -1,0 +1,10 @@
+description: Visitor personal data leak
+query: attack_trees/queries/visitor_leak.rq
+clearence level: 0
+groups: ["all"]
+children:
+  - description: Visitor's personal data is collected 
+    query:  attack_trees/queries/visitor_collected.rq
+    clearence level: 0
+    groups: ["all"]
+    children: []

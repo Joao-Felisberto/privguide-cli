@@ -99,6 +99,8 @@ func policies(dbManager *database.DBManager, regulation string) ([]map[string]in
 			// will never happen because the schema has already been validated
 			panic(err)
 		}
+		groupsRaw := q["groups"].([]interface{})
+		groups := util.Map(groupsRaw, func(raw interface{}) string { return raw.(string) })
 		return database.NewQuery(
 			// fmt.Sprintf("./.%s/%s", appName, q["file"].(string)),
 			qFile,
@@ -107,6 +109,8 @@ func policies(dbManager *database.DBManager, regulation string) ([]map[string]in
 			q["is consistency"].(bool),
 			maxViolations,
 			q["mapping message"].(string),
+			q["clearence level"].(int),
+			groups,
 		)
 	})
 	report := []map[string]interface{}{}
@@ -128,6 +132,8 @@ func policies(dbManager *database.DBManager, regulation string) ([]map[string]in
 			"is consistency":     pol.IsConsistency,
 			"violations":         res,
 			"mapping message":    pol.MappingMessage,
+			"clearence level":    pol.ClearenceLvl,
+			"groups":             pol.Group,
 		})
 	}
 
@@ -277,9 +283,11 @@ func verifyRequirements(dbManager *database.DBManager) (*[]map[string]interface{
 	report := []map[string]interface{}{}
 	for _, us := range userStories {
 		usReport := map[string]interface{}{
-			"use case":       us.UseCase,
-			"is misuse case": us.IsMisuseCase,
-			"requirements":   []map[string]interface{}{},
+			"use case":        us.UseCase,
+			"is misuse case":  us.IsMisuseCase,
+			"requirements":    []map[string]interface{}{},
+			"clearence level": us.ClearenceLvl,
+			"groups":          us.Groups,
 		}
 		for _, r := range us.Requirements {
 			f, err := fs.GetFile(r.Query)

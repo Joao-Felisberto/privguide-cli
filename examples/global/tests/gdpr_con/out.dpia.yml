@@ -1,0 +1,89 @@
+DPO:
+- contact: the@email.com
+  name: :The
+- contact: manemail.com
+  name: :Man
+last update: :last update
+personal data:
+- abides by code of conduct: false
+  destinataries:
+  - :User
+  id: dfd:message
+  kind: :personal
+  necessary to enter contract: []
+  purposes:
+  - :message routing
+  required by law: []
+  retention period: 2d
+  transfers to third parties: []
+- abides by code of conduct: false
+  destinataries:
+  - :User
+  id: dfd:AccountId
+  kind: :personal
+  necessary to enter contract: []
+  purposes: []
+  required by law: []
+  retention period: 2d
+  transfers to third parties: []
+- abides by code of conduct: false
+  destinataries:
+  - :User
+  id: dfd:Account
+  kind: :personal
+  necessary to enter contract: []
+  purposes: []
+  required by law: []
+  retention period: 2d
+  transfers to third parties: []
+personal data processing that requires DPIA: []
+personal data processing whitelist:
+- :message routing
+processings:
+- automated decisions: false
+  explicit: true
+  fair: true
+  id: dfd:send message
+  is official authority: false
+  large scale processing: false
+  lawful: true
+  legal impact for the user: false
+  legally mandated: false
+  legitimate: true
+  legitimate interest:
+  - :human
+  - :User
+  - :new one
+  professional secrecy: false
+  public interest: false
+  purposes:
+  - adequate: true
+    id: :message routing
+    limited: true
+    relevant: true
+  required for contract: []
+  requires new technologies: false
+  risk to rights and freedoms of:
+  - :User
+  risks:
+  - :Risk 1
+  scores users: false
+  specific: true
+  supervisory authority veredict:
+    allowed: true
+    contact:
+    - :Supervisor
+  systematic monitoring: false
+  transparent: true
+  vital interest:
+  - :human
+  - :User
+  - :another one
+responsible:
+- :Someone
+- :Else
+risks:
+- accepted mitigations: []
+  id: Risk 1
+  impact: 1
+  likelyhood: 1

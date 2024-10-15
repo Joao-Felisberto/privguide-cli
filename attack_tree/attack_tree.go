@@ -6,6 +6,7 @@ import (
 	"reflect"
 
 	"github.com/Joao-Felisberto/devprivops/schema"
+	"github.com/Joao-Felisberto/devprivops/util"
 )
 
 // Represents the execution status of a tree node, either before or after the execution of its associated query
@@ -28,6 +29,8 @@ type AttackNode struct {
 	Children        []*AttackNode             `json:"children"`         // The node's pre-conditions
 	ExecutionStatus ExecutionStatus           `json:"execution status"` // The current execution status of the node, may change when the tree is executed
 	ExecutionResult *[]map[string]interface{} `json:"execution result"` // The result of running the query, if it was run, else nil
+	ClearenceLvl    int                       `json:"clearence level"`  // The minimum hierarchical level required to see this in the visualizer
+	Groups          []string                  `json:"groups"`           // The groups allowed to see this in the visualizer
 }
 
 // Represents the whole attack/harm tree.
@@ -75,12 +78,16 @@ func parseNode(data interface{}) (*AttackNode, error) {
 	case map[interface{}]interface{}:
 		description, descOk := node["description"].(string)
 		query, queryOk := node["query"].(string)
+		clearenceLvl, clearenceOk := node["clearence level"].(int)
+		groupsRaw, groupsOk := node["groups"].([]interface{})
 		childrenData, childrenOk := node["children"].([]interface{})
 
 		// Can never occur, schema is validated prior
-		if !descOk || !queryOk || !childrenOk {
+		if !descOk || !queryOk || !childrenOk || !clearenceOk || !groupsOk {
 			return nil, fmt.Errorf("missing required fields in node")
 		}
+
+		groups := util.Map(groupsRaw, func(raw interface{}) string { return raw.(string) })
 
 		children := make([]*AttackNode, len(childrenData))
 		for i, childData := range childrenData {
@@ -97,6 +104,8 @@ func parseNode(data interface{}) (*AttackNode, error) {
 			Children:        children,
 			ExecutionStatus: NOT_EXECUTED,
 			ExecutionResult: nil,
+			ClearenceLvl:    clearenceLvl,
+			Groups:          groups,
 		}, nil
 	default:
 		return nil, fmt.Errorf("invalid node data type: %s", reflect.TypeOf(data))

@@ -4,3 +4,5 @@
   is consistency: true
   maximum violations: 0
   mapping message: Mapping message
+  clearence level: 0
+  groups: []

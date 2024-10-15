@@ -1,0 +1,5 @@
+description: Unauthenticated user can see private documents
+query: attack_trees/queries/see_privdoc_no_auth.rq
+clearence level: 0
+groups: ["all"]
+children: []

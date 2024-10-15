@@ -1,0 +1,88 @@
+# yaml-language-server: $schema=../../schemas/dpia-schema.json
+
+last update: :last update # 02/03/2004
+responsible:
+  - :Someone
+  - :Else
+DPO:
+  - name: :The
+    contact: the@email.com
+  - name: :Man
+    contact: man@email.com
+personal data:
+  - id: dfd:message
+    kind: :personal # :special | :legal_data
+    required by law: []
+    necessary to enter contract: []
+    destinataries: 
+      - :User # tag for the kind of people that wil recieve it
+    retention period: 2d # or policy
+    abides by code of conduct: false # Art 40 GDPR
+    purposes:
+      - :message routing
+    transfers to third parties: [] # contract, adequability decision, binding corporate rules, art 49
+  - id: dfd:AccountId
+    kind: :personal # :special | :legal_data
+    required by law: []
+    necessary to enter contract: []
+    destinataries: 
+      - :User # tag for the kind of people that wil recieve it
+    retention period: 2d # or policy # TODO SHOULD BE VALIDATED
+    abides by code of conduct: false # Art 40 GDPR
+    purposes: []
+      # - :message routing
+    transfers to third parties: [] # contract, adequability decision, binding corporate rules, art 49
+  - id: dfd:Account
+    kind: :personal # :special | :legal_data
+    required by law: []
+    necessary to enter contract: []
+    destinataries: 
+      - :User # tag for the kind of people that wil recieve it
+    retention period: 2d # or policy # TODO SHOULD BE VALIDATED
+    abides by code of conduct: false # Art 40 GDPR
+    purposes: []
+      # - :message routing
+    transfers to third parties: [] # contract, adequability decision, binding corporate rules, art 49
+risks:
+  - id: Risk 1
+    impact: 0
+    likelyhood: 1
+    accepted mitigations: []
+personal data processing whitelist:
+  - :message routing
+personal data processing that requires DPIA: []
+processings:
+  - id: dfd:send message
+    requires new technologies: false
+    risk to rights and freedoms of:
+      - :User
+    required for contract: []
+    legally mandated: false
+    vital interest: []
+    public interest: false
+    is official authority: false
+    legitimate interest:
+      - :User
+    professional secrecy: false
+    scores users: false
+    automated decisions: false
+    legal impact for the user: false
+    systematic monitoring: false
+    large scale processing: false
+    lawful: true
+    fair: true
+    transparent: true
+    specific: true
+    explicit: true
+    legitimate: true
+    purposes:
+      - id: message routing
+        adequate: true 
+        relevant: true 
+        limited: true
+    risks:
+      - :Risk 1
+    supervisory authority veredict:
+      contact:
+        - :Supervisor
+      allowed: true

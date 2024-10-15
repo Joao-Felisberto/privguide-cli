@@ -1,0 +1,74 @@
+PREFIX dfd: <https://devprivops.com/dfd/>
+PREFIX dpia: <https://devprivops.com/dpia/>
+
+SELECT ?dataStore ?dataTypeId ?dataFlowId ?validity ?periodicity
+WHERE {
+  # Retrieve data stores and their stored data
+  ?dataStore dfd:data_stored ?dataStoredObj .
+  ?dataStoredObj dfd:type ?dataTypeId ;
+                 dfd:delete ?dataFlowId .
+
+  # Retrieve the data type's validity
+  ?dataTypeId dfd:validity ?validity .
+
+  # Retrieve the data flow's periodicity
+  ?dataFlowId dfd:periodicity ?periodicity .
+
+  # Allow for validity and periodicity to be either time values or 'eternal'
+  FILTER (
+    # Case 1: Both validity and periodicity are time-based values
+    (
+      regex(?validity, "^[0-9]+(s|sec|secs|second|seconds|m|min|mins|minute|minutes|h|hr|hrs|hour|hours|d|day|days|w|week|weeks|month|months|y|year|years)$") &&
+      regex(?periodicity, "^[0-9]+(s|sec|secs|second|seconds|m|min|mins|minute|minutes|h|hr|hrs|hour|hours|d|day|days|w|week|weeks|month|months|y|year|years)$")
+    )
+    ||
+    # Case 2: Both validity and periodicity are 'eternal'
+    (
+      ?validity = "eternal" && ?periodicity = "eternal"
+    )
+    ||
+    # Case 3: Validity is 'eternal' and periodicity is a time-based value
+    (
+      ?validity = "eternal" && regex(?periodicity, "^[0-9]+(s|sec|secs|second|seconds|m|min|mins|minute|minutes|h|hr|hrs|hour|hours|d|day|days|w|week|weeks|month|months|y|year|years)$")
+    )
+    ||
+    # Case 4: Periodicity is 'eternal' and validity is a time-based value
+    (
+      ?periodicity = "eternal" && regex(?validity, "^[0-9]+(s|sec|secs|second|seconds|m|min|mins|minute|minutes|h|hr|hrs|hour|hours|d|day|days|w|week|weeks|month|months|y|year|years)$")
+    )
+  )
+
+  # Optionally bind variables for converting time units into seconds (external processing)
+  BIND(STRBEFORE(?validity, "(s|sec|secs|second|seconds|m|min|mins|minute|minutes|h|hr|hrs|hour|hours|d|day|days|w|week|weeks|month|months|y|year|years)") AS ?validityValue)
+  BIND(STRBEFORE(?periodicity, "(s|sec|secs|second|seconds|m|min|mins|minute|minutes|h|hr|hrs|hour|hours|d|day|days|w|week|weeks|month|months|y|year|years)") AS ?periodicityValue)
+
+  # Further processing in application logic needed to compare time units in a common base
+}
+
+
+#PREFIX dfd: <https://devprivops.com/dfd/>
+#PREFIX dpia: <https://devprivops.com/dpia/>
+#
+#SELECT ?dataStore ?dataTypeId ?dataFlowId ?validity ?periodicity
+#WHERE {
+#  # Retrieve data stores and their stored data
+#  ?dataStore dfd:data_stored ?dataStoredObj .
+#  ?dataStoredObj dfd:type ?dataTypeId ;
+#                 dfd:delete ?dataFlowId .
+#
+#  # Retrieve the data type's validity
+#  ?dataTypeId dfd:validity ?validity .
+#
+#  # Retrieve the data flow's periodicity
+#  ?dataFlowId dfd:periodicity ?periodicity .
+#
+#  # Optional: Filter for data that matches the regex for time units
+#  FILTER regex(?validity, "^[0-9]+(s|sec|secs|second|seconds|m|min|mins|minute|minutes|h|hr|hrs|hour|hours|d|day|days|w|week|weeks|month|months|y|year|years)$") .
+#  FILTER regex(?periodicity, "^[0-9]+(s|sec|secs|second|seconds|m|min|mins|minute|minutes|h|hr|hrs|hour|hours|d|day|days|w|week|weeks|month|months|y|year|years)$") .
+#
+#  # Optionally bind variables for converting time units into seconds (this part requires external processing or custom triplestore support)
+#  BIND(STRBEFORE(?validity, "(s|sec|secs|second|seconds|m|min|mins|minute|minutes|h|hr|hrs|hour|hours|d|day|days|w|week|weeks|month|months|y|year|years)") AS ?validityValue)
+#  BIND(STRBEFORE(?periodicity, "(s|sec|secs|second|seconds|m|min|mins|minute|minutes|h|hr|hrs|hour|hours|d|day|days|w|week|weeks|month|months|y|year|years)") AS ?periodicityValue)
+#
+#  # You can add more logic to convert the time units to a common base (e.g., seconds) in external code after fetching the data
+#}

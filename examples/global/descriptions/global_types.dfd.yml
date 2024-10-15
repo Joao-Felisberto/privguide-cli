@@ -1,0 +1,31 @@
+# yaml-language-server: $schema=../../global/schemas/dfd-schema.json
+
+data types:
+  - id: datetime
+    aggregates: []
+    validity: eternal
+    categories: []
+  - id: text
+    aggregates: []
+    validity: eternal
+    categories: []
+  - id: file
+    aggregates: []
+    validity: eternal
+    categories: []
+  - id: username
+    aggregates:
+      - :text
+    validity: eternal
+    categories: []
+  - id: password
+    aggregates:
+      - :text
+    validity: eternal
+    categories: 
+      # - dpia:personal
+      - dpia:confidential
+data flows: []
+data stores: []
+external entities: []
+processes: []
