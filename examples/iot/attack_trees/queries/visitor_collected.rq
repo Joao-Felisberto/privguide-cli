@@ -1,0 +1,8 @@
+PREFIX dfd: <https://devprivops.com/dfd/>
+PREFIX dpia: <https://devprivops.com/dpia/>
+
+SELECT * 
+WHERE {
+    dfd:Visitor dfd:produces ?data .
+    ?data dfd:categories dpia:personal .
+}

@@ -33,6 +33,7 @@ external entities:
     produces public information: false
     safeguards: []
     options: []
+    environment: []
   - id: dpia:AccountSystem 
     consumes:
       - :AccountId
@@ -45,6 +46,7 @@ external entities:
     produces public information: false
     safeguards: :as safeguards
     options: :as options
+    environment: []
 processes:
   - id: send message
     consumes:
@@ -57,6 +59,7 @@ processes:
       - dpia:message routing
     certification: []
     safeguards: []
+    environment: []
 data stores:
   - id: message db
     data stored:
@@ -70,6 +73,7 @@ data stores:
       - Portugal
     certification: []
     safeguards: []
+    environment: []
 data flows:
   - id: C message
     from: dpia:User

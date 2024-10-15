@@ -1,6 +1,6 @@
 [
   {
-    "stateDir": "tests/a",
+    "stateDir": "tests/perfect_scenario",
     "tests": [
       {
         "query": "regulations/asvs/consistency/no_undefined_caches.rq",

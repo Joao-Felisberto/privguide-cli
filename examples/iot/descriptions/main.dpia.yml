@@ -1,0 +1,18 @@
+# yaml-language-server: $schema=../../global/schemas/dpia-schema.json
+
+last update: 02/03/2004
+responsible:
+  - :John Doe
+DPO:
+  - name: John Smith
+    contact: john.smith@dpocorp.com
+personal data: []
+risks:
+  - id: deanonimization of presence
+    impact: 4
+    likelyhood: 1
+    accepted mitigations:
+      - presence is not tied to any human entity
+personal data processing whitelist: []
+personal data processing that requires DPIA: []
+processings: []

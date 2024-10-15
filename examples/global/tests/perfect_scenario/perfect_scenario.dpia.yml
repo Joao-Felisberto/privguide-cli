@@ -64,10 +64,10 @@ processings:
     legitimate interest:
       - :User
     professional secrecy: false
-    scores users: true
-    automated decisions: true
-    legal impact for the user: true
-    systematic monitoring: true
+    scores users: false
+    automated decisions: false
+    legal impact for the user: false
+    systematic monitoring: false
     large scale processing: false
     lawful: true
     fair: true
@@ -82,7 +82,7 @@ processings:
         limited: true
     risks:
       - :Risk 1
-    supervirory authority veredict:
+    supervisory authority veredict:
       contact:
         - :Supervisor
       allowed: true

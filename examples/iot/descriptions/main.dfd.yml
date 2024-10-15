@@ -1,0 +1,273 @@
+# yaml-language-server: $schema=../../global/schemas/dfd-schema.json
+
+data types:
+  - id: RGBColor
+    aggregates: []
+    validity: eternal
+    categories: []
+  - id: Presence
+    aggregates: []
+    validity: eternal
+    categories: [] # not personal, as presence is not tied to identity in this system
+  - id: Document
+    aggregates: []
+    validity: eternal
+    categories:
+      - dpia:confidential
+  - id: Temperature
+    aggregates: []
+    validity: eternal
+    categories: []
+external entities:
+  - id: IoT Manager
+    consumes:
+      - :RGBColor
+      - :Document
+      - :Temperature
+      - :Presence
+    produces:
+      - :RGBColor
+      - :Document
+      - :Temperature
+      - :Presence
+    location:
+      - Portugal
+    environment: []
+    categories: []
+    age: null
+    produces public information: false
+    safeguards: []
+    options: []
+  - id: Home Owner
+    consumes: []
+    produces:
+      - :RGBColor
+      - :Document
+      - :Temperature
+      - :Presence
+    location:
+      - Portugal
+    environment: []
+    categories:
+      - dpia:human
+    age: ">16"
+    produces public information: false
+    safeguards: []
+    options: []
+  - id: Visitor
+    consumes: []
+    produces:
+      - :Presence
+    location:
+      - Portugal
+    environment: []
+    categories:
+      - dpia:human
+    age: "<16"
+    produces public information: false
+    safeguards: []
+    options: []
+  - id: Lamp
+    consumes:
+      - :RGBColor
+    produces: []
+    location:
+      - Portugal
+    environment: []
+    categories: []
+    age: null
+    produces public information: false
+    safeguards: []
+    options: []
+  - id: Printer
+    consumes:
+      - :Document
+    produces: []
+    location:
+      - Portugal
+    environment: []
+    categories: []
+    age: null
+    produces public information: false
+    safeguards: []
+    options: []
+  - id: Thermostat
+    consumes:
+      - :Temperature
+    produces: []
+    location:
+      - Portugal
+    environment: []
+    categories: []
+    age: null
+    produces public information: false
+    safeguards: []
+    options: []
+  - id: Presence Sensor
+    consumes:
+      - :Presence
+    produces:
+      - :Presence
+    location:
+      - Portugal
+    environment: []
+    categories: []
+    age: null
+    produces public information: false
+    safeguards: []
+    options: []
+processes: []
+#  - id: set light
+#    consumes:
+#      - :RGBColor
+#    produces:
+#      - :RGBColor
+#    location:
+#      - Portugal
+#    environment: []
+#    purposes: 
+#      - dpia:set light
+#    certification: []
+#    safeguards: []
+data stores:
+  - id: NAS
+    data stored:
+      - type: :Document
+        storage period: eternal 
+        create: :C Document NAS
+        read: :R Document NAS
+        update: :U Document NAS
+        delete: :D Document NAS
+    location:
+      - Portugal
+    environment: [] # home????
+    certification: []
+    safeguards: []
+#  - id: IoT Manager
+#    data stored: []
+#    location:
+#      - Portugal
+#    environment: [] # home????
+#    certification: []
+#    safeguards: []
+data flows:
+  - id: C Document NAS
+    from: :Home Owner
+    to: :NAS
+    data:
+      - :Document
+    encryption: HTTPS
+    periodicity: 3h
+    amount of data per period: 5
+    certification: []
+    safeguards: []
+  - id: R Document NAS
+    from: :Home Owner
+    to: :NAS
+    data:
+      - :Document
+    encryption: HTTPS
+    periodicity: 3h
+    amount of data per period: 5
+    certification: []
+    safeguards: []
+  - id: U Document NAS
+    from: :Home Owner
+    to: :NAS
+    data:
+      - :Document
+    encryption: HTTPS
+    periodicity: 3h
+    amount of data per period: 5
+    certification: []
+    safeguards: []
+  - id: D Document NAS
+    from: :Home Owner
+    to: :NAS
+    data:
+      - :Document
+    encryption: HTTPS
+    periodicity: 3h
+    amount of data per period: 5
+    certification: []
+    safeguards: []
+  - id: Owner Set Lamp light
+    from: :Home Owner
+    to: :IoT Manager
+    data:
+      - :RGBColor
+    encryption: HTTPS
+    periodicity: 3h
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: Set Lamp light
+    from: :IoT Manager
+    to: :Lamp
+    data:
+      - :RGBColor
+    encryption: HTTPS
+    periodicity: 3h
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: Owner print Document
+    from: :Home Owner
+    to: :IoT Manager
+    data:
+      - :Document
+    encryption: HTTPS
+    periodicity: 1w
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: Print Document
+    from: :IoT Manager
+    to: :Printer
+    data:
+      - :Document
+    encryption: HTTPS
+    periodicity: 1w
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: Owner set Thermostat
+    from: :Home Owner
+    to: :IoT Manager
+    data:
+      - :Temperature
+    encryption: HTTPS
+    periodicity: 1w
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: Set Temperature
+    from: :IoT Manager
+    to: :Thermostat
+    data:
+      - :Temperature
+    encryption: HTTPS
+    periodicity: 1w
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: Visitor enters or leaves room
+    from: :Visitor
+    to: :IoT Manager
+    data:
+      - :Presence
+    encryption: HTTPS
+    periodicity: 1w
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: Home Owner enters or leaves room
+    from: :Home Owner
+    to: :IoT Manager
+    data:
+      - :Presence
+    encryption: HTTPS
+    periodicity: 1w
+    amount of data per period: 1
+    certification: []
+    safeguards: []
