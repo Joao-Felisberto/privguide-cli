@@ -196,7 +196,7 @@ func ReadYAMLWithStringSchema(yamlFile string, schema *string) (interface{}, err
 	}
 
 	if *schema != "" {
-		res, err := ValidateYAMLAgainstSchemaString(yamlFile, schema)
+		res, err := validateYAMLAgainstSchemaString(yamlFile, schema)
 		if err != nil {
 			return nil, fmt.Errorf("error validating schema: %s", err)
 		}
@@ -257,7 +257,7 @@ func ValidateYAMLAgainstSchemaFile(yamlFile string, schemaFile string) (*gojsons
 // `schemaFile`: The path to the json schema the yaml file should follow. If "", there is no schema validation
 //
 // returns: the schema validation results or an error if the file or schema could not be read or the schema could not be validated
-func ValidateYAMLAgainstSchemaString(yamlFile string, schemaString *string) (*gojsonschema.Result, error) {
+func validateYAMLAgainstSchemaString(yamlFile string, schemaString *string) (*gojsonschema.Result, error) {
 	// Load JSON schema
 	schemaLoader := gojsonschema.NewStringLoader(*schemaString)
 	schema, err := gojsonschema.NewSchema(schemaLoader)

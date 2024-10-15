@@ -176,7 +176,7 @@ a:
     c:
       id: cId
       d: 1
-      f: 2
+      f: true
     e: 3
 `
 
@@ -199,7 +199,7 @@ a:
 		{"<https://example.com/aId>", "<https://example.com/b>", "<https://example.com/bId>"},
 		{"<https://example.com/bId>", "<https://example.com/c>", "<https://example.com/cId>"},
 		{"<https://example.com/cId>", "<https://example.com/d>", "\"1\""},
-		{"<https://example.com/cId>", "<https://example.com/f>", "\"2\""},
+		{"<https://example.com/cId>", "<https://example.com/f>", "true"},
 		{"<https://example.com/bId>", "<https://example.com/e>", "\"3\""},
 	}
 
@@ -364,5 +364,87 @@ final: null
 	data, err = schema.ReadYAML(fileName, badSchemaName)
 	if err == nil && data != nil {
 		t.Errorf("Schema validation did not work for file '%s' with bad schema '%s'", fileName, badSchemaName)
+	}
+}
+
+func TestValidateYAMLWithJSONSchemaString(t *testing.T) {
+	schemaStr := `
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/Welcome4",
+    "definitions": {
+        "Welcome4": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "test": {
+                    "type": "integer"
+                },
+                "another": {
+                    "type": "string"
+                },
+                "some more": {
+                    "type": "boolean"
+                },
+                "final": {
+                    "type": "null"
+                }
+            },
+            "required": [
+                "another",
+                "final",
+                "some more",
+                "test"
+            ],
+            "title": "Welcome4"
+        }
+    }
+}
+	`
+
+	badSchema := `
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "type": "array",
+    "items": {},
+    "definitions": {}
+}
+	`
+
+	fileName := ".test_read_yaml/file1.yml"
+	err := util.CreateFileWithData(fileName, `
+test: 1
+another: a
+some more: true
+final: null
+`)
+	defer util.DeleteFileAndParentPath(fileName)
+	if err != nil {
+		t.Fatalf("Could not create file '%s': %s", fileName, err)
+	}
+
+	data, err := schema.ReadYAMLWithStringSchema(fileName, &schemaStr)
+	if err != nil {
+		t.Errorf("Could not read YAML file '%s' with schema '%s': %s", fileName, schemaStr, err)
+	}
+
+	expected := map[interface{}]interface{}{"test": 1, "another": "a", "some more": true, "final": nil}
+	if !reflect.DeepEqual(data, expected) {
+		t.Errorf("The data read from '%s' did not match the expected data: got '%#v', expected '%#v'", fileName, data, expected)
+	}
+
+	emptySchema := ""
+	data, err = schema.ReadYAMLWithStringSchema(fileName, &emptySchema)
+	if err != nil {
+		t.Errorf("Could not read YAML file '%s' WITHOUT SCHEMA: %s", fileName, err)
+	}
+
+	if !reflect.DeepEqual(data, expected) {
+		t.Errorf("The data read from '%s' WITHOUT SCHEMA did not match the expected data: got '%#v', expected '%#v'", fileName, data, expected)
+	}
+
+	data, err = schema.ReadYAMLWithStringSchema(fileName, &badSchema)
+	if err == nil && data != nil {
+		t.Errorf("Schema validation did not work for file '%s' with bad schema '%s'", fileName, badSchema)
 	}
 }
