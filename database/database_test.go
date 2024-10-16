@@ -3,6 +3,7 @@ package database_test
 
 import (
 	"encoding/json"
+	"errors"
 	"io"
 	"os"
 	"reflect"
@@ -215,6 +216,47 @@ func TestExecuteQueryFile(t *testing.T) {
 	}
 }
 
+func TestExecuteQueryFileWithErrors(t *testing.T) {
+	db := database.NewDBManager(USER, PASS, HOST, PORT, DB)
+
+	fileData := `
+	SELECT
+	WHERE 
+		<https://example.com/5> <https://example.com/6> ?o .
+	} 
+`
+
+	if err := os.WriteFile("tmp.rq", []byte(fileData), 0666); err != nil {
+		t.Fatal(err)
+	}
+	defer os.Remove("tmp.rq")
+
+	res, err := db.ExecuteQueryFile("tmp.rq")
+
+	if err == nil {
+		t.Fatal(err)
+	}
+
+	if len(res) != 0 {
+		t.Fatal("The result should be an empty list")
+	}
+
+	if err := os.WriteFile("tmp2.rq", []byte(fileData), 0000); err != nil {
+		t.Fatal(err)
+	}
+	defer os.Remove("tmp2.rq")
+
+	res, err = db.ExecuteQueryFile("tmp2.rq")
+
+	if err == nil {
+		t.Fatal("It shuold not be possible to read the file")
+	}
+
+	if len(res) != 0 {
+		t.Fatal("The result should be an empty list")
+	}
+}
+
 // TEst for the ExecuteAttackTree function
 func TestExecuteAttackTree(t *testing.T) {
 	db := database.NewDBManager(USER, PASS, HOST, PORT, DB)
@@ -309,6 +351,50 @@ children:
 	}
 	if failNode != nil {
 		t.Errorf("Failed at node %v", &failNode)
+	}
+	if res != nil {
+		t.Errorf("Failed with result %s", res)
+	}
+
+	atkTreeFileWithErrors := `
+description: R
+query: test/root/f1.rq
+clearence level: 0
+groups: []
+children:
+  - description: C1
+    query: test/root/f2.rq
+    clearence level: 0
+    groups: []
+    children: []
+  - description: C2
+    query: test/root/f3.rq
+    clearence level: 0
+    groups: []
+    children:
+      - description: C21
+        query: test/root/ERROR.rq
+        clearence level: 0
+        groups: []
+        children: []
+`
+
+	if err := os.WriteFile(".devprivops/test/atk_tree_err.yml", []byte(atkTreeFileWithErrors), 0666); err != nil {
+		t.Fatal(err)
+	}
+	defer os.Remove(".devprivops/test/atk_tree_err.yml")
+
+	atkTree, err = attacktree.NewAttackTreeFromYaml(".devprivops/test/atk_tree_err.yml" /*, ""*/)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	res, failNode, err = db.ExecuteAttackTree(atkTree)
+	if !errors.Is(err, os.ErrNotExist) {
+		t.Fatal(err)
+	}
+	if failNode.Description != "C21" {
+		t.Errorf("Should have failed at node %v", &failNode)
 	}
 	if res != nil {
 		t.Errorf("Failed with result %s", res)

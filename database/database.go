@@ -285,7 +285,7 @@ func (db *DBManager) ExecuteAttackTree(attackTree *attacktree.AttackTree) ([]map
 	return db.executeAttackTreeNode(&attackTree.Root)
 }
 
-// Applies the current configuration to the descrption already in the triple store.
+// Applies the current configuration to the description already in the triple store.
 //
 // This means the queries do not have to take into account parts of the system that might be configurable,
 // as the identifiers to configuration variables are replaced by the objects they point to in the config

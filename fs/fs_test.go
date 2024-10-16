@@ -5,6 +5,7 @@
 package fs_test
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"reflect"
@@ -72,6 +73,40 @@ func TestGetFile(t *testing.T) {
 	}
 	if f != localFile {
 		t.Errorf("Found file does not match expectation: expected %s, got %s", localFile, f)
+	}
+}
+
+// Tests for the getFile function passing an invalid global directory/ Tests for the getFile function
+
+func TestGetFileInvalidParams(t *testing.T) {
+	err := os.Mkdir(globalRoot, 0766)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.Remove(globalRoot)
+
+	err = os.Mkdir(localRoot, 0766)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.Remove(localRoot)
+
+	_, err = fs.ExGetFile("f1.txt", localRoot, globalRoot)
+	if !errors.Is(err, os.ErrNotExist) {
+		t.Fatal(err)
+	}
+
+	// localFile := fmt.Sprintf("%s/f1.txt", localRoot)
+	_ = fmt.Sprintf("%s/f1.txt", localRoot)
+
+	_, err = fs.ExGetFile("f1.txt", localRoot, globalRoot)
+	if !errors.Is(err, os.ErrNotExist) {
+		t.Fatal(err)
+	}
+
+	_, err = fs.ExGetFile("f1.txt", "", "/this/does/not/exist")
+	if !errors.Is(err, os.ErrNotExist) {
+		t.Fatal(err)
 	}
 }
 
