@@ -50,6 +50,70 @@
   mapping message: For each 'dataFlow', both the 'to' and 'from' properties shall be references to valid external entities, processes or data stores.
   clearence level: 0
   groups: ["all"]
+- file: regulations/gdpr/consistency/destinataries_exist.rq
+  title: Personal data requires valid destinataries
+  description: Ensure all the personal data has a valid destinatary
+  is consistency: true
+  maximum violations: 0
+  mapping message: Ensure all destinataries for the 'data' are valid external entities or their categories 
+  clearence level: 0
+  groups: ["all"]
+- file: regulations/gdpr/consistency/no_undefined_external_entities.rq
+  title: All external entities must be defined
+  description: Ensure all external entities have a definition in a DFD
+  is consistency: true
+  maximum violations: 0
+  mapping message: Ensure all entities under 'destinataries' is an external entity of a category of external entities in the dfd
+  clearence level: 0
+  groups: ["all"]
+- file: regulations/gdpr/consistency/no_undefined_personal_data.rq
+  title: All personal data must be defined
+  description: Ensure all personal data has a definition in a DFD
+  is consistency: true
+  maximum violations: 0
+  mapping message: Ensure all data types with category 'dpia:personal' are defined in the 'personal data' property
+  clearence level: 0
+  groups: ["all"]
+- file: regulations/gdpr/consistency/no_undefined_purpose.rq
+  title: All purposes of processing must be defined
+  description: Ensure all processing purposes have definitions
+  is consistency: true
+  maximum violations: 0
+  mapping message: Ensure all processes' purposes and those under 'personal data processing whitelist' and 'personal data processing that requires DPIA' are defined under the 'purposes' property of a processing
+  clearence level: 0
+  groups: ["all"]
+- file: regulations/gdpr/consistency/no_undefined_processing.rq
+  title: All processings have to undergo a DPIA
+  description: Ensure the processings are mentioned in the DPIA, to the required extent.
+  is consistency: true
+  maximum violations: 0
+  mapping message: Ensure all processes in the dfd are defined in the 'processings' property
+  clearence level: 0
+  groups: ["all"]
+- file: regulations/gdpr/consistency/valid_update_date.rq
+  title: Last update date must be a valid date
+  description: Ensure the last update date is a valid date
+  is consistency: true
+  maximum violations: 0
+  mapping message: Ensure the 'last update' date abides by the REGEX "^[0-9]{2}/[0-9]{2}/[0-9]{4}"
+  clearence level: 0
+  groups: ["all"]
+- file: regulations/gdpr/consistency/valid_retention_period.rq
+  title: Retention period has to be a valid duration
+  description: Ensure the retention period represents a valid time duration 
+  is consistency: true
+  maximum violations: 0
+  mapping message: All time units must be 'eternal' or abide by the REGEX  "^[0-9]+(s|sec|secs|second|seconds|m|min|mins|minute|minutes|h|hr|hrs|hour|hours|d|day|days|w|week|weeks|month|months|y|year|years)$"
+  clearence level: 0
+  groups: ["all"]
+- file: regulations/gdpr/consistency/no_undefined_risks.rq
+  title: All risks must be defined
+  description: Ensure all risks have a definition
+  is consistency: true
+  maximum violations: 0
+  mapping message: Ensure all risks have definitions in the 'risks' property
+  clearence level: 0
+  groups: ["all"]
 
 
 # GDPR
@@ -81,6 +145,61 @@
   is consistency: false
   maximum violations: 0
   mapping message: Remove the listed 'data' from the data flow's 'data' field
+  clearence level: 0
+  groups: ["all"]
+- file: regulations/gdpr/policies/lawful_processing.rq
+  title: Data processing must be lawful
+  description: Ensure no data type is processed in an unlawful way, according to articles 5 and 6 of the GDPR
+  is consistency: false
+  maximum violations: 0
+  mapping message: All processings must be lawful, fair and transparent and also specific, explicit and legitimate
+  clearence level: 0
+  groups: ["all"]
+- file: regulations/gdpr/policies/minimal_purposes.rq
+  title: Data can only be used for the declared purposes
+  description: Ensure no data type is processed for more purposes than declared in the DPIA
+  is consistency: false
+  maximum violations: 0
+  mapping message: Ensure all purposes in the dfd processes are also declared in the dpia's purpose declaration
+  clearence level: 0
+  groups: ["all"]
+# - file: regulations/gdpr/policies/required_dpo.rq
+#   title: Project requires DPO
+#   description: Ensure the project has an associated DPO if required as mandated by the GDPR
+#   is consistency: false
+#   maximum violations: 0
+#   mapping message: ""
+
+- file: regulations/gdpr/policies/dpia.rq
+  title: DPIA
+  description: Ensure the project passes the DPIA
+  is consistency: false
+  maximum violations: 0
+  mapping message: No process can to automated decisions, score users or have a legal impact on them, do large scale processing, do systematic monitoring, be blacklisted in the DPIA, or not be whitelisted
+  clearence level: 0
+  groups: ["all"]
+- file: regulations/gdpr/policies/new_technologies.rq
+  title: New Technologies Require DPIA
+  description: Ensure all new technologies pass DPIA
+  is consistency: false
+  maximum violations: 0
+  mapping message: No processing shall require new technologies
+  clearence level: 0
+  groups: ["all"]
+- file: regulations/gdpr/policies/high_risk.rq
+  title: Processings With High Risk
+  description: Ensure all processes with high risk pass DPIA. The risk is defined as likelihood * impact
+  is consistency: false
+  maximum violations: 0
+  mapping message: No process can have a risk factor higher than 8
+  clearence level: 0
+  groups: ["all"]
+- file: regulations/gdpr/policies/dpo.rq
+  title: DPO Veredict
+  description: Ensure all applicable processesings have been aproved by a DPO
+  is consistency: false
+  maximum violations: 0
+  mapping message: Ensure there is at least one DPO contact in the DPIA
   clearence level: 0
   groups: ["all"]
 
