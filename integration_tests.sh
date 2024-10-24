@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 PKGARGS="$*"
 
@@ -34,27 +34,39 @@ cmp res.json schema/schemas/requirement-schema.json
 
 rm res.json
 
-./devprivops analyse user pass 127.0.0.1 3030 tmp --report-endpoint http://localhost:8000
+cnt=0
+diff "test_files/expected_outputs/out_$cnt.txt" <(./devprivops analyse user pass 127.0.0.1 3030 tmp --report-endpoint http://localhost:8000 2>&1)
 echo "================== TEST DONE!"
-./devprivops test user pass 127.0.0.1 3030 tmp 
+cnt=$((cnt + 1))
+diff "test_files/expected_outputs/out_$cnt.txt" <(./devprivops test user pass 127.0.0.1 3030 tmp 2>&1)
 echo "================== TEST DONE!"
-./devprivops analyse user pass 127.0.0.1 3030 tmp  --local-dir test_files/test_1 || true
+cnt=$((cnt + 1))
+diff "test_files/expected_outputs/out_$cnt.txt" <(./devprivops analyse user pass 127.0.0.1 3030 tmp --local-dir test_files/test_1 2>&1)
 echo "================== TEST DONE!"
-./devprivops analyse user pass 127.0.0.1 3030 tmp  --local-dir test_files/test_2 || true
+cnt=$((cnt + 1))
+diff "test_files/expected_outputs/out_$cnt.txt" <(./devprivops analyse user pass 127.0.0.1 3030 tmp --local-dir test_files/test_2 2>&1)
 echo "================== TEST DONE!"
-./devprivops analyse user pass 127.0.0.1 3030 tmp  --local-dir test_files/test_3
+cnt=$((cnt + 1))
+diff "test_files/expected_outputs/out_$cnt.txt" <(./devprivops analyse user pass 127.0.0.1 3030 tmp --local-dir test_files/test_3 2>&1)
 echo "================== TEST DONE!"
-./devprivops analyse user pass 127.0.0.1 3030 tmp  --local-dir test_files/test_4 || true
+cnt=$((cnt + 1))
+diff "test_files/expected_outputs/out_$cnt.txt" <(./devprivops analyse user pass 127.0.0.1 3030 tmp --local-dir test_files/test_4 2>&1)
 echo "================== TEST DONE!"
-./devprivops analyse user pass 127.0.0.1 3030 tmp  --local-dir test_files/test_5 || true
+cnt=$((cnt + 1))
+diff "test_files/expected_outputs/out_$cnt.txt" <(./devprivops analyse user pass 127.0.0.1 3030 tmp --local-dir test_files/test_5 2>&1)
 echo "================== TEST DONE!"
-./devprivops analyse user pass 127.0.0.1 3030 tmp  --local-dir test_files/test_6 || true
+cnt=$((cnt + 1))
+diff "test_files/expected_outputs/out_$cnt.txt" <(./devprivops analyse user pass 127.0.0.1 3030 tmp --local-dir test_files/test_6 2>&1)
 echo "================== TEST DONE!"
-./devprivops analyse user pass 127.0.0.1 3030 tmp  --local-dir test_files/test_7 || true
+cnt=$((cnt + 1))
+diff "test_files/expected_outputs/out_$cnt.txt" <(./devprivops analyse user pass 127.0.0.1 3030 tmp --local-dir test_files/test_7 2>&1)
 echo "================== TEST DONE!"
-./devprivops test user pass 127.0.0.1 3030 tmp  --local-dir test_files/test_7 || true
+cnt=$((cnt + 1))
+diff "test_files/expected_outputs/out_$cnt.txt" <(./devprivops test user pass 127.0.0.1 3030 tmp --local-dir test_files/test_7 2>&1)
 echo "================== TEST DONE!"
-./devprivops test user pass 127.0.0.1 3030 tmp --pipeline --local-dir test_files/test_7 || true
+cnt=$((cnt + 1))
+# diff <(grep -vE "$timestamp_regex" "test_files/expected_outputs/out_$cnt.txt") <(./devprivops test user pass 127.0.0.1 3030 tmp --pipeline --local-dir test_files/test_7 2>&1 | grep -vE "$timestamp_regex")
+diff <(sed 's/time=[^ ]* //g' "test_files/expected_outputs/out_$cnt.txt") <(./devprivops test user pass 127.0.0.1 3030 tmp --pipeline --local-dir test_files/test_7 2>&1 | sed 's/time=[^ ]* //g')
 echo "================== TEST DONE!"
 
 # Close the server

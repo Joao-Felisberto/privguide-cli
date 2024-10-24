@@ -1,0 +1,20 @@
+[36mINFO: [0m[97mLoading scenario[0m [37mscenario[0m: '[36mtests/a[0m'
+[36mINFO: [0m[97m===Reasoner Rules===[0m
+[36mINFO: [0m[97mRunning test[0m [37mtest[0m: '[36mregulations/reg_1/reg.rq[0m'
+Expected: [
+  {}
+]
+Actual  : []
+[91mERROR: [0m[97mTest failed[0m [37mfile[0m: '[36mtest_files/test_7/regulations/reg_1/reg.rq[0m' [37mactual[0m: '[36m[][0m' [37mexpected[0m: '[36m[map[]][0m'
+Error: some tests failed
+Usage:
+  devprivops test <username> <password> <database ip> <database port> <dataset> [flags]
+
+Flags:
+      --global-dir string   The path to the global configurations (default "/etc/devprivops")
+  -h, --help                help for test
+      --local-dir string    The path to the local configurations (default "./.devprivops")
+      --pipeline            whether to format the output for pipeline usage
+  -v, --verbose             whether to display debug messages
+
+[91mERROR: [0m[97msome tests failed[0m

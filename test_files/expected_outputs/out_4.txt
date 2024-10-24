@@ -1,0 +1,8 @@
+[36mINFO: [0m[97m===Reasoner Rules===[0m
+[36mINFO: [0m[97m===Policy Compliance===[0m
+[36mINFO: [0m[97mViolations:[0m [37mpolicy[0m: '[36mTitle[0m' [37mviolations[0m: '[36m[][0m'
+[36mINFO: [0m[97m===Attack Trees===[0m
+[36mINFO: [0m[97mExecuting attack node:[0m [37mattack node[0m: '[36mR[0m'
+[36mINFO: [0m[97mNOT POSSIBLE[0m [37mnode[0m: '[36mR[0m'
+[36mINFO: [0m[97m===Extra Data===[0m
+[36mINFO: [0m[97mWriting report[0m [37mto[0m: '[36mreport.json[0m'

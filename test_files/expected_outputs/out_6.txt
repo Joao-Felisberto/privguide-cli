@@ -1,0 +1,24 @@
+[36mINFO: [0m[97m===Reasoner Rules===[0m
+[36mINFO: [0m[97m===Policy Compliance===[0m
+[36mINFO: [0m[97mViolations:[0m [37mpolicy[0m: '[36mTitle[0m' [37mviolations[0m: '[36m[][0m'
+[36mINFO: [0m[97m===Attack Trees===[0m
+[36mINFO: [0m[97mExecuting attack node:[0m [37mattack node[0m: '[36mC11[0m'
+[36mINFO: [0m[97mNOT POSSIBLE[0m [37mnode[0m: '[36mC11[0m'
+[36mINFO: [0m[97mUNREACHABLE[0m [37mnode[0m: '[36mC1[0m'
+[36mINFO: [0m[97mExecuting attack node:[0m [37mattack node[0m: '[36mC2[0m'
+[36mINFO: [0m[97mNOT POSSIBLE[0m [37mnode[0m: '[36mC2[0m'
+Error: error at node 'C2': failed to unmarshal result of 'test_files/test_5/attack_trees/queries/file2.rq', was there an error in the query? invalid character 'P' looking for beginning of value. Result was Parse error: Line 2, column 17: Unresolved prefixed name: ex:NO
+
+Usage:
+  devprivops analyse <username> <password> <database ip> <database port> <dataset> [flags]
+
+Flags:
+      --global-dir string        The path to the global configurations (default "/etc/devprivops")
+  -h, --help                     help for analyse
+      --local-dir string         The path to the local configurations (default "./.devprivops")
+      --pipeline                 whether to format the output for pipeline usage
+      --report-endpoint string   Endpoint where to send the final report
+  -v, --verbose                  whether to display debug messages
+
+[91mERROR: [0m[97merror at node 'C2': failed to unmarshal result of 'test_files/test_5/attack_trees/queries/file2.rq', was there an error in the query? invalid character 'P' looking for beginning of value. Result was Parse error: Line 2, column 17: Unresolved prefixed name: ex:NO
+[0m

@@ -1,0 +1,20 @@
+time=2024-10-24T10:19:07.550+01:00 level=INFO msg="Loading scenario" scenario=tests/a
+time=2024-10-24T10:19:07.550+01:00 level=INFO msg="===Reasoner Rules==="
+time=2024-10-24T10:19:07.552+01:00 level=INFO msg="Running test" test=regulations/reg_1/reg.rq
+Expected: [
+  {}
+]
+Actual  : []
+time=2024-10-24T10:19:07.554+01:00 level=ERROR msg="Test failed" file=test_files/test_7/regulations/reg_1/reg.rq actual=[] expected=[map[]]
+Error: some tests failed
+Usage:
+  devprivops test <username> <password> <database ip> <database port> <dataset> [flags]
+
+Flags:
+      --global-dir string   The path to the global configurations (default "/etc/devprivops")
+  -h, --help                help for test
+      --local-dir string    The path to the local configurations (default "./.devprivops")
+      --pipeline            whether to format the output for pipeline usage
+  -v, --verbose             whether to display debug messages
+
+time=2024-10-24T10:19:07.554+01:00 level=ERROR msg="some tests failed"

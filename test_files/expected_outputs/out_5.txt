@@ -1,0 +1,15 @@
+[36mINFO: [0m[97m===Reasoner Rules===[0m
+[36mINFO: [0m[97m===Policy Compliance===[0m
+Error: stat /etc/devprivops/regulations/reg_1/policies.yml: no such file or directory
+Usage:
+  devprivops analyse <username> <password> <database ip> <database port> <dataset> [flags]
+
+Flags:
+      --global-dir string        The path to the global configurations (default "/etc/devprivops")
+  -h, --help                     help for analyse
+      --local-dir string         The path to the local configurations (default "./.devprivops")
+      --pipeline                 whether to format the output for pipeline usage
+      --report-endpoint string   Endpoint where to send the final report
+  -v, --verbose                  whether to display debug messages
+
+[91mERROR: [0m[97mstat /etc/devprivops/regulations/reg_1/policies.yml: no such file or directory[0m
