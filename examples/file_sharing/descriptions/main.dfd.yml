@@ -48,8 +48,7 @@ external entities:
     options: []
     environment: []
   - id: dpia:UnauthenticatedUser 
-    consumes:
-      - :Document
+    consumes: dfd:UnauthenticatedUser consumes
     produces: []
     location:
       - Portugal

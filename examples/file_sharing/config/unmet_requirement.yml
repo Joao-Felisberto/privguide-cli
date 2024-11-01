@@ -1,4 +1,3 @@
 config:
   - id: dfd:UnauthenticatedUser consumes
-    value:
-      - dfd:Document
+    value: []

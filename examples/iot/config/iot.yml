@@ -1,0 +1,7 @@
+config:
+  - id: dfd:presence categories
+    value: # not personal, as presence is not tied to identity in this system
+      - dpia:impersonal
+  - id: dfd:home owner consumption
+    value: 
+      - dfd:RGBColor

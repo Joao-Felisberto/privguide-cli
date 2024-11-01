@@ -54,7 +54,7 @@
         }
     ],
     "branch": "master",
-    "config": "chat_app",
+    "config": "pol_violation",
     "extra data": [
         {
             "clearence level": 0,
@@ -234,7 +234,11 @@
                     "mapping message": "Ensure for all dataFlows there exists a declaration in the 'data flows' property",
                     "maximum violations": 0,
                     "name": "All data flows must be identified",
-                    "violations": []
+                    "violations": [
+                        {
+                            "dataFlow": "https://devprivops.com/dfd/not_existent"
+                        }
+                    ]
                 },
                 {
                     "clearence level": 0,

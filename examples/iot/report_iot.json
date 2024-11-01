@@ -2,39 +2,12 @@
     "attack trees": [
         {
             "root": {
-                "description": "R",
-                "query": "attack_trees/queries/master.rq",
+                "description": "Visitor personal data leak",
+                "query": "attack_trees/queries/visitor_leak.rq",
                 "children": [
                     {
-                        "description": "C1",
-                        "query": "attack_trees/queries/file1.rq",
-                        "children": [
-                            {
-                                "description": "C11",
-                                "query": "attack_trees/queries/file3.rq",
-                                "children": [],
-                                "execution status": 2,
-                                "execution result": [
-                                    {
-                                        "o": "02/03/2004"
-                                    }
-                                ],
-                                "clearence level": 0,
-                                "groups": [
-                                    "all"
-                                ]
-                            }
-                        ],
-                        "execution status": 1,
-                        "execution result": [],
-                        "clearence level": 0,
-                        "groups": [
-                            "all"
-                        ]
-                    },
-                    {
-                        "description": "C2",
-                        "query": "attack_trees/queries/file2.rq",
+                        "description": "Visitor's personal data is collected",
+                        "query": "attack_trees/queries/visitor_collected.rq",
                         "children": [],
                         "execution status": 1,
                         "execution result": [],
@@ -54,7 +27,7 @@
         }
     ],
     "branch": "master",
-    "config": "chat_app",
+    "config": "iot",
     "extra data": [
         {
             "clearence level": 0,
@@ -67,73 +40,11 @@
             "location": "regulations.dpia",
             "results": [
                 {
-                    "automated_decision_making": "false",
-                    "dt": "https://devprivops.com/dfd/message",
-                    "from": "https://devprivops.com/dpia/User",
-                    "legitimate_interest_of": "https://devprivops.com/dpia/User",
-                    "location": "Portugal",
-                    "purposes": "https://devprivops.com/dpia/message_routing",
-                    "to": "https://devprivops.com/dfd/send_message",
-                    "toDPIA": "https://devprivops.com/dfd/send_message"
-                },
-                {
-                    "dt": "https://devprivops.com/dfd/message",
-                    "from": "https://devprivops.com/dpia/User",
+                    "dt": "https://devprivops.com/dfd/Document",
+                    "from": "https://devprivops.com/dfd/Home_Owner",
                     "location": "Portugal",
                     "storage_period": "eternal",
-                    "to": "https://devprivops.com/dfd/message_db"
-                },
-                {
-                    "automated_decision_making": "false",
-                    "dt": "https://devprivops.com/dfd/message",
-                    "from": "https://devprivops.com/dpia/User",
-                    "legitimate_interest_of": "https://devprivops.com/dpia/User",
-                    "location": "Portugal",
-                    "purposes": "https://devprivops.com/dpia/message_routing",
-                    "to": "https://devprivops.com/dpia/User",
-                    "toDPIA": "https://devprivops.com/dfd/send_message"
-                },
-                {
-                    "category": "https://devprivops.com/dpia/human",
-                    "from": "https://devprivops.com/dpia/User",
-                    "location": "Portugal",
-                    "to": "https://devprivops.com/dpia/User"
-                },
-                {
-                    "automated_decision_making": "false",
-                    "dt": "https://devprivops.com/dfd/username",
-                    "from": "https://devprivops.com/dpia/User",
-                    "legitimate_interest_of": "https://devprivops.com/dpia/User",
-                    "location": "Portugal",
-                    "purposes": "https://devprivops.com/dpia/message_routing",
-                    "to": "https://devprivops.com/dpia/AccountSystem",
-                    "toDPIA": "https://devprivops.com/dfd/send_message"
-                },
-                {
-                    "automated_decision_making": "false",
-                    "dt": "https://devprivops.com/dfd/password",
-                    "from": "https://devprivops.com/dpia/User",
-                    "legitimate_interest_of": "https://devprivops.com/dpia/User",
-                    "location": "Portugal",
-                    "purposes": "https://devprivops.com/dpia/message_routing",
-                    "to": "https://devprivops.com/dpia/AccountSystem",
-                    "toDPIA": "https://devprivops.com/dfd/send_message"
-                },
-                {
-                    "automated_decision_making": "false",
-                    "dt": "https://devprivops.com/dfd/AccountId",
-                    "from": "https://devprivops.com/dpia/User",
-                    "legitimate_interest_of": "https://devprivops.com/dpia/User",
-                    "location": "Portugal",
-                    "purposes": "https://devprivops.com/dpia/message_routing",
-                    "to": "https://devprivops.com/dpia/AccountSystem",
-                    "toDPIA": "https://devprivops.com/dfd/send_message"
-                },
-                {
-                    "from": "https://devprivops.com/dpia/User",
-                    "location": "Portugal",
-                    "safeguards": "encryption",
-                    "to": "https://devprivops.com/dpia/AccountSystem"
+                    "to": "https://devprivops.com/dfd/NAS"
                 }
             ]
         }
@@ -210,7 +121,11 @@
                     "mapping message": "For each dataType, ensure a declaration for it exists in the 'data types' property",
                     "maximum violations": 0,
                     "name": "No undefined data types",
-                    "violations": []
+                    "violations": [
+                        {
+                            "dataType": "https://devprivops.com/dfd/home_owner_consumption"
+                        }
+                    ]
                 },
                 {
                     "clearence level": 0,
@@ -456,26 +371,6 @@
         }
     ],
     "project": "devprivops",
-    "time": 1730049691,
-    "user stories": [
-        {
-            "clearence level": 0,
-            "groups": [
-                "all"
-            ],
-            "is misuse case": false,
-            "requirements": [
-                {
-                    "description": "Some more details on the requirement",
-                    "results": [
-                        {
-                            "o": "02/03/2004"
-                        }
-                    ],
-                    "title": "Requirement 1"
-                }
-            ],
-            "use case": "As a persona I want to do stuff so that my life is better"
-        }
-    ]
+    "time": 1730057275,
+    "user stories": []
 }

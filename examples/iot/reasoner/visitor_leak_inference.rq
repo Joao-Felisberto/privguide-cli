@@ -1,9 +1,9 @@
 PREFIX dfd: <https://devprivops.com/dfd/>
 PREFIX dpia: <https://devprivops.com/dpia/>
 
-SELECT * 
-WHERE {
-#    dfd:Visitor dfd:produces ?data .
-#    dfd:Home_Owner dfd:consumes ?data .
+INSERT {
     dpia:ROOT dpia:visitor_spied_by_owner ?data .  
+} WHERE {
+    dfd:Visitor dfd:produces ?data .
+    dfd:Home_Owner dfd:consumes ?data .
 }

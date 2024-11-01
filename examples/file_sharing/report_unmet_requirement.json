@@ -15,7 +15,7 @@
         }
     ],
     "branch": "master",
-    "config": "file_sharing",
+    "config": "unmet_requirement",
     "extra data": [
         {
             "clearence level": 0,
@@ -68,20 +68,6 @@
                     "toDPIA": "https://devprivops.com/dfd/recieve_Document"
                 },
                 {
-                    "dt": "https://devprivops.com/dfd/PrivDocument",
-                    "from": "https://devprivops.com/dpia/AuthenticatedUser",
-                    "location": "Portugal",
-                    "storage_period": "eternal",
-                    "to": "https://devprivops.com/dfd/Document_db"
-                },
-                {
-                    "dt": "https://devprivops.com/dfd/PrivDocument",
-                    "from": "https://devprivops.com/dpia/AuthenticatedUser",
-                    "location": "Portugal",
-                    "storage_period": "eternal",
-                    "to": "https://devprivops.com/dfd/Document_db"
-                },
-                {
                     "dt": "https://devprivops.com/dfd/Document",
                     "from": "https://devprivops.com/dpia/AuthenticatedUser",
                     "location": "Portugal",
@@ -90,6 +76,20 @@
                 },
                 {
                     "dt": "https://devprivops.com/dfd/Document",
+                    "from": "https://devprivops.com/dpia/AuthenticatedUser",
+                    "location": "Portugal",
+                    "storage_period": "eternal",
+                    "to": "https://devprivops.com/dfd/Document_db"
+                },
+                {
+                    "dt": "https://devprivops.com/dfd/PrivDocument",
+                    "from": "https://devprivops.com/dpia/AuthenticatedUser",
+                    "location": "Portugal",
+                    "storage_period": "eternal",
+                    "to": "https://devprivops.com/dfd/Document_db"
+                },
+                {
+                    "dt": "https://devprivops.com/dfd/PrivDocument",
                     "from": "https://devprivops.com/dpia/AuthenticatedUser",
                     "location": "Portugal",
                     "storage_period": "eternal",
@@ -422,7 +422,11 @@
                     "mapping message": "For each dataType, ensure a declaration for it exists in the 'data types' property",
                     "maximum violations": 0,
                     "name": "No undefined data types",
-                    "violations": []
+                    "violations": [
+                        {
+                            "dataType": "https://devprivops.com/dfd/UnauthenticatedUser_consumes"
+                        }
+                    ]
                 },
                 {
                     "clearence level": 0,
@@ -698,11 +702,7 @@
             "requirements": [
                 {
                     "description": "An unauthenticated user, when given a document link, must be able to get the document without authentication.",
-                    "results": [
-                        {
-                            "success": "FOUND"
-                        }
-                    ],
+                    "results": [],
                     "title": "UnauthenticatedUsers must be able to see Documents"
                 }
             ],

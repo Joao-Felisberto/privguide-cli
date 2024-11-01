@@ -8,7 +8,7 @@ data types:
   - id: Presence
     aggregates: []
     validity: eternal
-    categories: [] # not personal, as presence is not tied to identity in this system
+    categories: :presence categories
   - id: Document
     aggregates: []
     validity: eternal
@@ -39,7 +39,7 @@ external entities:
     safeguards: []
     options: []
   - id: Home Owner
-    consumes: []
+    consumes: :home owner consumption
     produces:
       - :RGBColor
       - :Document

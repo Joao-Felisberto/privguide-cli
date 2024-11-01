@@ -50,8 +50,9 @@ external entities:
     categories: []
     age: null
     produces public information: false
-    safeguards: :as safeguards
-    options: :as options
+    safeguards: 
+      - encryption
+    options: []
 processes:
   - id: send message
     consumes:
@@ -73,7 +74,7 @@ data stores:
         create: :C store message
         read:   :R store message
         update: :U store message
-        delete: :D store message
+        delete: :delete endpoint
     location:
       - Portugal
     environment: []

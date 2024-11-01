@@ -1,0 +1,7 @@
+config:
+  - id: dfd:presence categories
+    value: 
+      - dpia:personal
+  - id: dfd:home owner consumption
+    value: 
+      - dfd:Presence
