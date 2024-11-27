@@ -9,6 +9,7 @@ schemas/*.yml
 covdatafiles
 
 report*.json
+report*.yml
 !examples/**/report*.json
 !*schema.json
 times*txt

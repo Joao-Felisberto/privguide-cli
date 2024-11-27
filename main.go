@@ -15,7 +15,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var verbose = false // Whether the log should log more information or not
+var verbose = false   // Whether the log should log more information or not
+var writeYaml = false // Whether the report file should be writen in yaml
 
 // Builds the command and delegates execution to the appropriate function from the cmd package
 func main() {
@@ -39,7 +40,7 @@ func main() {
 				logLevel = slog.LevelDebug
 			}
 			util.SetupLogger(logLevel)
-			return cmd.Analyse(cmd_, args)
+			return cmd.Analyse(cmd_, args, writeYaml)
 		},
 	}
 
@@ -97,6 +98,8 @@ func main() {
 
 	analyseCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "whether to display debug messages")
 	testCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "whether to display debug messages")
+
+	analyseCmd.Flags().BoolVar(&writeYaml, "yaml-report", false, "whether to write the report in YAML")
 
 	rootCmd.AddCommand(analyseCmd)
 	rootCmd.AddCommand(testCmd)

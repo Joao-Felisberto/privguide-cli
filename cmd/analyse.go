@@ -19,6 +19,7 @@ import (
 	"github.com/Joao-Felisberto/devprivops/schema"
 	"github.com/Joao-Felisberto/devprivops/util"
 	"github.com/spf13/cobra"
+	"gopkg.in/yaml.v2"
 )
 
 var tooManyViolations = false
@@ -386,7 +387,7 @@ func getExtraData(dbManager *database.DBManager) (*[]map[string]interface{}, err
 // `report`: The report to send
 //
 // returns: an error if there are issues sending the report
-func sendReport(url string, report *map[string]interface{}) error {
+func sendReport(url string, report *map[string]interface{}, writeYaml bool) error {
 	// Read report.json file
 	/*
 		reportData, err := os.ReadFile("report.json")
@@ -395,14 +396,24 @@ func sendReport(url string, report *map[string]interface{}) error {
 		}
 	*/
 
-	reportData, err := json.Marshal(report)
+	marshal := json.Marshal
+	if writeYaml {
+		marshal = yaml.Marshal
+	}
+
+	reportData, err := marshal(report)
 	if err != nil {
 		return fmt.Errorf("error serializing report: %s", err)
 	}
 
+	contentType := "application/json"
+	if writeYaml {
+		contentType = "text/plain"
+	}
+
 	// Send HTTP POST request
 	slog.Info("Sending report to visualizer", "url", url)
-	resp, err := http.Post(url, "application/json", bytes.NewBuffer(reportData))
+	resp, err := http.Post(url, contentType, bytes.NewBuffer(reportData))
 	if err != nil {
 		return fmt.Errorf("error sending HTTP request: %s", err)
 	}
@@ -433,7 +444,7 @@ func sendReport(url string, report *map[string]interface{}) error {
 // `config`: The path from the local or global directory root to the configuration file to use
 //
 // `report`: The reference to the report structure that will be updated in this execution
-func analysisCycle(dbManager *database.DBManager, reportEndpoint string, config string, report *map[string]interface{}) error {
+func analysisCycle(dbManager *database.DBManager, reportEndpoint string, config string, report *map[string]interface{}, writeYaml bool) error {
 	// 1. Load DFD into DB
 	if err := loadRepresentations(dbManager, "descriptions"); err != nil {
 		return err
@@ -564,18 +575,33 @@ func analysisCycle(dbManager *database.DBManager, reportEndpoint string, config 
 		slog.Error("error parsing report:", "error", err)
 	}
 
-	reportFile := "report.json"
+	reportExtension := "json"
+	if writeYaml {
+		reportExtension = "yml"
+	}
+	reportFile := fmt.Sprintf("report.%s", reportExtension)
 	if config != "" {
 		cfgPath := strings.Split(config, "/")
 		cfgNameParts := strings.Split(cfgPath[len(cfgPath)-1], ".")
-		reportFile = fmt.Sprintf("report_%s.json", cfgNameParts[0])
+		reportFile = fmt.Sprintf("report_%s.%s", cfgNameParts[0], reportExtension)
 	}
 	slog.Info("Writing report", "to", reportFile)
-	if err := os.WriteFile(reportFile, []byte(jsonReport), 0666); err != nil {
-		return err
+
+	if writeYaml {
+		yamlReport, err := yaml.Marshal(report)
+		if err != nil {
+			slog.Error("error parsing report:", "error", err)
+		}
+		if err := os.WriteFile(reportFile, []byte(yamlReport), 0666); err != nil {
+			return err
+		}
+	} else {
+		if err := os.WriteFile(reportFile, []byte(jsonReport), 0666); err != nil {
+			return err
+		}
 	}
 	if reportEndpoint != "" {
-		if err := sendReport(reportEndpoint, report); err != nil {
+		if err := sendReport(reportEndpoint, report, writeYaml); err != nil {
 			return err
 		}
 	}
@@ -601,7 +627,7 @@ func analysisCycle(dbManager *database.DBManager, reportEndpoint string, config 
 // `args`: The args of said command
 //
 // returns: an error when any of the phases fails
-func Analyse(cmd *cobra.Command, args []string) error {
+func Analyse(cmd *cobra.Command, args []string, write_yaml bool) error {
 	username := args[0]
 	password := args[1]
 	ip := args[2]
@@ -629,7 +655,7 @@ func Analyse(cmd *cobra.Command, args []string) error {
 	}
 
 	if len(configs) == 0 {
-		err := analysisCycle(&dbManager, reportEndpoint, "", &report)
+		err := analysisCycle(&dbManager, reportEndpoint, "", &report, write_yaml)
 		if err != nil {
 			return err
 		}
@@ -639,7 +665,7 @@ func Analyse(cmd *cobra.Command, args []string) error {
 		}
 	} else {
 		for _, config := range configs {
-			err := analysisCycle(&dbManager, reportEndpoint, config, &report)
+			err := analysisCycle(&dbManager, reportEndpoint, config, &report, write_yaml)
 			if err != nil {
 				return err
 			}
