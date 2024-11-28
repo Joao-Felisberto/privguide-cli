@@ -13,7 +13,7 @@ The tool can be used as a docker container, a native binary or included in a CI/
 The tool can be executed from a local docker conatainer.
 The container we provide already has a working Fuseki instance exposed on port 3030, without user or password, and a dataset called `tmp`.
 
-To run the tool locally with docker containers, we can use bind mounts when starting the container
+To run the tool with docker containers, we can use bind mounts when starting the container
 
 ```sh
 docker run -d \ 
@@ -35,9 +35,10 @@ This will give access to the configuration directories in the host to the contai
 ## Native Binary
 
 The tool can be installed nativelly by compiling the source code.
-To do this, it is needed to install the dependencies in the `shell.nix`, either through `nix` itself, or by procedurally installing them through other means.
+To do this, it is needed to install the dependencies in the `shell.nix`, either through `nix` itself, or by manually installing them through other means.
+To use the nix shell, run `nix-shell`.
 
-Then, to have the binary, we simply need to run `go build`.
+Then, to have the binary, run `go build`.
 
 To execute the tool, run `./devprivops <args>` or place the binary in a directory in `$PATH`.
 
