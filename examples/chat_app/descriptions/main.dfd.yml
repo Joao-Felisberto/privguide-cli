@@ -25,9 +25,23 @@ data types:
 external entities:
   - id: dpia:User 
     consumes:
-      - :message
+      - id: :message
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     produces: 
-      - :message
+      - id: :message
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     location:
       - Portugal
     categories:
@@ -39,11 +53,39 @@ external entities:
     environment: []
   - id: dpia:AccountSystem 
     consumes:
-      - :AccountId
-      - :username
-      - :password
+      - id: :AccountId
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
+      - id: :username
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
+      - id: :password
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     produces: 
-      - :Account
+      - id: :Account
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     location:
       - Portugal
     environment: []
@@ -56,9 +98,23 @@ external entities:
 processes:
   - id: send message
     consumes:
-      - :message
+      - id: :message
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     produces:
-      - :message
+      - id: :message
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     location:
       - Portugal
     environment: []
@@ -70,6 +126,10 @@ data stores:
   - id: message db
     data stored:
       - type: :message
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
         storage period: eternal
         create: :C store message
         read:   :R store message
@@ -85,8 +145,22 @@ data flows:
     from: dpia:User
     to: dpia:AccountSystem
     data:
-      - :username
-      - :password
+      - id: :username
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
+      - id: :password
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     encryption: HTTPS
     periodicity: 30m
     amount of data per period: 1
@@ -96,8 +170,22 @@ data flows:
     from: dpia:User
     to: dpia:AccountSystem
     data:
-      - :username
-      - :password
+      - id: :username
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
+      - id: :password
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     encryption: HTTPS
     periodicity: 30m
     amount of data per period: 1
@@ -107,7 +195,14 @@ data flows:
     from: dpia:User
     to: :send message
     data:
-      - :message
+      - id: :message
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     encryption: signal
     periodicity: 1m
     amount of data per period: 1
@@ -117,7 +212,14 @@ data flows:
     from: :send message
     to: :message db
     data:
-      - :message
+      - id: :message
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     encryption: signal
     periodicity: 1m
     amount of data per period: 1
@@ -127,7 +229,14 @@ data flows:
     from: dpia:User
     to: :send message
     data:
-      - :message
+      - id: :message
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     encryption: signal
     periodicity: 1m
     amount of data per period: 1
@@ -137,7 +246,14 @@ data flows:
     from: :send message
     to: :message db
     data:
-      - :message
+      - id: :message
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     encryption: signal
     periodicity: 1m
     amount of data per period: 1
@@ -147,7 +263,14 @@ data flows:
     from: dpia:User
     to: :send message
     data:
-      - :message
+      - id: :message
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     encryption: signal
     periodicity: 1m
     amount of data per period: 1
@@ -157,7 +280,14 @@ data flows:
     from: :send message
     to: :message db
     data:
-      - :message
+      - id: :message
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     encryption: signal
     periodicity: 1m
     amount of data per period: 1
@@ -167,7 +297,14 @@ data flows:
     from: dpia:User
     to: :send message
     data:
-      - :message
+      - id: :message
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     encryption: signal
     periodicity: 1m
     amount of data per period: 1
@@ -177,7 +314,14 @@ data flows:
     from: :send message
     to: :message db
     data:
-      - :message
+      - id: :message
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     encryption: signal
     periodicity: 1m
     amount of data per period: 1
@@ -187,7 +331,14 @@ data flows:
     from: :send message
     to: dpia:User
     data:
-      - :message
+      - id: :message
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     encryption: signal
     periodicity: 1m
     amount of data per period: 1

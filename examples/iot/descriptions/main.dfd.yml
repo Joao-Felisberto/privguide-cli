@@ -22,38 +22,70 @@ external entities:
   - id: IoT Manager
     consumes:
       - id: :RGBColor
+        data processed:
+          level 0: logical
+          level 1: boolean
         format:
-          id: psdc:plain
+          format type: psdc:plain
           level 0: plain text
+          level 1: business
       - id: :Document
+        data processed:
+          level 0: logical
+          level 1: boolean
         format:
-          id: psdc:plain
+          format type: psdc:plain
           level 0: plain text
+          level 1: business
       - id: :Temperature
+        data processed:
+          level 0: logical
+          level 1: boolean
         format:
-          id: psdc:plain
+          format type: psdc:plain
           level 0: plain text
+          level 1: business
       - id: :Presence
+        data processed:
+          level 0: logical
+          level 1: boolean
         format:
-          id: psdc:plain
+          format type: psdc:plain
           level 0: plain text
+          level 1: business
     produces:
       - id: :RGBColor
+        data processed:
+          level 0: logical
+          level 1: boolean
         format:
-          id: psdc:plain
+          format type: psdc:plain
           level 0: plain text
+          level 1: business
       - id: :Document
+        data processed:
+          level 0: logical
+          level 1: boolean
         format:
-          id: psdc:plain
+          format type: psdc:plain
           level 0: plain text
+          level 1: business
       - id: :Temperature
+        data processed:
+          level 0: logical
+          level 1: boolean
         format:
-          id: psdc:plain
+          format type: psdc:plain
           level 0: plain text
+          level 1: business
       - id: :Presence
+        data processed:
+          level 0: logical
+          level 1: boolean
         format:
-          id: psdc:plain
+          format type: psdc:plain
           level 0: plain text
+          level 1: business
     location:
       - Portugal
     environment: []
@@ -66,21 +98,37 @@ external entities:
     consumes: :home owner consumption
     produces:
       - id: :RGBColor
+        data processed:
+          level 0: logical
+          level 1: boolean
         format:
-          id: psdc:plain
+          format type: psdc:plain
           level 0: plain text
+          level 1: business
       - id: :Document
+        data processed:
+          level 0: logical
+          level 1: boolean
         format:
-          id: psdc:plain
+          format type: psdc:plain
           level 0: plain text
+          level 1: business
       - id: :Temperature
+        data processed:
+          level 0: logical
+          level 1: boolean
         format:
-          id: psdc:plain
+          format type: psdc:plain
           level 0: plain text
+          level 1: business
       - id: :Presence
+        data processed:
+          level 0: logical
+          level 1: boolean
         format:
-          id: psdc:plain
+          format type: psdc:plain
           level 0: plain text
+          level 1: business
     location:
       - Portugal
     environment: []
@@ -94,9 +142,13 @@ external entities:
     consumes: []
     produces:
       - id: :Presence
+        data processed:
+          level 0: logical
+          level 1: boolean
         format:
-          id: psdc:plain
+          format type: psdc:plain
           level 0: plain text
+          level 1: business
     location:
       - Portugal
     environment: []
@@ -109,9 +161,13 @@ external entities:
   - id: Lamp
     consumes:
       - id: :RGBColor
+        data processed:
+          level 0: logical
+          level 1: boolean
         format:
-          id: psdc:plain
+          format type: psdc:plain
           level 0: plain text
+          level 1: business
     produces: []
     location:
       - Portugal
@@ -124,9 +180,13 @@ external entities:
   - id: Printer
     consumes:
       - id: :Document
+        data processed:
+          level 0: logical
+          level 1: boolean
         format:
-          id: psdc:plain
+          format type: psdc:plain
           level 0: plain text
+          level 1: business
     produces: []
     location:
       - Portugal
@@ -139,9 +199,13 @@ external entities:
   - id: Thermostat
     consumes:
       - id: :Temperature
+        data processed:
+          level 0: logical
+          level 1: boolean
         format:
-          id: psdc:plain
+          format type: psdc:plain
           level 0: plain text
+          level 1: business
     produces: []
     location:
       - Portugal
@@ -154,14 +218,22 @@ external entities:
   - id: Presence Sensor
     consumes:
       - id: :Presence
+        data processed:
+          level 0: logical
+          level 1: boolean
         format:
-          id: psdc:plain
+          format type: psdc:plain
           level 0: plain text
+          level 1: business
     produces:
       - id: :Presence
+        data processed:
+          level 0: logical
+          level 1: boolean
         format:
-          id: psdc:plain
+          format type: psdc:plain
           level 0: plain text
+          level 1: business
     location:
       - Portugal
     environment: []
@@ -188,7 +260,7 @@ data stores:
     data stored:
       - type: :Document
         format:
-          id: psdc:plain
+          format type: psdc:plain
           level 0: plain text
         storage period: eternal 
         create: :C Document NAS
@@ -213,9 +285,13 @@ data flows:
     to: :NAS
     data:
       - id: :Document
+        data processed:
+          level 0: logical
+          level 1: boolean
         format:
-          id: psdc:plain
+          format type: psdc:plain
           level 0: plain text
+          level 1: business
     encryption: HTTPS
     periodicity: 3h
     amount of data per period: 5
@@ -226,9 +302,13 @@ data flows:
     to: :NAS
     data:
       - id: :Document
+        data processed:
+          level 0: logical
+          level 1: boolean
         format:
-          id: psdc:plain
+          format type: psdc:plain
           level 0: plain text
+          level 1: business
     encryption: HTTPS
     periodicity: 3h
     amount of data per period: 5
@@ -239,9 +319,13 @@ data flows:
     to: :NAS
     data:
       - id: :Document
+        data processed:
+          level 0: logical
+          level 1: boolean
         format:
-          id: psdc:plain
+          format type: psdc:plain
           level 0: plain text
+          level 1: business
     encryption: HTTPS
     periodicity: 3h
     amount of data per period: 5
@@ -252,9 +336,13 @@ data flows:
     to: :NAS
     data:
       - id: :Document
+        data processed:
+          level 0: logical
+          level 1: boolean
         format:
-          id: psdc:plain
+          format type: psdc:plain
           level 0: plain text
+          level 1: business
     encryption: HTTPS
     periodicity: 3h
     amount of data per period: 5
@@ -265,9 +353,13 @@ data flows:
     to: :IoT Manager
     data:
       - id: :RGBColor
+        data processed:
+          level 0: logical
+          level 1: boolean
         format:
-          id: psdc:plain
+          format type: psdc:plain
           level 0: plain text
+          level 1: business
     encryption: HTTPS
     periodicity: 3h
     amount of data per period: 1
@@ -278,9 +370,13 @@ data flows:
     to: :Lamp
     data:
       - id: :RGBColor
+        data processed:
+          level 0: logical
+          level 1: boolean
         format:
-          id: psdc:plain
+          format type: psdc:plain
           level 0: plain text
+          level 1: business
     encryption: HTTPS
     periodicity: 3h
     amount of data per period: 1
@@ -291,9 +387,13 @@ data flows:
     to: :IoT Manager
     data:
       - id: :Document
+        data processed:
+          level 0: logical
+          level 1: boolean
         format:
-          id: psdc:plain
+          format type: psdc:plain
           level 0: plain text
+          level 1: business
     encryption: HTTPS
     periodicity: 1w
     amount of data per period: 1
@@ -304,9 +404,13 @@ data flows:
     to: :Printer
     data:
       - id: :Document
+        data processed:
+          level 0: logical
+          level 1: boolean
         format:
-          id: psdc:plain
+          format type: psdc:plain
           level 0: plain text
+          level 1: business
     encryption: HTTPS
     periodicity: 1w
     amount of data per period: 1
@@ -317,9 +421,13 @@ data flows:
     to: :IoT Manager
     data:
       - id: :Temperature
+        data processed:
+          level 0: logical
+          level 1: boolean
         format:
-          id: psdc:plain
+          format type: psdc:plain
           level 0: plain text
+          level 1: business
     encryption: HTTPS
     periodicity: 1w
     amount of data per period: 1
@@ -330,9 +438,13 @@ data flows:
     to: :Thermostat
     data:
       - id: :Temperature
+        data processed:
+          level 0: logical
+          level 1: boolean
         format:
-          id: psdc:plain
+          format type: psdc:plain
           level 0: plain text
+          level 1: business
     encryption: HTTPS
     periodicity: 1w
     amount of data per period: 1
@@ -343,9 +455,13 @@ data flows:
     to: :IoT Manager
     data:
       - id: :Presence
+        data processed:
+          level 0: logical
+          level 1: boolean
         format:
-          id: psdc:plain
+          format type: psdc:plain
           level 0: plain text
+          level 1: business
     encryption: HTTPS
     periodicity: 1w
     amount of data per period: 1
@@ -356,9 +472,13 @@ data flows:
     to: :IoT Manager
     data:
       - id: :Presence
+        data processed:
+          level 0: logical
+          level 1: boolean
         format:
-          id: psdc:plain
+          format type: psdc:plain
           level 0: plain text
+          level 1: business
     encryption: HTTPS
     periodicity: 1w
     amount of data per period: 1

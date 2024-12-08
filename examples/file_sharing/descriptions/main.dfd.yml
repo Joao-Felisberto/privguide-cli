@@ -33,11 +33,39 @@ data types:
 external entities:
   - id: dpia:AuthenticatedUser 
     consumes:
-      - :Document
-      - :PrivDocument
+      - id: :Document
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
+      - id: :PrivDocument
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     produces: 
-      - :Document
-      - :PrivDocument
+      - id: :Document
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
+      - id: :PrivDocument
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     location:
       - Portugal
     categories:
@@ -61,11 +89,39 @@ external entities:
     environment: []
   - id: dpia:AccountSystem 
     consumes:
-      - :AccountId
-      - :username
-      - :password
+      - id: :AccountId
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
+      - id: :username
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
+      - id: :password
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     produces: 
-      - :Account
+      - id: :Account
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     location:
       - Portugal
     environment: []
@@ -77,9 +133,23 @@ external entities:
 processes:
   - id: send Document
     consumes:
-      - :Document
+      - id: :Document
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     produces:
-      - :Document
+      - id: :Document
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     location:
       - Portugal
     environment: []
@@ -89,9 +159,23 @@ processes:
     safeguards: []
   - id: recieve Document
     consumes:
-      - :Document
+      - id: :Document
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     produces:
-      - :Document
+      - id: :Document
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     location:
       - Portugal
     environment: []
@@ -101,9 +185,23 @@ processes:
     safeguards: []
   - id: send PrivDocument
     consumes:
-      - :PrivDocument
+      - id: :PrivDocument
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     produces:
-      - :PrivDocument
+      - id: :PrivDocument
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     location:
       - Portugal
     environment: []
@@ -113,9 +211,23 @@ processes:
     safeguards: []
   - id: recieve PrivDocument
     consumes:
-      - :Document
+      - id: :Document
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     produces:
-      - :Document
+      - id: :Document
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     location:
       - Portugal
     environment: []
@@ -127,12 +239,20 @@ data stores:
   - id: Document db
     data stored:
       - type: :Document
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
         storage period: eternal
         create: :C store Document
         read:   :R store Document
         update: :U store Document
         delete: :D store Document
       - type: :PrivDocument
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
         storage period: eternal
         create: :C store PrivDocument
         read:   :R store PrivDocument
@@ -148,8 +268,22 @@ data flows:
     from: dpia:AuthenticatedUser
     to: dpia:AccountSystem
     data:
-      - :username
-      - :password
+      - id: :username
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
+      - id: :password
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     encryption: HTTPS
     periodicity: 30m
     amount of data per period: 1
@@ -159,8 +293,22 @@ data flows:
     from: dpia:AuthenticatedUser
     to: dpia:AccountSystem
     data:
-      - :username
-      - :password
+      - id: :username
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
+      - id: :password
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     encryption: HTTPS
     periodicity: 30m
     amount of data per period: 1
@@ -170,7 +318,14 @@ data flows:
     from: dpia:AuthenticatedUser
     to: :send Document
     data:
-      - :Document
+      - id: :Document
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     encryption: signal
     periodicity: 1m
     amount of data per period: 1
@@ -180,7 +335,14 @@ data flows:
     from: :send Document
     to: :Document db
     data:
-      - :Document
+      - id: :Document
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     encryption: signal
     periodicity: 1m
     amount of data per period: 1
@@ -190,7 +352,14 @@ data flows:
     from: dpia:AuthenticatedUser
     to: :send Document
     data:
-      - :Document
+      - id: :Document
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     encryption: signal
     periodicity: 1m
     amount of data per period: 1
@@ -200,7 +369,14 @@ data flows:
     from: :send Document
     to: :Document db
     data:
-      - :Document
+      - id: :Document
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     encryption: signal
     periodicity: 1m
     amount of data per period: 1
@@ -210,7 +386,14 @@ data flows:
     from: dpia:AuthenticatedUser
     to: :send Document
     data:
-      - :Document
+      - id: :Document
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     encryption: signal
     periodicity: 1m
     amount of data per period: 1
@@ -220,7 +403,14 @@ data flows:
     from: :send Document
     to: :Document db
     data:
-      - :Document
+      - id: :Document
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     encryption: signal
     periodicity: 1m
     amount of data per period: 1
@@ -230,7 +420,14 @@ data flows:
     from: dpia:AuthenticatedUser
     to: :send Document
     data:
-      - :Document
+      - id: :Document
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     encryption: signal
     periodicity: 1m
     amount of data per period: 1
@@ -240,7 +437,14 @@ data flows:
     from: :send Document
     to: :Document db
     data:
-      - :Document
+      - id: :Document
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     encryption: signal
     periodicity: 1m
     amount of data per period: 1
@@ -250,7 +454,14 @@ data flows:
     from: :send Document
     to: dpia:AuthenticatedUser
     data:
-      - :Document
+      - id: :Document
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     encryption: signal
     periodicity: 1m
     amount of data per period: 1
@@ -260,7 +471,14 @@ data flows:
     from: dpia:AuthenticatedUser
     to: :send PrivDocument
     data:
-      - :PrivDocument
+      - id: :PrivDocument
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     encryption: signal
     periodicity: 1m
     amount of data per period: 1
@@ -270,7 +488,14 @@ data flows:
     from: :send PrivDocument
     to: :Document db
     data:
-      - :PrivDocument
+      - id: :PrivDocument
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     encryption: signal
     periodicity: 1m
     amount of data per period: 1
@@ -280,7 +505,14 @@ data flows:
     from: dpia:AuthenticatedUser
     to: :send PrivDocument
     data:
-      - :PrivDocument
+      - id: :PrivDocument
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     encryption: signal
     periodicity: 1m
     amount of data per period: 1
@@ -290,7 +522,14 @@ data flows:
     from: :send PrivDocument
     to: :Document db
     data:
-      - :PrivDocument
+      - id: :PrivDocument
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     encryption: signal
     periodicity: 1m
     amount of data per period: 1
@@ -300,7 +539,14 @@ data flows:
     from: dpia:AuthenticatedUser
     to: :send PrivDocument
     data:
-      - :PrivDocument
+      - id: :PrivDocument
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     encryption: signal
     periodicity: 1m
     amount of data per period: 1
@@ -310,7 +556,14 @@ data flows:
     from: :send PrivDocument
     to: :Document db
     data:
-      - :PrivDocument
+      - id: :PrivDocument
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     encryption: signal
     periodicity: 1m
     amount of data per period: 1
@@ -320,7 +573,14 @@ data flows:
     from: dpia:AuthenticatedUser
     to: :send PrivDocument
     data:
-      - :PrivDocument
+      - id: :PrivDocument
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     encryption: signal
     periodicity: 1m
     amount of data per period: 1
@@ -330,7 +590,14 @@ data flows:
     from: :send PrivDocument
     to: :Document db
     data:
-      - :PrivDocument
+      - id: :PrivDocument
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     encryption: signal
     periodicity: 1m
     amount of data per period: 1
@@ -340,7 +607,14 @@ data flows:
     from: :send PrivDocument
     to: dpia:AuthenticatedUser
     data:
-      - :PrivDocument
+      - id: :PrivDocument
+        data processed:
+          level 0: logical
+          level 1: boolean
+        format:
+          format type: psdc:plain
+          level 0: plain text
+          level 1: business
     encryption: signal
     periodicity: 1m
     amount of data per period: 1
