@@ -1,0 +1,69 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "type": "array",
+    "items": {
+        "$ref": "#/definitions/PsDC"
+    },
+    "definitions": {
+        "PsDC": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "level 0": {
+                    "type": "string",
+                    "enum": [
+                        "identifiers",
+                        "behavioral",
+                        "societal"
+                    ]
+                },
+                "level 1": {
+                    "type": "string",
+                    "enum": [
+                        "human",
+                        "biological",
+                        "devices",
+                        "interactions",
+                        "skills",
+                        "actions",
+                        "statistics",
+                        "connections",
+                        "companies",
+                        "relationships",
+                        "gender"
+                    ]
+                },
+                "level 2": {
+                    "type": "string",
+                    "enum": [
+                        "online",
+                        "position",
+                        "object",
+                        "subject",
+                        "sexual",
+                        "criminal record",
+                        "biometric",
+                        "genetic",
+                        "address",
+                        "characteristics",
+                        "connections",
+                        "surveillance",
+                        "communication",
+                        "shopping",
+                        "beliefs"
+                    ]
+                }
+            },
+            "required": [
+                "id",
+                "level 0",
+                "level 1",
+                "level 2"
+            ],
+            "title": "PsDC"
+        }
+    }
+}

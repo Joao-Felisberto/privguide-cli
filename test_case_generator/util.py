@@ -1,6 +1,6 @@
 from abc import ABC
 from typing import Self
-
+# import inspect
 
 class Cloneable(ABC):
 
@@ -14,4 +14,5 @@ class Cloneable(ABC):
             for k in params
         }
 
+        # print('--> ', inspect.signature(self.__class__.__init__), params)
         return self.__class__(**params)

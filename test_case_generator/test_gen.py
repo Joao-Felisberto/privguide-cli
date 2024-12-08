@@ -1,8 +1,10 @@
 import json
+from typing import List
 
 import yaml
 
-from dfd import DataType, ExternalEntity, Process, DataStore, DataStored, DataFlow, DFD
+from dfd import DataType, ExternalEntity, Process, DataStore, DataStored, DataFlow, DFD, DataFormat, Data, \
+    ProcessedCategorization
 from dpia import DPO, PersonalDatum, DPIA, Risk, Processing, Purpose, SupervisoryAuthorityVeredict
 
 
@@ -16,7 +18,13 @@ def to_yaml(data, fname):
         f.write(yaml.dump(json.loads(data)))
 
 
+def to_data_list(dt_names: List[str]) -> List[Data]:
+    return [Data(e, DataFormat.default(), ProcessedCategorization.default()) for e in dt_names]
+
+# yaml-language-server: $schema=../../schemas/dfd-schema.json
 if __name__ == '__main__':
+    # Data(e, DataFormat("psdc:plain", "plain text", "business")
+
     dt1 = DataType(
         "message",
         [],
@@ -44,8 +52,8 @@ if __name__ == '__main__':
 
     ee1 = ExternalEntity(
         "dpia:User",
-        [":message"],
-        [":message"],
+        to_data_list([":message"]),
+        to_data_list([":message"]),
         ["Portugal"],
         [],
         ["dpia:human"],
@@ -56,8 +64,8 @@ if __name__ == '__main__':
     )
     ee2 = ExternalEntity(
         "dpia:User",
-        [":message"],
-        [":message"],
+        to_data_list([":message"]),
+        to_data_list([":message"]),
         ["Portugal"],
         [],
         ["dpia:external system"],
@@ -69,8 +77,8 @@ if __name__ == '__main__':
 
     proc1 = Process(
         "send message",
-        [":message"],
-        [":message"],
+        to_data_list([":message"]),
+        to_data_list([":message"]),
         ["Portugal"],
         [],
         ["dpia:message routing"],
@@ -85,6 +93,7 @@ if __name__ == '__main__':
         ":R store message",
         ":U store message",
         ":D store message",
+        DataFormat.default(),
     )
 
     ds1 = DataStore(
@@ -100,7 +109,7 @@ if __name__ == '__main__':
         "C message",
         "dpia:User",
         ":send message",
-        [":message"],
+        to_data_list([":message"]),
         "signal",
         "1m",
         1,
@@ -115,7 +124,7 @@ if __name__ == '__main__':
         "C store message",
         ":send message",
         ":message db",
-        [":message"],
+        to_data_list([":message"]),
         "signal",
         "1m",
         1,
@@ -223,8 +232,8 @@ if __name__ == '__main__':
         [processing1]
     )
 
-    to_yaml(dfd, "../.devprivops/tests/a/out.dfd.yml")
-    to_yaml(dpia, "../.devprivops/tests/a/out.dpia.yml")
+    to_yaml(dfd, "../examples/global/tests/a/out.dfd.yml")
+    to_yaml(dpia, "../examples/global/tests/a/out.dpia.yml")
 
     # ASVS
 
@@ -242,8 +251,8 @@ if __name__ == '__main__':
     dfd2 = dfd.clone(data_types=[dt_2_1, dt2, dt3], data_stores=[ds_2_1])
     dpia2 = dpia.clone()
 
-    to_yaml(dfd2, "../.devprivops/tests/asvs_browser/out.dfd.yml")
-    to_yaml(dpia2, "../.devprivops/tests/asvs_browser/out.dpia.yml")
+    to_yaml(dfd2, "../examples/global/tests/asvs_browser/out.dfd.yml")
+    to_yaml(dpia2, "../examples/global/tests/asvs_browser/out.dpia.yml")
 
     # DPIA con
 
@@ -284,8 +293,8 @@ if __name__ == '__main__':
         last_update="wrong date",
     )
 
-    to_yaml(dfd3, "../.devprivops/tests/dpia_con/out.dfd.yml")
-    to_yaml(dpia3, "../.devprivops/tests/dpia_con/out.dpia.yml")
+    to_yaml(dfd3, "../examples/global/tests/dpia_con/out.dfd.yml")
+    to_yaml(dpia3, "../examples/global/tests/dpia_con/out.dpia.yml")
 
     data_4_1 = DataStored(
         ":type 3",
@@ -294,6 +303,7 @@ if __name__ == '__main__':
         ":R new",
         ":U new",
         ":D new",
+        DataFormat.default()
     )
 
     ds_4_1 = DataStore(
@@ -307,14 +317,14 @@ if __name__ == '__main__':
 
     ee_4_1 = ee1.clone(
         id_="new ent",
-        consumes=[":type 1"],
-        produces=[":type 2"],
+        consumes=to_data_list([":type 1"]),
+        produces=to_data_list([":type 2"]),
     )
 
     df_4_1 = df1.clone(
         from_=":message",
         to=":no exists",
-        data=[":type 4", *df1.data],
+        data=[Data(":type 4", DataFormat.default(), ProcessedCategorization.default()), *df1.data],
         periodicity="invalid",
     )
 
@@ -338,8 +348,8 @@ if __name__ == '__main__':
         processings=[processing_4_1],
     )
 
-    to_yaml(dfd4, "../.devprivops/tests/gdpr_con/out.dfd.yml")
-    to_yaml(dpia4, "../.devprivops/tests/gdpr_con/out.dpia.yml")
+    to_yaml(dfd4, "../examples/global/tests/gdpr_con/out.dfd.yml")
+    to_yaml(dpia4, "../examples/global/tests/gdpr_con/out.dpia.yml")
 
     risk_5_1 = risk1.clone(
         impact=10,
@@ -383,8 +393,8 @@ if __name__ == '__main__':
         risks=[risk_5_1],
     )
 
-    to_yaml(dfd5, "../.devprivops/tests/dpia_pol/out.dfd.yml")
-    to_yaml(dpia5, "../.devprivops/tests/dpia_pol/out.dpia.yml")
+    to_yaml(dfd5, "../examples/global/tests/dpia_pol/out.dfd.yml")
+    to_yaml(dpia5, "../examples/global/tests/dpia_pol/out.dpia.yml")
 
     ee_6_1 = ee1.clone(
         location=["Nowhere"],
@@ -396,7 +406,7 @@ if __name__ == '__main__':
     )
 
     df_6_1 = df1.clone(
-        data=[":new data", *df1.data]
+        data=[Data(":new data", DataFormat.default(), ProcessedCategorization.default()), *df1.data]
     )
 
     data_6_1 = data1.clone(
@@ -416,5 +426,216 @@ if __name__ == '__main__':
     )
     dpia6 = dpia.clone()
 
-    to_yaml(dfd6, "../.devprivops/tests/dfd_pol/out.dfd.yml")
-    to_yaml(dpia6, "../.devprivops/tests/dfd_pol/out.dpia.yml")
+    to_yaml(dfd6, "../examples/global/tests/dfd_pol/out.dfd.yml")
+    to_yaml(dpia6, "../examples/global/tests/dfd_pol/out.dpia.yml")
+
+    dt_p_1 = DataType(
+        "message",
+        [],
+        "eternal",
+        ["dpia:confidential", "dpia:personal"],
+    )
+    dt_p_2 = DataType(
+        "AccountId",
+        [],
+        "eternal",
+        ["dpia:personal"],
+    )
+    dt_p_3 = DataType(
+        "Account",
+        [],
+        "eternal",
+        ["dpia:confidential", "dpia:personal"],
+    )
+
+    ee_p_1 = ExternalEntity(
+        "dpia:User",
+        [Data(":message", DataFormat.default(), ProcessedCategorization.default())],
+        [Data(":message", DataFormat.default(), ProcessedCategorization.default())],
+        ["Portugal"],
+        [],
+        ["dpia:human"],
+        ">16",
+        False,
+        [],
+        [],
+    )
+    ee_p_2 = ExternalEntity(
+        "dpia:AccountSystem",
+        [Data(":message", DataFormat.default(), ProcessedCategorization.default())],
+        [Data(":message", DataFormat.default(), ProcessedCategorization.default())],
+        ["Portugal"],
+        [],
+        ["dpia:human"],
+        ">16",
+        False,
+        [],
+        [],
+    )
+
+    proc_p_1 = Process(
+        "send message",
+        [Data(":message", DataFormat.default(), ProcessedCategorization.default())],
+        [Data(":message", DataFormat.default(), ProcessedCategorization.default())],
+        ["Portugal"],
+        [],
+        ["dpia:message routing"],
+        [],
+        [],
+    )
+
+    ds_p_1 = DataStore(
+        "message db",
+        [
+            DataStored(
+                ":message",
+                "eternal",
+                ":C store message",
+                ":R store message",
+                ":U store message",
+                ":D store message",
+                DataFormat.default(),
+            )
+        ],
+        ["Portugal"],
+        [],
+        [],
+        [],
+    )
+
+    store_message_df_p = [
+        DataFlow(
+            f"{m} store message",
+            ":send message",
+            ":message db",
+            [Data(":message", DataFormat.default(), ProcessedCategorization.default())],
+            "signal",
+            "1m",
+            1,
+            [],
+            [],
+        )
+        for m in ('C', 'R', 'U', 'D')
+    ]
+    message_df_p = [
+        DataFlow(
+            f"{m} message",
+            "dpia:User",
+            ":send message",
+            [Data(":message", DataFormat.default(), ProcessedCategorization.default())],
+            "signal",
+            "1m",
+            1,
+            [],
+            [],
+        )
+        for m in ('C', 'R', 'U', 'D')
+    ]
+    deliver_df_p = DataFlow(
+            f"Deliver message",
+            ":send message",
+            "dpia:User",
+            [Data(":message", DataFormat.default(), ProcessedCategorization.default())],
+            "signal",
+            "1m",
+            1,
+            [],
+            [],
+        )
+
+    dpo_p = [
+        DPO(":The", "the@email.com"),
+        DPO(":Man", "man@email.com"),
+    ]
+
+    pd_p_1 = PersonalDatum(
+        "dfd:message",
+        ":personal",
+        [],
+        [],
+        [":User"],
+        "2d",
+        False,
+        [":message routing"],
+        [],
+    )
+    pd_p_2 = PersonalDatum(
+        "dfd:AccountId",
+        ":personal",
+        [],
+        [],
+        [":User"],
+        "2d",
+        False,
+        [],
+        [],
+    )
+    pd_p_3 = PersonalDatum(
+        "dfd:Account",
+        ":personal",
+        [],
+        [],
+        [":User"],
+        "2d",
+        False,
+        [],
+        [],
+    )
+
+    r_p_1 = Risk(
+        "Risk 1",
+        0,
+        1,
+        []
+    )
+
+    processing_p_1 = Processing(
+        id_="dfd:send message",
+        requires_new_technologies=False,
+        risk_to_rights_and_freedoms_of=[":User"],
+        required_for_contract=[],
+        legally_mandated=False,
+        vital_interest=[],
+        public_interest=False,
+        is_official_authority=False,
+        legitimate_interest=[":User"],
+        professional_secrecy=False,
+        scores_users=False,
+        automated_decisions=False,
+        legal_impact_for_the_user=False,
+        systematic_monitoring=False,
+        large_scale_processing=False,
+        lawful=True,
+        fair=True,
+        transparent=True,
+        specific=True,
+        explicit=True,
+        legitimate=True,
+        purposes=[purpose1],
+        risks=[f":{r_p_1.id_}"],
+        supervisory_authority_veredict=SupervisoryAuthorityVeredict(
+            [":Supervisor"],
+            True
+        )
+    )
+
+    dfd_perfect = DFD(
+        [dt_p_1, dt_p_2, dt_p_3],
+        [ee_p_1, ee_p_2],
+        [proc_p_1],
+        [ds_p_1],
+        [*store_message_df_p, *message_df_p, deliver_df_p]
+    )
+    dpia_perfect = DPIA(
+        ":last_update",
+        [":Someone", ":Else"],
+        dpo_p,
+        [pd_p_1, pd_p_2, pd_p_3],
+        [r_p_1],
+        [":message routing"],
+        [],
+        [processing_p_1]
+    )
+
+    to_yaml(dfd_perfect, "../examples/global/tests/perfect_scenario/perfect_scenario.dfd.yml")
+    to_yaml(dpia_perfect, "../examples/global/tests/perfect_scenario/perfect_scenario.dpia.yml")

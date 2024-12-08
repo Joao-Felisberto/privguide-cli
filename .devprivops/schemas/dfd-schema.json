@@ -62,7 +62,8 @@
                 "data": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "object",
+                        "$ref": "Data"
                     }
                 },
                 "encryption": {
@@ -155,6 +156,14 @@
                 "type": {
                     "type": "string"
                 },
+                "format": {
+                    "type": "object",
+                    "$ref": "#/definitions/DataFormat"
+                },
+                "processed categorization": {
+                    "type": "object",
+                    "$ref": "#/definitions/ProcessedCategorization"
+                },
                 "storage period": {
                     "type": "string"
                 },
@@ -174,6 +183,7 @@
             "required": [
                 "create",
                 "delete",
+                "format",
                 "read",
                 "storage period",
                 "type",
@@ -222,13 +232,15 @@
                 "consumes": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "object",
+                        "$ref": "Data"
                     }
                 },
                 "produces": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "object",
+                        "$ref": "Data"
                     }
                 },
                 "location": {
@@ -313,13 +325,15 @@
                 "consumes": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "object",
+                        "$ref": "Data"
                     }
                 },
                 "produces": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "object",
+                        "$ref": "Data"
                     }
                 },
                 "location": {
@@ -364,6 +378,102 @@
                 "safeguards"
             ],
             "title": "Process"
+        },
+        "Data": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "format": {
+                    "type": "object",
+                    "$ref": "#/definitions/DataFormat"
+                }
+            },
+            "required": [
+                "id",
+                "format"
+            ],
+            "title": "Data"
+        },
+        "DataFormat": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "level 0": {
+                    "type": "string",
+                    "enum": [
+                        "plain text",
+                        "cipher",
+                        "anonymized",
+                        "pseudonymized",
+                        "metadata"
+                    ]
+                },
+                "level 1": {
+                    "type": "string",
+                    "enum": [
+                        "re-identification",
+                        "accuracy",
+                        "linkability",
+                        "social",
+                        "technical",
+                        "operational",
+                        "business"
+                    ]
+                }
+            },
+            "required": [
+                "id",
+                "level 0",
+                "level 1"
+            ],
+            "title": "DataFormat"
+        },
+        "ProcessedCategorization": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "level 0": {
+                    "type": "string",
+                    "enum": [
+                        "health",
+                        "sensing data",
+                        "spatial",
+                        "temporal",
+                        "logical"
+                    ]
+                },
+                "level 1": {
+                    "type": "string",
+                    "enum": [
+                        "phyical",
+                        "mental",
+                        "social",
+                        "human sensors",
+                        "environmental sensors",
+                        "locality",
+                        "relative",
+                        "absolute",
+                        "tilestamp",
+                        "interval",
+                        "numeric",
+                        "date",
+                        "time",
+                        "time with time zone",
+                        "boolean"
+                    ]
+                }
+            },
+            "required": [
+                "level 0",
+                "level 1"
+            ],
+            "title": "ProcessedCategorization"
         }
     }
 }

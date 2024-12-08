@@ -2,8 +2,22 @@ data flows:
 - amount of data per period: 1
   certification: []
   data:
-  - :type 4
-  - :message
+  - data processed:
+      level 0: logical
+      level 1: boolean
+    format:
+      format type: psdc:plain
+      level 0: plain text
+      level 1: business
+    id: :type 4
+  - data processed:
+      level 0: logical
+      level 1: boolean
+    format:
+      format type: psdc:plain
+      level 0: plain text
+      level 1: business
+    id: :message
   encryption: signal
   from: :message
   id: C message
@@ -13,7 +27,14 @@ data flows:
 - amount of data per period: 1
   certification: []
   data:
-  - :message
+  - data processed:
+      level 0: logical
+      level 1: boolean
+    format:
+      format type: psdc:plain
+      level 0: plain text
+      level 1: business
+    id: :message
   encryption: signal
   from: dpia:User
   id: C message
@@ -23,7 +44,14 @@ data flows:
 - amount of data per period: 1
   certification: []
   data:
-  - :message
+  - data processed:
+      level 0: logical
+      level 1: boolean
+    format:
+      format type: psdc:plain
+      level 0: plain text
+      level 1: business
+    id: :message
   encryption: signal
   from: dpia:User
   id: R message
@@ -33,7 +61,14 @@ data flows:
 - amount of data per period: 1
   certification: []
   data:
-  - :message
+  - data processed:
+      level 0: logical
+      level 1: boolean
+    format:
+      format type: psdc:plain
+      level 0: plain text
+      level 1: business
+    id: :message
   encryption: signal
   from: dpia:User
   id: U message
@@ -43,7 +78,14 @@ data flows:
 - amount of data per period: 1
   certification: []
   data:
-  - :message
+  - data processed:
+      level 0: logical
+      level 1: boolean
+    format:
+      format type: psdc:plain
+      level 0: plain text
+      level 1: business
+    id: :message
   encryption: signal
   from: dpia:User
   id: D message
@@ -53,7 +95,14 @@ data flows:
 - amount of data per period: 1
   certification: []
   data:
-  - :message
+  - data processed:
+      level 0: logical
+      level 1: boolean
+    format:
+      format type: psdc:plain
+      level 0: plain text
+      level 1: business
+    id: :message
   encryption: signal
   from: :send message
   id: C store message
@@ -63,7 +112,14 @@ data flows:
 - amount of data per period: 1
   certification: []
   data:
-  - :message
+  - data processed:
+      level 0: logical
+      level 1: boolean
+    format:
+      format type: psdc:plain
+      level 0: plain text
+      level 1: business
+    id: :message
   encryption: signal
   from: :send message
   id: R store message
@@ -73,7 +129,14 @@ data flows:
 - amount of data per period: 1
   certification: []
   data:
-  - :message
+  - data processed:
+      level 0: logical
+      level 1: boolean
+    format:
+      format type: psdc:plain
+      level 0: plain text
+      level 1: business
+    id: :message
   encryption: signal
   from: :send message
   id: U store message
@@ -83,7 +146,14 @@ data flows:
 - amount of data per period: 1
   certification: []
   data:
-  - :message
+  - data processed:
+      level 0: logical
+      level 1: boolean
+    format:
+      format type: psdc:plain
+      level 0: plain text
+      level 1: business
+    id: :message
   encryption: signal
   from: :send message
   id: D store message
@@ -95,6 +165,10 @@ data stores:
   data stored:
   - create: :C new
     delete: :D new
+    format:
+      format type: psdc:plain
+      level 0: plain text
+      level 1: business
     read: :R new
     storage period: eternal
     type: :type 3
@@ -108,6 +182,10 @@ data stores:
   data stored:
   - create: :C store message
     delete: :D store message
+    format:
+      format type: psdc:plain
+      level 0: plain text
+      level 1: business
     read: :R store message
     storage period: eternal
     type: :message
@@ -149,54 +227,110 @@ external entities:
   categories:
   - dpia:human
   consumes:
-  - :type 1
+  - data processed:
+      level 0: logical
+      level 1: boolean
+    format:
+      format type: psdc:plain
+      level 0: plain text
+      level 1: business
+    id: :type 1
   environment: []
   id: new ent
   location:
   - Portugal
   options: []
   produces:
-  - :type 2
+  - data processed:
+      level 0: logical
+      level 1: boolean
+    format:
+      format type: psdc:plain
+      level 0: plain text
+      level 1: business
+    id: :type 2
   produces public information: false
   safeguards: []
 - age: '>16'
   categories:
   - dpia:human
   consumes:
-  - :message
+  - data processed:
+      level 0: logical
+      level 1: boolean
+    format:
+      format type: psdc:plain
+      level 0: plain text
+      level 1: business
+    id: :message
   environment: []
   id: dpia:User
   location:
   - Portugal
   options: []
   produces:
-  - :message
+  - data processed:
+      level 0: logical
+      level 1: boolean
+    format:
+      format type: psdc:plain
+      level 0: plain text
+      level 1: business
+    id: :message
   produces public information: false
   safeguards: []
 - age: null
   categories:
   - dpia:external system
   consumes:
-  - :message
+  - data processed:
+      level 0: logical
+      level 1: boolean
+    format:
+      format type: psdc:plain
+      level 0: plain text
+      level 1: business
+    id: :message
   environment: []
   id: dpia:User
   location:
   - Portugal
   options: []
   produces:
-  - :message
+  - data processed:
+      level 0: logical
+      level 1: boolean
+    format:
+      format type: psdc:plain
+      level 0: plain text
+      level 1: business
+    id: :message
   produces public information: false
   safeguards: []
 processes:
 - certification: []
   consumes:
-  - :message
+  - data processed:
+      level 0: logical
+      level 1: boolean
+    format:
+      format type: psdc:plain
+      level 0: plain text
+      level 1: business
+    id: :message
   environment: []
   id: send message
   location:
   - Portugal
   produces:
-  - :message
+  - data processed:
+      level 0: logical
+      level 1: boolean
+    format:
+      format type: psdc:plain
+      level 0: plain text
+      level 1: business
+    id: :message
   purposes:
   - dpia:message routing
   safeguards: []

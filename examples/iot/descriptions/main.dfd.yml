@@ -21,15 +21,39 @@ data types:
 external entities:
   - id: IoT Manager
     consumes:
-      - :RGBColor
-      - :Document
-      - :Temperature
-      - :Presence
+      - id: :RGBColor
+        format:
+          id: psdc:plain
+          level 0: plain text
+      - id: :Document
+        format:
+          id: psdc:plain
+          level 0: plain text
+      - id: :Temperature
+        format:
+          id: psdc:plain
+          level 0: plain text
+      - id: :Presence
+        format:
+          id: psdc:plain
+          level 0: plain text
     produces:
-      - :RGBColor
-      - :Document
-      - :Temperature
-      - :Presence
+      - id: :RGBColor
+        format:
+          id: psdc:plain
+          level 0: plain text
+      - id: :Document
+        format:
+          id: psdc:plain
+          level 0: plain text
+      - id: :Temperature
+        format:
+          id: psdc:plain
+          level 0: plain text
+      - id: :Presence
+        format:
+          id: psdc:plain
+          level 0: plain text
     location:
       - Portugal
     environment: []
@@ -41,10 +65,22 @@ external entities:
   - id: Home Owner
     consumes: :home owner consumption
     produces:
-      - :RGBColor
-      - :Document
-      - :Temperature
-      - :Presence
+      - id: :RGBColor
+        format:
+          id: psdc:plain
+          level 0: plain text
+      - id: :Document
+        format:
+          id: psdc:plain
+          level 0: plain text
+      - id: :Temperature
+        format:
+          id: psdc:plain
+          level 0: plain text
+      - id: :Presence
+        format:
+          id: psdc:plain
+          level 0: plain text
     location:
       - Portugal
     environment: []
@@ -57,7 +93,10 @@ external entities:
   - id: Visitor
     consumes: []
     produces:
-      - :Presence
+      - id: :Presence
+        format:
+          id: psdc:plain
+          level 0: plain text
     location:
       - Portugal
     environment: []
@@ -69,7 +108,10 @@ external entities:
     options: []
   - id: Lamp
     consumes:
-      - :RGBColor
+      - id: :RGBColor
+        format:
+          id: psdc:plain
+          level 0: plain text
     produces: []
     location:
       - Portugal
@@ -81,7 +123,10 @@ external entities:
     options: []
   - id: Printer
     consumes:
-      - :Document
+      - id: :Document
+        format:
+          id: psdc:plain
+          level 0: plain text
     produces: []
     location:
       - Portugal
@@ -93,7 +138,10 @@ external entities:
     options: []
   - id: Thermostat
     consumes:
-      - :Temperature
+      - id: :Temperature
+        format:
+          id: psdc:plain
+          level 0: plain text
     produces: []
     location:
       - Portugal
@@ -105,9 +153,15 @@ external entities:
     options: []
   - id: Presence Sensor
     consumes:
-      - :Presence
+      - id: :Presence
+        format:
+          id: psdc:plain
+          level 0: plain text
     produces:
-      - :Presence
+      - id: :Presence
+        format:
+          id: psdc:plain
+          level 0: plain text
     location:
       - Portugal
     environment: []
@@ -133,6 +187,9 @@ data stores:
   - id: NAS
     data stored:
       - type: :Document
+        format:
+          id: psdc:plain
+          level 0: plain text
         storage period: eternal 
         create: :C Document NAS
         read: :R Document NAS
@@ -155,7 +212,10 @@ data flows:
     from: :Home Owner
     to: :NAS
     data:
-      - :Document
+      - id: :Document
+        format:
+          id: psdc:plain
+          level 0: plain text
     encryption: HTTPS
     periodicity: 3h
     amount of data per period: 5
@@ -165,7 +225,10 @@ data flows:
     from: :Home Owner
     to: :NAS
     data:
-      - :Document
+      - id: :Document
+        format:
+          id: psdc:plain
+          level 0: plain text
     encryption: HTTPS
     periodicity: 3h
     amount of data per period: 5
@@ -175,7 +238,10 @@ data flows:
     from: :Home Owner
     to: :NAS
     data:
-      - :Document
+      - id: :Document
+        format:
+          id: psdc:plain
+          level 0: plain text
     encryption: HTTPS
     periodicity: 3h
     amount of data per period: 5
@@ -185,7 +251,10 @@ data flows:
     from: :Home Owner
     to: :NAS
     data:
-      - :Document
+      - id: :Document
+        format:
+          id: psdc:plain
+          level 0: plain text
     encryption: HTTPS
     periodicity: 3h
     amount of data per period: 5
@@ -195,7 +264,10 @@ data flows:
     from: :Home Owner
     to: :IoT Manager
     data:
-      - :RGBColor
+      - id: :RGBColor
+        format:
+          id: psdc:plain
+          level 0: plain text
     encryption: HTTPS
     periodicity: 3h
     amount of data per period: 1
@@ -205,7 +277,10 @@ data flows:
     from: :IoT Manager
     to: :Lamp
     data:
-      - :RGBColor
+      - id: :RGBColor
+        format:
+          id: psdc:plain
+          level 0: plain text
     encryption: HTTPS
     periodicity: 3h
     amount of data per period: 1
@@ -215,7 +290,10 @@ data flows:
     from: :Home Owner
     to: :IoT Manager
     data:
-      - :Document
+      - id: :Document
+        format:
+          id: psdc:plain
+          level 0: plain text
     encryption: HTTPS
     periodicity: 1w
     amount of data per period: 1
@@ -225,7 +303,10 @@ data flows:
     from: :IoT Manager
     to: :Printer
     data:
-      - :Document
+      - id: :Document
+        format:
+          id: psdc:plain
+          level 0: plain text
     encryption: HTTPS
     periodicity: 1w
     amount of data per period: 1
@@ -235,7 +316,10 @@ data flows:
     from: :Home Owner
     to: :IoT Manager
     data:
-      - :Temperature
+      - id: :Temperature
+        format:
+          id: psdc:plain
+          level 0: plain text
     encryption: HTTPS
     periodicity: 1w
     amount of data per period: 1
@@ -245,7 +329,10 @@ data flows:
     from: :IoT Manager
     to: :Thermostat
     data:
-      - :Temperature
+      - id: :Temperature
+        format:
+          id: psdc:plain
+          level 0: plain text
     encryption: HTTPS
     periodicity: 1w
     amount of data per period: 1
@@ -255,7 +342,10 @@ data flows:
     from: :Visitor
     to: :IoT Manager
     data:
-      - :Presence
+      - id: :Presence
+        format:
+          id: psdc:plain
+          level 0: plain text
     encryption: HTTPS
     periodicity: 1w
     amount of data per period: 1
@@ -265,7 +355,10 @@ data flows:
     from: :Home Owner
     to: :IoT Manager
     data:
-      - :Presence
+      - id: :Presence
+        format:
+          id: psdc:plain
+          level 0: plain text
     encryption: HTTPS
     periodicity: 1w
     amount of data per period: 1

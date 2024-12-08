@@ -10,6 +10,10 @@
   uri: https://devprivops.com/github-actions
   files:
     - .*\.gh-action\.yml
+- abreviation: psdc
+  uri: https://devprivops.com/psdc
+  files:
+    - .*\.psdc\.yml
 - abreviation: cfg
   uri: https://devprivops.com/config
   files:

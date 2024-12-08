@@ -221,7 +221,7 @@ func ValidateYAMLAgainstSchemaFile(yamlFile string, schemaFile string) (*gojsons
 	schemaLoader := gojsonschema.NewReferenceLoader("file://" + schemaFile)
 	schema, err := gojsonschema.NewSchema(schemaLoader)
 	if err != nil {
-		return nil, fmt.Errorf("failed to load JSON schema: %s", err)
+		return nil, fmt.Errorf("failed to load JSON schema '%s' for '%s': %s", schemaFile, yamlFile, err)
 	}
 
 	// Load YAML data
@@ -262,7 +262,7 @@ func validateYAMLAgainstSchemaString(yamlFile string, schemaString *string) (*go
 	schemaLoader := gojsonschema.NewStringLoader(*schemaString)
 	schema, err := gojsonschema.NewSchema(schemaLoader)
 	if err != nil {
-		return nil, fmt.Errorf("failed to load JSON schema: %s", err)
+		return nil, fmt.Errorf("failed to load JSON schema string: %s", err)
 	}
 
 	// Load YAML data
