@@ -1,10 +1,21 @@
 {
     "$schema": "http://json-schema.org/draft-06/schema#",
-    "type": "array",
+    "type": "object",
     "items": {
-        "$ref": "#/definitions/PsDC"
+        "$ref": "#/definitions/PsDCClassification"
     },
     "definitions": {
+        "PsDCClassification": {
+            "type": "array",
+            "additionalProperties": false,
+            "properties": {
+                "data types": {
+                    "type": "object",
+                    "$ref":  "#/definitions/PsDC"
+                }
+            },
+            "required": ["data types"]
+        },
         "PsDC": {
             "type": "object",
             "additionalProperties": false,

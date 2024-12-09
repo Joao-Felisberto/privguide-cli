@@ -21,7 +21,7 @@ data types:
 external entities:
   - id: IoT Manager
     consumes:
-      - id: :RGBColor
+      - id: RGBColor
         data processed:
           level 0: logical
           level 1: boolean
@@ -29,7 +29,7 @@ external entities:
           format type: psdc:plain
           level 0: plain text
           level 1: business
-      - id: :Document
+      - id: Document
         data processed:
           level 0: logical
           level 1: boolean
@@ -37,7 +37,7 @@ external entities:
           format type: psdc:plain
           level 0: plain text
           level 1: business
-      - id: :Temperature
+      - id: Temperature
         data processed:
           level 0: logical
           level 1: boolean
@@ -45,7 +45,7 @@ external entities:
           format type: psdc:plain
           level 0: plain text
           level 1: business
-      - id: :Presence
+      - id: Presence
         data processed:
           level 0: logical
           level 1: boolean
@@ -54,7 +54,7 @@ external entities:
           level 0: plain text
           level 1: business
     produces:
-      - id: :RGBColor
+      - id: RGBColor
         data processed:
           level 0: logical
           level 1: boolean
@@ -62,7 +62,7 @@ external entities:
           format type: psdc:plain
           level 0: plain text
           level 1: business
-      - id: :Document
+      - id: Document
         data processed:
           level 0: logical
           level 1: boolean
@@ -70,7 +70,7 @@ external entities:
           format type: psdc:plain
           level 0: plain text
           level 1: business
-      - id: :Temperature
+      - id: Temperature
         data processed:
           level 0: logical
           level 1: boolean
@@ -78,7 +78,7 @@ external entities:
           format type: psdc:plain
           level 0: plain text
           level 1: business
-      - id: :Presence
+      - id: Presence
         data processed:
           level 0: logical
           level 1: boolean
@@ -97,7 +97,7 @@ external entities:
   - id: Home Owner
     consumes: :home owner consumption
     produces:
-      - id: :RGBColor
+      - id: RGBColor
         data processed:
           level 0: logical
           level 1: boolean
@@ -105,7 +105,7 @@ external entities:
           format type: psdc:plain
           level 0: plain text
           level 1: business
-      - id: :Document
+      - id: Document
         data processed:
           level 0: logical
           level 1: boolean
@@ -113,7 +113,7 @@ external entities:
           format type: psdc:plain
           level 0: plain text
           level 1: business
-      - id: :Temperature
+      - id: Temperature
         data processed:
           level 0: logical
           level 1: boolean
@@ -121,7 +121,7 @@ external entities:
           format type: psdc:plain
           level 0: plain text
           level 1: business
-      - id: :Presence
+      - id: Presence
         data processed:
           level 0: logical
           level 1: boolean
@@ -141,7 +141,7 @@ external entities:
   - id: Visitor
     consumes: []
     produces:
-      - id: :Presence
+      - id: Presence
         data processed:
           level 0: logical
           level 1: boolean
@@ -160,7 +160,7 @@ external entities:
     options: []
   - id: Lamp
     consumes:
-      - id: :RGBColor
+      - id: RGBColor
         data processed:
           level 0: logical
           level 1: boolean
@@ -179,7 +179,7 @@ external entities:
     options: []
   - id: Printer
     consumes:
-      - id: :Document
+      - id: Document
         data processed:
           level 0: logical
           level 1: boolean
@@ -198,7 +198,7 @@ external entities:
     options: []
   - id: Thermostat
     consumes:
-      - id: :Temperature
+      - id: Temperature
         data processed:
           level 0: logical
           level 1: boolean
@@ -217,7 +217,7 @@ external entities:
     options: []
   - id: Presence Sensor
     consumes:
-      - id: :Presence
+      - id: Presence
         data processed:
           level 0: logical
           level 1: boolean
@@ -226,7 +226,7 @@ external entities:
           level 0: plain text
           level 1: business
     produces:
-      - id: :Presence
+      - id: Presence
         data processed:
           level 0: logical
           level 1: boolean
@@ -284,7 +284,7 @@ data flows:
     from: :Home Owner
     to: :NAS
     data:
-      - id: :Document
+      - id: Document
         data processed:
           level 0: logical
           level 1: boolean
@@ -301,7 +301,7 @@ data flows:
     from: :Home Owner
     to: :NAS
     data:
-      - id: :Document
+      - id: Document
         data processed:
           level 0: logical
           level 1: boolean
@@ -318,7 +318,7 @@ data flows:
     from: :Home Owner
     to: :NAS
     data:
-      - id: :Document
+      - id: Document
         data processed:
           level 0: logical
           level 1: boolean
@@ -335,7 +335,7 @@ data flows:
     from: :Home Owner
     to: :NAS
     data:
-      - id: :Document
+      - id: Document
         data processed:
           level 0: logical
           level 1: boolean
@@ -352,7 +352,7 @@ data flows:
     from: :Home Owner
     to: :IoT Manager
     data:
-      - id: :RGBColor
+      - id: RGBColor
         data processed:
           level 0: logical
           level 1: boolean
@@ -369,7 +369,7 @@ data flows:
     from: :IoT Manager
     to: :Lamp
     data:
-      - id: :RGBColor
+      - id: RGBColor
         data processed:
           level 0: logical
           level 1: boolean
@@ -386,7 +386,7 @@ data flows:
     from: :Home Owner
     to: :IoT Manager
     data:
-      - id: :Document
+      - id: Document
         data processed:
           level 0: logical
           level 1: boolean
@@ -403,7 +403,7 @@ data flows:
     from: :IoT Manager
     to: :Printer
     data:
-      - id: :Document
+      - id: Document
         data processed:
           level 0: logical
           level 1: boolean
@@ -420,7 +420,7 @@ data flows:
     from: :Home Owner
     to: :IoT Manager
     data:
-      - id: :Temperature
+      - id: Temperature
         data processed:
           level 0: logical
           level 1: boolean
@@ -437,7 +437,7 @@ data flows:
     from: :IoT Manager
     to: :Thermostat
     data:
-      - id: :Temperature
+      - id: Temperature
         data processed:
           level 0: logical
           level 1: boolean
@@ -454,7 +454,7 @@ data flows:
     from: :Visitor
     to: :IoT Manager
     data:
-      - id: :Presence
+      - id: Presence
         data processed:
           level 0: logical
           level 1: boolean
@@ -471,7 +471,7 @@ data flows:
     from: :Home Owner
     to: :IoT Manager
     data:
-      - id: :Presence
+      - id: Presence
         data processed:
           level 0: logical
           level 1: boolean

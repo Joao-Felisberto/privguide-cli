@@ -1,0 +1,17 @@
+PREFIX psdc: <https://devprivops.com/psdc/>
+PREFIX dfd: <https://devprivops.com/dfd/>
+
+SELECT *
+WHERE {
+    psdc:ROOT psdc:data_types ?d_type .
+    ?d_type psdc:level_0 ?dt_lvl_0 .
+    ?d_type psdc:level_1 ?dt_lvl_1 .
+    ?d_type psdc:level_2 ?dt_lvl_2 .
+
+#    ?d_type dfd:data_processed/dfd:level_0 ?dp_lvl_0 .
+#    ?d_type dfd:data_processed/dfd:level_1 ?dp_lvl_1 .
+    
+#    ?d_type dfd:format/dfd:format_type ?format_t .
+#    ?d_type dfd:format/dfd:level_0 ?format_lvl_0 .
+#    ?d_type dfd:format/dfd:level_1 ?format_lvl_1 .
+}

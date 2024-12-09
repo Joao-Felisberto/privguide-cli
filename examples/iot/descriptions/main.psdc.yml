@@ -1,0 +1,6 @@
+# yaml-language-server: $schema=../../global/schemas/psdc-schema.json
+data types:
+  - id: dfd:Presence
+    level 0: behavioral
+    level 1: actions
+    level 2: address

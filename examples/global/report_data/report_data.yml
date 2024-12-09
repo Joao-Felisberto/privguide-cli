@@ -1,0 +1,16 @@
+# yaml-language-server: $schema=../../../schema/schemas/report_data-schema.json
+
+- location: regulations.dpia
+  query: report_data/queries/consent.rq
+  heading: List of information to be provided for each personal data point collected 
+  description: For each personal data point collected, lists every data processing, storage and share with third party to which a user has to consent to
+  data row line: ""
+  clearence level: 0
+  groups: ["all"]
+- location: placeholder
+  query: report_data/queries/d_types.rq
+  heading: Classification of data types
+  description: The classification of the data types used in the system according to the PsDC
+  data row line: ""
+  clearence level: 0
+  groups: ["all"]
