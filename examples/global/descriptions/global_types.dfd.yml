@@ -25,6 +25,10 @@ data types:
     categories: 
       # - dpia:personal
       - dpia:confidential
+  - id: isBenign
+    aggregates: []
+    validity: eternal
+    categories: []
 data flows: []
 data stores: []
 external entities: []

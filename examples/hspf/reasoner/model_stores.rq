@@ -1,0 +1,8 @@
+PREFIX dfd: <https://devprivops.com/dfd/>
+
+INSERT {
+    dpia:ROOT dfd:model_store ?ds .  
+} WHERE {
+    dfd:ROOT dfd:data_stores ?ds .
+    ?ds dfd:data_stored/dfd:type dfd:Model .
+}

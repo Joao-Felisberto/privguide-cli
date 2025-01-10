@@ -1,0 +1,501 @@
+# yaml-language-server: $schema=../../global/schemas/dfd-schema.json
+
+data types:
+  - id: NetworkPacket
+    aggregates: [] # https://www.kaggle.com/datasets/chethuhn/network-intrusion-dataset
+    validity: 30d
+    categories: 
+      - dpia:personal
+      - dpia:confidential
+  - id: AnonNetworkPacket
+    aggregates: [] # https://www.kaggle.com/datasets/chethuhn/network-intrusion-dataset
+    validity: 30d
+    categories:
+      - dpia:confidential
+  # - id: Network Flow
+  #   aggregates:
+  #     - :NetworkPacket
+  #   validity: eternal
+  #   categories: []
+  - id: TrafficClassification
+    aggregates: []
+    validity: eternal
+    categories: []
+  - id: Model
+    aggregates: []
+    validity: eternal
+    categories: 
+      - dpia:confidential
+external entities:
+  - id: MicroService
+    consumes: []
+    produces:
+      - :NetworkPacket
+    location:
+      - Portugal
+    environment: []
+    categories: []
+    age: null
+    produces public information: false
+    safeguards: []
+    options: []
+  - id: Collector
+    consumes: []
+    produces: []
+    location:
+      - Portugal
+    environment: []
+    categories: 
+      - :network attack protection
+    age: null
+    produces public information: false
+    safeguards:
+      - DoS Hulk
+      - DoS
+      - DoS Slowloris
+      - DoS Slowhttptest
+      - DDoS
+      - Nmap
+      - FTP-Patator
+      - SSH-Patator
+      - Bot
+      - Brute Force
+      - Web Attack
+      - SQL Injection
+    options: []
+  - id: Agent
+    consumes: []
+    produces: []
+    location:
+      - Portugal
+    environment: []
+    categories: []
+    age: null
+    produces public information: false
+    safeguards: []
+    options: []
+  - id: Aggregator
+    consumes: []
+    produces: []
+    location:
+      - Portugal
+    environment: []
+    categories: []
+    age: null
+    produces public information: false
+    safeguards:
+      - DoS Hulk
+      - DoS
+      - DoS Slowloris
+      - DoS Slowhttptest
+      - DDoS
+      - Nmap
+      - FTP-Patator
+      - SSH-Patator
+      - Bot
+      - Brute Force
+      - Web Attack
+      - SQL Injection
+    options: []
+  - id: PolicyEnforcer
+    consumes: 
+      - :AnonNetworkPacket
+    produces: []
+    location:
+      - Portugal
+    environment: []
+    categories: []
+    age: null
+    produces public information: false
+    safeguards: []
+    options: []
+processes: 
+  - id: Anonymization
+    consumes:
+      - :NetworkPacket
+    produces:
+      - :AnonNetworkPacket
+    location:
+      - Portugal
+    environment: []
+    purposes: []
+    certification: []
+    safeguards: []
+  - id: Classification
+    consumes:
+      - :AnonNetworkPacket
+    produces:
+      - :TrafficClassification
+    location:
+      - Portugal
+    environment: []
+    purposes: []
+    certification:
+      - DoS Hulk
+      - DoS
+      - DoS Slowloris
+      - DoS Slowhttptest
+      - DDoS
+      - Nmap
+      - FTP-Patator
+      - SSH-Patator
+      - Bot
+      - Brute Force
+      - Web Attack
+      - SQL Injection
+    safeguards: []
+data stores: 
+  - id: TrafficStore
+    data stored:
+      - type: :AnonNetworkPacket
+        storage period: 30d
+        create: :StoreTraffic
+        read: 
+        update: 
+        delete: 
+    location:
+      - Portugal
+    environment: []
+    certification: []
+    safeguards: []
+  - id: LocalTrafficStore
+    data stored:
+      - type: :AnonNetworkPacket
+        storage period: 30d
+        create: :StoreTrafficLocal
+        read: 
+        update: 
+        delete: 
+    location:
+      - Portugal
+    environment: []
+    certification: []
+    safeguards: []
+  - id: ModelStore
+    data stored:
+      - type: :Model
+        storage period: eternal
+        create: :CModel
+        read: :RModel
+        update: :UModel
+        delete: :DModel
+    location:
+      - Portugal
+    environment: []
+    certification: []
+    safeguards: []
+data flows: 
+  - id: :RecievePacket
+    from: :MicroService
+    to: :Anonymization
+    data:
+      - :NetworkPacket
+    encryption: none
+    periodicity: 1s
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: :CollectPacket
+    from: :Anonymization
+    to: :Collector
+    data:
+      - :AnonNetworkPacket
+    encryption: none
+    periodicity: 1s
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: :SendToAgent
+    from: :Collector
+    to: :Agent
+    data:
+      - :AnonNetworkPacket
+    encryption: none
+    periodicity: 1s
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: StoreTrafficLocal
+    from: :Collector
+    to: :LocalTrafficStore
+    data:
+      - :AnonNetworkPacket
+    encryption: none
+    periodicity: 1s
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: StoreTraffic
+    from: :Aggregator
+    to: :TrafficStore
+    data:
+      - :AnonNetworkPacket
+    encryption: none
+    periodicity: 1s
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: TrafficToAggregator
+    from: :Agent
+    to: :Aggregator
+    data:
+      - :AnonNetworkPacket
+    encryption: none
+    periodicity: 1s
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: TrafficToAggregator
+    from: :Agent
+    to: :Aggregator
+    data:
+      - :AnonNetworkPacket
+    encryption: none
+    periodicity: 1s
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: TrafficToPolEnforcer
+    from: :Aggregator
+    to: :PolicyEnforcer
+    data:
+      - :AnonNetworkPacket
+    encryption: none
+    periodicity: 1s
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: DeployModel
+    from: :Aggregator
+    to: :Agent
+    data:
+      - :Model
+    encryption: none
+    periodicity: 1d
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: CModel
+    from: :Aggregator
+    to: :ModelStore
+    data:
+      - :Model
+    encryption: none
+    periodicity: 1d
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: RModel
+    from: :Aggregator
+    to: :ModelStore
+    data:
+      - :Model
+    encryption: none
+    periodicity: 1d
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: UModel
+    from: :Aggregator
+    to: :ModelStore
+    data:
+      - :Model
+    encryption: none
+    periodicity: 1d
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: DModel
+    from: :Aggregator
+    to: :ModelStore
+    data:
+      - :Model
+    encryption: none
+    periodicity: 1d
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: ClassifyLocal
+    from: :Agent
+    to: :TrafficClassification
+    data:
+      - :NetworkPacket
+    encryption: none
+    periodicity: 1d
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: Classify
+    from: :Aggregator
+    to: :Classification
+    data:
+      - :NetworkPacket
+    encryption: none
+    periodicity: 1d
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: SendClassificationLocal
+    from: :Classification
+    to: :Aggregator
+    data:
+      - :Classification
+    encryption: none
+    periodicity: 1d
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+  - id: SendClassification
+    from: :Classification
+    to: :PolicyEnforcer
+    data:
+      - :TrafficClassification
+    encryption: none
+    periodicity: 1d
+    amount of data per period: 1
+    certification: []
+    safeguards: []
+# data types:
+#   - id: Network Packet
+#     aggregates: [] # https://www.kaggle.com/datasets/chethuhn/network-intrusion-dataset
+#     validity: eternal
+#     categories: []
+#   - id: Network Flow
+#     aggregates:
+#       - :Network Packet
+#     validity: eternal
+#     categories: []
+# external entities:
+#   - id: Aggregator
+#     consumes:
+#       -
+#     produces:
+#       -
+#     location:
+#       - Portugal
+#     environment: []
+#     categories: []
+#     age: null
+#     produces public information: false
+#     safeguards:
+#       - DoS Hulk
+#       - DoS
+#       - DoS Slowloris
+#       - DoS Slowhttptest
+#       - DDoS
+#       - Nmap
+#       - FTP-Patator
+#       - SSH-Patator
+#       - Bot
+#       - Brute Force
+#       - Web Attack
+#       - SQL Injection
+#     options: []
+#   - id: Agent
+#     consumes:
+#       - :Network Flow
+#     produces:
+#       -
+#     location:
+#       - Portugal
+#     environment: []
+#     categories: []
+#     age: null
+#     produces public information: false
+#     safeguards:
+#       - DoS Hulk
+#       - DoS
+#       - DoS Slowloris
+#       - DoS Slowhttptest
+#       - DDoS
+#       - Nmap
+#       - FTP-Patator
+#       - SSH-Patator
+#       - Bot
+#       - Brute Force
+#       - Web Attack
+#       - SQL Injection
+#     options: []
+#   - id: Collector
+#     consumes:
+#       -
+#     produces:
+#       -
+#     location:
+#       - Portugal
+#     environment: []
+#     categories: []
+#     age: null
+#     produces public information: false
+#     safeguards:
+#       - DoS Hulk
+#       - DoS
+#       - DoS Slowloris
+#       - DoS Slowhttptest
+#       - DDoS
+#       - Nmap
+#       - FTP-Patator
+#       - SSH-Patator
+#       - Bot
+#       - Brute Force
+#       - Web Attack
+#       - SQL Injection
+#     options: []
+#   - id: ML Model
+#     consumes:
+#       -
+#     produces:
+#       -
+#     location:
+#       - Portugal
+#     environment: []
+#     categories: []
+#     age: null
+#     produces public information: false
+#   - id: Federated Agent # Is this a data store?
+#     consumes:
+#       -
+#     produces:
+#       -
+#     location:
+#       - Portugal
+#     environment: []
+#     categories: []
+#     age: null
+#     produces public information: false
+#   - id: NFStream # https://www.nfstream.org/
+#     consumes:
+#       - :Network Packet
+#     produces:
+#       - :Network Flow
+#     location:
+#       - Portugal
+#     environment: []
+#     categories: []
+#     age:
+#     produces public information: false
+#     safeguards: []
+#     options: []
+# processes:
+#   - id: Federated Training
+#     consumes:
+#       - :Network Packet
+#     produces: []
+#     location:
+#       - Portugal
+#     environment: []
+#     purposes: []
+#     certification: []
+#     safeguards: []
+#   - id: Layer 4 packet anonymization
+#     consumes:
+#       - :Network Packet
+#     produces:
+#       - :Network Packet
+#     location: []
+#     environment: []
+#     purposes: []
+#     certification: []
+#     safeguards: []
+# data stores: []
+# data flows: []

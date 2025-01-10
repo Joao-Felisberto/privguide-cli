@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=../../../schema/schemas/requirement-schema.json
+
+- use case: As a User I want to be able to detect well known network attacks so that my microservices are secure against them
+  is misuse case: false
+  clearence level: 0
+  groups: ["all"]
+  requirements:
+    - title: The system must have safeguards against common network attacks
+      description: The system must be resilient against DoS Hulk, DoS. DoS Slowloris, DoS Slowhttptest, DDoS, Nmap, FTP-Patator, SSH-Patator, Bot, Brute Force, Web Attack, and SQL Injections attacks
+      query: requirements/common_atk.rq
+      clearence level: 0
+      groups: ["all"]

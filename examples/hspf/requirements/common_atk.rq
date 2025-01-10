@@ -1,0 +1,10 @@
+PREFIX dfd: <https://devprivops.com/dfd/>
+
+SELECT ?missing 
+WHERE {
+    VALUES ?certification { "DoS Hulk" "DoS" "DoS Slowloris" "DoS Slowhttptest" "DDoS" "Nmap" "FTP-Patator" "SSH-Patator" "Bot" "Brute Force" "Web Attack" "SQL Injection" }
+    FILTER NOT EXISTS {
+        dfd:Classification dfd:certification ?certification .
+    }
+    BIND(?certification as ?missing) .
+}

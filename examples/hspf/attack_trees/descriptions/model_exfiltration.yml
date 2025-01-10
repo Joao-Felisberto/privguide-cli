@@ -1,0 +1,5 @@
+description: Model Exfiltration
+query: attack_trees/queries/model_exfiltration.rq
+clearence level: 0
+groups: ["all"]
+children: []

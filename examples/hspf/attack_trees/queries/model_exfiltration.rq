@@ -1,0 +1,12 @@
+PREFIX dfd: <https://devprivops.com/dfd/>
+
+SELECT * 
+WHERE {
+    # dfd:ROOT dfd:data_stores ?ds .
+    # ?ds dfd:data_stored/dfd:type dfd:Model .
+    dfd:ROOT dfd:model_store ?ds .
+
+    FILTER NOT EXISTS {
+        ?ds dfd:safeguards dfd:anti_exfiltration .
+    }
+}
